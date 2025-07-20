@@ -1,0 +1,7 @@
+.mvn
+.angular
+.idea
+*.iws
+*.iml
+*.ipr
+/mysql-data

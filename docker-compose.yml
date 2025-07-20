@@ -1,0 +1,15 @@
+services:
+
+  dema-app:
+    container_name: dema-app
+    image: dema-app:1.0.12
+    environment:
+      EMAIL_HOST_NAME: ${EMAIL_HOST_NAME}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}  
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/apartment
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      API_PORT: 8081
+    ports:
+      - 8081:8081
