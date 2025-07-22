@@ -5,3 +5,5 @@
 *.iml
 *.ipr
 /mysql-data
+/node_modules
+/target
