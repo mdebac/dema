@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+
+:host{
+  display: block;
+  border-radius: var(--cornerRadius);
+  grid-row: span var(--rowSpan);
+  grid-column: span var(--colSpan);
+  min-height: var(--minHeight);
+}
+
+.container{
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+ // padding: 30px;
+ // margin: 10px;
+  box-sizing: border-box;
+  border-radius: inherit;
+  overflow: hidden;
+  background-color: var(--backgroundColor);
+}
+
+.settings-button{
+  position: absolute;
+  top:20px;
+  right: 20px;
+}

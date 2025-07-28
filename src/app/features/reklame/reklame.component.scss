@@ -1,0 +1,30 @@
+@use '@angular/material' as mat;
+
+//$primary-color: beige;
+//$secondary-color: #bd0430;
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  background-color: $secondary-color;
+  color: $primary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.activebutton
+{
+  background-color: $primary-color;
+  color: $secondary-color;
+  --mdc-extended-fab-container-elevation-shadow: 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color;
+
+}
+
+.mat-mdc-extended-fab:hover{
+  background-color: $primary-color;
+  color: $secondary-color;
+}

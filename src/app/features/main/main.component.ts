@@ -23,7 +23,15 @@ export class MainComponent implements OnInit{
           console.log("data",data)
           this.res = data.text;
         }
-    )
+    );
+
+      this.service.ping2().subscribe(
+          data => {
+              console.log("data",data)
+              this.res = data.text;
+          }
+      );
+
   }
 
 }

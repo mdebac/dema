@@ -1,0 +1,9 @@
+export enum Chip {
+  PICTURE='PICTURE',
+  VIDEO='VIDEO',
+  TEXT='TEXT',
+  JOB='JOB',
+  FORM='FORM',
+  SHOPPING='SHOPPING',
+  SETTINGS='SETTINGS',
+}

@@ -1,0 +1,29 @@
+<div class="container title" [ngClass]="[elevation]">
+
+  <div class="settings-button">
+    <button *ngIf="loggedIn" mat-mini-fab color="primary" (click)="updateItemSettings(data.colors,data.item)" aria-label="Settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <button *ngIf="loggedIn" mat-mini-fab color="primary" (click)="updateItem(data.languages,data.colors,data.item)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button *ngIf="loggedIn" mat-mini-fab color="danger" (click)="deleteItem(data.item)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+
+  @if (data.item.chip === Chip.TEXT) {
+    <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item.iso, selectedIso: selectedIso}">
+    </ng-container>
+  }
+  @if (data.item.chip === Chip.JOB) {
+    <ng-container *ngComponentOutlet="data.component; inputs: {  itemId: data.item.id, item: data.item.iso, selectedIso: selectedIso}">
+    </ng-container>
+  }
+  @if (data.item.chip === Chip.VIDEO || data.item.chip === Chip.PICTURE) {
+    <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, columns: columns}">
+    </ng-container>
+  }
+
+</div>

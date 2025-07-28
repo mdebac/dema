@@ -1,0 +1,160 @@
+<ng-container *ngrxLet="{ header: header$, selectedIso: selectedIso$, tabs: tabs$, segment: segment$ } as vm">
+
+  <div class="grid-container">
+
+    <section>
+      <div class="flex-container">
+        <div class="header-left">
+          <div class="logoSpace">
+
+              <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"
+                   src="{{'data:image/jpg;base64,' + vm.header.iconImage}}" alt=""/>
+
+            <p>{{ getIconText(vm.selectedIso, vm.header?.iso) }}</p>
+
+          </div>
+          <div class="logoText">
+            {{ getIconTitle(vm.selectedIso, vm.header?.iso) }}
+          </div>
+          <div class="grb">
+            <div class="grb-crveno"></div>
+            <div class="grb-bijelo"></div>
+            <div class="grb-bijelo"></div>
+            <div class="grb-crveno"></div>
+          </div>
+
+        </div>
+
+        <div class="tabsSpace">
+
+          @for (headerDetail of vm.header?.detail; track headerDetail.detailUrl; let idx1 = $index, e = $even) {
+
+            @for (iso of headerDetail.iso; track iso.iso; let idx2 = $index, e = $even) {
+
+              @if (idx1 === 0) {
+                @if (vm.selectedIso === iso.iso) {
+                  <div class="button-container">
+                    <button *ngIf="!vm.segment"
+                            [routerLink]="['.']"
+                            routerLinkActive="activebutton"
+                            [routerLinkActiveOptions]="{exact: true}"
+                            mat-fab extended>
+                      <mat-icon *ngIf="headerDetail.icon">{{ headerDetail.icon }}</mat-icon>
+                      {{ iso.label }}
+                    </button>
+
+                    <button *ngIf="vm.segment"
+                            [routerLink]="[headerDetail.detailUrl]"
+                            routerLinkActive="activebutton"
+                            [routerLinkActiveOptions]="{exact: true}"
+                            mat-fab extended>
+                      <mat-icon *ngIf="headerDetail.icon">{{ headerDetail.icon }}</mat-icon>
+                      {{ iso.label }}
+                    </button>
+
+                  </div>
+                }
+              } @else {
+                @if (vm.selectedIso === iso.iso) {
+                  <div class="button-container">
+                    <button
+                      routerLink="{{ headerDetail.detailUrl }}"
+                      routerLinkActive="activebutton"
+                      mat-fab extended>
+                      <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}</mat-icon>
+                      {{ iso.label }}
+                    </button>
+                  </div>
+                }
+              }
+            }
+          }
+        </div>
+
+        <div class="isoSpace">
+
+          <div class="isoSpaceLanguage">
+            <iso-buttons *ngIf="vm.header?.languages" [countries]="vm.header.languages" [selectedIn]="vm.selectedIso"
+                         (selectedOut)="activeIso($event)">
+            </iso-buttons>
+          </div>
+
+          <div class="isoSpaceActions">
+            @if (!loggedIn) {
+
+              <p class="myspace"></p>
+              <!--
+                           <div class="button-container">
+                             <button routerLink="/login"
+                                     routerLinkActive="activebutton"
+                                     mat-fab extended>
+                               <mat-icon>favorite</mat-icon>
+                               Login
+                             </button>
+                           </div>
+
+                           <div class="button-container">
+                             <button routerLink="/register"
+                                     routerLinkActive="activebutton"
+                                     mat-fab extended>
+                               <mat-icon>favorite</mat-icon>
+                               Register
+                             </button>
+                           </div>
+                            -->
+            } @else {
+
+              <div class="button-container">
+                <button routerLink="/cv"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                  <mat-icon>file_copy</mat-icon>
+                  My CVs
+                </button>
+              </div>
+
+              <div class="button-container">
+                <button routerLink="/my"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                  <mat-icon>favorite</mat-icon>
+                  My Tabs
+                </button>
+              </div>
+              <div class="button-container">
+                <button (click)="logout()"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                  <mat-icon>favorite</mat-icon>
+                  Logout
+                </button>
+              </div>
+            }
+
+          </div>
+
+
+        </div>
+      </div>
+
+    </section>
+
+    <mat-grid-list cols="8" rowHeight="8:6" gutterSize="0">
+
+      <mat-grid-tile class="dashboard-tile" [colspan]="6" [rowspan]="5">
+        <router-outlet></router-outlet>
+      </mat-grid-tile>
+
+      <mat-grid-tile class="reklame-tile" [colspan]="2" [rowspan]="2">
+        <calendar></calendar>
+      </mat-grid-tile>
+
+      <mat-grid-tile class="location-tile" [colspan]="2" [rowspan]="3">
+        <div class="container">
+        <reklame></reklame>
+          </div>
+      </mat-grid-tile>
+
+    </mat-grid-list>
+  </div>
+</ng-container>

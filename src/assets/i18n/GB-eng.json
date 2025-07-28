@@ -1,0 +1,26 @@
+{
+  "send.cv.button": "Send your resume",
+  "cv.name-surname": "Name and Surname",
+  "cv.cover-letter": "Briefly about myself",
+  "cv.upload.text": "Upload CV in pdf format",
+  "cv.upload.choose": "Choose",
+  "cv.upload.no-file-chosen": "No file has been chosen",
+  "item.upload.image.text": "Upload Image in jpg format",
+  "delete.item": "Are you sure you want to DELETE Item?",
+  "delete.detail": "Are you sure you want to DELETE Page?",
+  "confirm.yes": "Yes",
+  "confirm.no": "No",
+  "update.page": "Update page",
+  "delete.page": "Delete page",
+  "create.page": "Create new page",
+  "create.item": "Create new item",
+  "update.item": "Update item",
+  "item.dialog.description": "Description",
+  "item.dialog.job.title": "Job title",
+  "job.apply.button": "Apply for Job",
+  "item.dialog.remaining.size": "Remaining size {{length}} / 2500",
+  "detail.dialog.remaining.size": "Remaining size {{length}} / 150",
+  "detail.dialog.title": "Title",
+  "detail.dialog.title.error": "Min 2, Max 150"
+
+}

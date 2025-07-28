@@ -1,0 +1,75 @@
+@use '@angular/material' as mat;
+
+//https://stackblitz.com/edit/material-shadow-demo-6xgcov?file=src%2Fglobal_styles.scss,src%2Fapp%2Fpages%2Fdemo%2Fdemo.component.html
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 15px;
+  bottom: 5px;
+  background-color: $primary-color;
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+  @include mat.card-overrides((
+    elevated-container-shape: 16px
+  ));
+}
+
+
+.dashboard-card-content {
+  text-align: center;
+  overflow: hidden;
+  height: 100%;
+  padding: 0;
+  margin-bottom: 5px;
+}
+.dashboard-card-actions {
+  padding: 0;
+  margin: 0;
+}
+
+
+
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  --ngx-editor-background-color: $primary-color;
+  --ngx-editor-border-color: $primary-color;
+  font-size: large;
+
+}
+
+.content {
+  width: 100%;
+  line-height: 30px;
+}
+
+.editor {
+
+  .NgxEditor {
+  }
+
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+    margin-bottom: 0.7rem;
+
+    pre {
+      white-space: pre !important;
+    }
+  }
+}
+
+.title{
+  font-family: "Arial";
+  font-size: xx-large;
+  padding: 10px;
+  margin: 0;
+}

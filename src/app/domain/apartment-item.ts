@@ -1,8 +1,7 @@
 import {Audit} from "./audit";
-import {Chip} from "../../../pages/my-dashboard/chip.enum";
 import {ApartmentItemIso} from "./apartment-item-iso";
-import {ApartmentDetail} from "./apartment-detail";
 import {Colors} from "./colors";
+import {Chip} from "./chip.enum";
 
 export interface ApartmentItem extends Audit{
   description: string;
