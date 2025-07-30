@@ -11,14 +11,14 @@ import { FormsModule } from '@angular/forms';
     imports: [NgxEditorComponent, FormsModule]
 })
 export class TextComponent implements OnInit, OnDestroy {
-  @Input() item:ApartmentItemIso[];
-  @Input() selectedIso:string;
-  @Input() columns:number;
+  @Input() item:ApartmentItemIso[] = [];
+  @Input() selectedIso:string = "";
+  @Input() columns:number = 1;
 
-  editor: Editor;
+  editor: Editor = new Editor();
 
   ngOnInit(): void {
-    this.editor = new Editor();
+    //this.editor = new Editor();
   }
 
   ngOnDestroy(): void {

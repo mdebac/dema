@@ -1,0 +1,59 @@
+<mat-card class="dashboard-card">
+  <mat-card-header>
+    <h2 class="button-container-left text">CV data</h2>
+  </mat-card-header>
+  <mat-card-content [formGroup]="form">
+
+    <div class="row-input-container-left">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Email">
+        <mat-icon matSuffix>sentiment_dissatisfied</mat-icon>
+        <mat-error>
+          Email format
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row-input-container-left">
+      <mat-form-field>
+        <mat-label>{{ "cv.name-surname" | translate }}</mat-label>
+        <input matInput formControlName="name" placeholder="{{'cv.name-surname' | translate}}">
+        <mat-error>
+         Min 4
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row-input-container-left">
+      <mat-form-field>
+        <mat-label>{{ "cv.cover-letter" | translate }}</mat-label>
+        <textarea matInput formControlName="coverLetterText" placeholder="{{'cv.cover-letter' | translate}}">
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+                cdkAutosizeMaxRows="5"></textarea>
+        <mat-error>
+         Min 20
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-label><b>{{ "cv.upload.text" | translate }}</b></mat-label>
+      <br>
+      <input type="file" accept="application/pdf" id="pdf" (change)="selectFile($event)"/>
+    </div>
+    <br>
+
+    <button [disabled]="!form.valid || !captchaResolved" (click)="createCvData()" mat-flat-button color="primary">
+      {{ "send.cv.button" | translate }}
+    </button>
+
+    <mat-error *ngIf="form.get('content')?.hasError('invalidCvSize')">File must not be bigger then 1 Mb</mat-error>
+
+    <br>
+    <re-captcha (resolved)="checkCaptcha($event)" siteKey="{{captchaKey}}">
+    </re-captcha>
+
+  </mat-card-content>
+</mat-card>

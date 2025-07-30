@@ -21,7 +21,7 @@ export interface ApartmentDetail extends Audit{
 }
 
 export interface ApartmentDetailDialogData {
-  languages: string[];
+  languages: string[] | undefined;
   detail: Partial<ApartmentDetail>;
-  colors: Partial<Colors>;
+  colors: Partial<Colors> | undefined;
 }

@@ -10,8 +10,8 @@ import { YouTubePlayer } from '@angular/youtube-player';
 })
 export class YoutubeComponent implements OnInit {
 
-  @Input() item: ApartmentItem;
-  @Input() columns: number;
+  @Input() item: ApartmentItem | null = null;
+  @Input() columns: number = 1;
 
   ngOnInit() {
     const scriptTag = document.createElement('script');

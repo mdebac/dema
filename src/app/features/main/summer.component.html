@@ -1,0 +1,78 @@
+<ng-container *ngrxLet="{ activeDetail: activeDetail$, country: selectedIso$, header: header$} as vm">
+
+  <mat-card class="dashboard-card">
+    <mat-card-header>
+      <div class="button-container-left">
+        <div class="container">
+          <div class="content">
+            <div class="editor">
+              <ngx-editor [editor]="editor"
+                          [ngModel]="getTitle(vm.country, vm.activeDetail?.iso)"
+                          [disabled]="true"
+                          [placeholder]="''"
+              >
+              </ngx-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grb">
+        <div class="grb-crveno"></div>
+        <div class="grb-bijelo"></div>
+        <div class="grb-bijelo"></div>
+        <div class="grb-crveno"></div>
+      </div>
+      <!-- if admin/manager -->
+      @if (loggedIn) {
+
+        <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                 [value]="vm.activeDetail?.columns"
+                                 (change)="onChange($event,vm.activeDetail)">
+          <mat-button-toggle [value]="1">1</mat-button-toggle>
+          <mat-button-toggle [value]="2">2</mat-button-toggle>
+          <mat-button-toggle [value]="3">3</mat-button-toggle>
+          <mat-button-toggle [value]="4">4</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <div class="button-container">
+          <button mat-flat-button color="primary" (click)="createNewItem(vm.activeDetail, vm.header?.colors)">
+            <mat-icon>add_circle</mat-icon>
+            new Item
+          </button>
+        </div>
+        <div class="button-container">
+          <button mat-flat-button color="primary" (click)="updateDetail(vm.header, vm.activeDetail)">
+            <mat-icon>update</mat-icon>
+            {{ "update.page" | translate }}
+          </button>
+        </div>
+        <div class="button-container">
+          <button color="accent" mat-flat-button (click)="deleteDetail(vm.activeDetail)">
+            <mat-icon>delete</mat-icon>
+            {{ "delete.page" | translate }}
+          </button>
+        </div>
+      }
+    </mat-card-header>
+
+    @if (vm.activeDetail?.items) {
+      <mat-card-content
+        cdkDropList
+        [cdkDropListDisabled]="false"
+        [cdkDropListData]="vm.activeDetail!.items"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (data of vm.activeDetail?.items; track data.id) {
+
+          @if (vm.activeDetail.iso) {
+            <widget [selectedIso]="vm.country" [columns]="vm.activeDetail.columns" cdkDrag
+                    [data]="transformItemToWidget(vm.activeDetail, data, vm.header?.colors)"></widget>
+          }
+        }
+      </mat-card-content>
+    }
+
+  </mat-card>
+
+</ng-container>

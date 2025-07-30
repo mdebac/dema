@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,5 +109,15 @@ public class User implements UserDetails, Principal {
 
     public String getFullName() {
         return firstname + " " + lastname;
+    }
+
+    @PrePersist
+    protected void setupCreateAudit() {
+        this.createdDate = OffsetDateTime.now().toLocalDateTime();
+    }
+
+    @PreUpdate
+    protected void setupUpdateAudit() {
+        this.lastModifiedDate = OffsetDateTime.now().toLocalDateTime();
     }
 }

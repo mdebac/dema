@@ -1,4 +1,4 @@
-package com.infodema.webcreator.controllers;
+package com.infodema.webcreator.domain.core;
 
 import lombok.*;
 

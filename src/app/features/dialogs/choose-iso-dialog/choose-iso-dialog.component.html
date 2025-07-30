@@ -1,0 +1,64 @@
+  <div class="example-list"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    #todoList="cdkDropList"
+    [cdkDropListData]="chosen"
+    [cdkDropListConnectedTo]="[doneList]"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (item of chosen; track item) {
+      <div class="example-box" cdkDrag>{{item}}</div>
+    }
+  </div>
+
+<div class="example-list"
+  cdkDropList
+  #doneList="cdkDropList"
+  cdkDropListOrientation="horizontal"
+  [cdkDropListData]="toChoose"
+  [cdkDropListConnectedTo]="[todoList]"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (item of toChoose; track item) {
+    <div class="example-box" cdkDrag>{{item}}</div>
+  }
+</div>
+<!--
+<div class="row-container">
+  <h2>Chosen</h2>
+  <div
+    cdkDropList
+    #todoList="cdkDropList"
+    [cdkDropListData]="chosen"
+    [cdkDropListConnectedTo]="[doneList]"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (item of chosen; track item) {
+      <div cdkDrag>{{item}}</div>
+    }
+  </div>
+</div>
+
+
+<div class="row-container">
+  <h2>To Choose</h2>
+  <div
+    cdkDropList
+    #doneList="cdkDropList"
+    [cdkDropListData]="toChoose"
+    [cdkDropListConnectedTo]="[todoList]"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (item of toChoose; track item) {
+      <div class="example-box" cdkDrag>{{item}}</div>
+    }
+  </div>
+</div>
+-->
+<button (click)="saveIso()"  mat-flat-button color="primary">
+  Save
+</button>
+
+<!-- Copyright 2023 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at https://angular.io/license -->

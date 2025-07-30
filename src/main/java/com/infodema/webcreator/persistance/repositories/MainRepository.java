@@ -1,6 +1,6 @@
 package com.infodema.webcreator.persistance.repositories;
 
-import com.infodema.webcreator.controllers.MainCriteria;
+import com.infodema.webcreator.domain.core.MainCriteria;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.security.User;
 import com.infodema.webcreator.domain.projections.MainProjection;

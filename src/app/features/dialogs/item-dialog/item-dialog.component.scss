@@ -1,0 +1,49 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+:host{
+  @include mat.card-overrides((
+    elevated-container-shape: 16px
+  ));
+}
+
+.dashboard-card {
+  margin: 10px;
+  background-color: $primary-color;
+  max-height: 600px;
+  position: relative;
+  overflow-y: auto;
+  color: $secondary-color;
+  //scrollbar-color: $secondary-color $primary-color;
+}
+
+.dashboard-card mat-card-content {
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(1,1fr);
+  gap: 16px;
+}
+
+
+.mat-mdc-card-header {
+  display: flex;
+  padding: 8px 8px 8px 8px;
+  overflow: hidden;
+  //margin-right: 30%;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  .button-container-left {
+    margin-right: auto;
+  }
+  color: $secondary-color;
+  .row-input-container-left {
+    .mat-mdc-form-field{
+      width: 100%;
+    }
+  }
+
+}
+

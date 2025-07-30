@@ -2,10 +2,9 @@ import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {ApartmentItemIso} from "../../../../domain/apartment-item-iso";
 import { Editor, NgxEditorComponent } from "ngx-editor";
 import {ApartmentStore} from "../../../../services/apartments-store.service";
-import {Subject} from "rxjs";
+import {EMPTY, Subject} from "rxjs";
 import {filter, takeUntil} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
-import {CvDataDialogComponent} from "../../../dialogs/cv-data-dialog/cv-data-dialog.component";
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -24,11 +23,11 @@ export class JobComponent implements OnInit, OnDestroy {
  // error$ = this.store.error$.pipe(filter((e) => !!e));
   dialog = inject(MatDialog);
 
-  @Input() item:ApartmentItemIso[];
-  @Input() selectedIso:string;
-  @Input() columns:number;
-  @Input() itemId:number;
-  editor: Editor;
+  @Input() item:ApartmentItemIso[] = [];
+  @Input() selectedIso:string = "";
+  @Input() columns:number = 1;
+  @Input() itemId:number = 1;
+  editor: Editor = new Editor();
 
   ngOnInit(): void {
     this.editor = new Editor();

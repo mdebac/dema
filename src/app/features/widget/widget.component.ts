@@ -12,18 +12,22 @@ import {ApartmentStore} from "../../services/apartments-store.service";
 import {Widget} from "./widget";
 import {ApartmentItem, ApartmentItemDialogData} from "../../domain/apartment-item";
 import {filter, takeUntil} from "rxjs/operators";
-import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {Subject} from "rxjs";
-import {TokenService} from "../../../../services/token/token.service";
-import {Chip} from "../../../../pages/my-dashboard/chip.enum";
-import {ItemSettingsDialogComponent} from "../dialogs/item-settings-dialog/item-settings-dialog.component";
-import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
 import {Colors} from "../../domain/colors";
 import { NgClass, NgIf, NgComponentOutlet } from "@angular/common";
 import { MatMiniFabButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
+import {TokenService} from "../../services/token.service";
+import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
+import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
+import {ItemSettingsDialogComponent} from "../dialogs/item-settings-dialog/item-settings-dialog.component";
+import {Chip} from "../../domain/chip.enum";
+import {ApartmentDetail} from "../../domain/apartment-detail";
+import {ChipMap} from "../../domain/chip-map";
+import {TextComponent} from "./type/text/text.component";
+import {ApartmentItemIso} from "../../domain/apartment-item-iso";
 
 // @ts-ignore
 @Component({
@@ -44,21 +48,21 @@ export class WidgetComponent implements OnDestroy, OnInit {
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService);
 
-  private _data: Widget;
-  elevation: string;
+  private _data: Widget | undefined;
+  elevation: string | undefined;
   loggedIn: boolean = true;
   @HostBinding("style.--rowSpan")
-  rowSpan: number;
+  rowSpan: number | undefined;
   @HostBinding("style.--colSpan")
-  colSpan: number;
+  colSpan: number | undefined;
   @HostBinding("style.--cornerRadius")
-  cornerRadius: string;
+  cornerRadius: string | undefined;
   @HostBinding("style.--minHeight")
-  minHeight: string;
+  minHeight: string | undefined;
   @HostBinding("style.--backgroundColor")
-  backgroundColor: string;
+  backgroundColor: string | undefined;
 
-  @Input() columns: number;
+  @Input() columns: number | undefined;
 
   @Input() set data(value: Widget) {
     this._data = value;
@@ -70,15 +74,44 @@ export class WidgetComponent implements OnDestroy, OnInit {
     this.backgroundColor = this._data?.item?.backgroundColor ? this._data.item.backgroundColor : "";
   }
 
-  @Input() selectedIso: string | null;
+  @Input() selectedIso: string | null | undefined;
 
   get data(): Widget {
-    return this._data;
+
+    if(this._data?.component){
+      return this._data;
+    }
+    return this.transformItemToWidget();
+
   }
+
+  get dataIso(): ApartmentItemIso[] {
+    if(this._data?.item?.iso){
+      return this._data.item.iso;
+    }
+    return [];
+  }
+
+  get dataId(): number {
+    if(this._data?.item?.id){
+      return this._data.item.id;
+    }
+    return 0;
+  }
+  transformItemToWidget(): Widget {
+  //detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined
+    return {
+      item: null,
+      languages: null,
+      component: TextComponent,
+      colors: undefined,
+    };
+  }
+
 
   unsubscribe$ = new Subject<void>();
 
-  updateItem(languages: string[], colors: Colors, item: ApartmentItem | null) {
+  updateItem(languages: string[] | undefined | null, colors: Colors | undefined, item: ApartmentItem  | undefined | null) {
     const partial: Partial<ApartmentItem> = {...item}
     const data: ApartmentItemDialogData = {
       languages: languages,
@@ -99,7 +132,7 @@ export class WidgetComponent implements OnDestroy, OnInit {
 );
   }
 
-    updateItemSettings(colors: Colors, item: ApartmentItem | null) {
+    updateItemSettings(colors: Colors | undefined, item: ApartmentItem | undefined | null) {
       const partial: Partial<ApartmentItem> = {...item}
       const data: ApartmentItemDialogData = {
         languages: [],
@@ -117,14 +150,16 @@ export class WidgetComponent implements OnDestroy, OnInit {
     );
   }
 
-  deleteItem(item: ApartmentItem) {
+  deleteItem(item: ApartmentItem | undefined | null) {
     this.conformationDialog().pipe(
       filter(val => !!val),
       takeUntil(this.unsubscribe$)
     ).subscribe(confirm => {
         if (confirm) {
           console.log("delete Item")
-          this.store.deleteItemEffect(item)
+          if(item){
+            this.store.deleteItemEffect(item)
+          }
         }
       }
     );

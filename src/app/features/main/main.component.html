@@ -1,1 +1,10 @@
-<p>xmain works! {{res}}</p>
+MAIN COMPONENT
+<ng-container *ngrxLet="{
+  columns: columns$,
+  colors: colors$,
+} as vm">
+    <summer
+            [col]="vm.columns"
+            [colors]="vm.colors"
+    ></summer>
+</ng-container>

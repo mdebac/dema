@@ -1,0 +1,11 @@
+<mat-card class="dashboard-card">
+  <mat-card-content>
+      <mat-label class="text"><b>{{ label }}</b></mat-label>
+    <button (click)="onYes()" mat-flat-button color="warn">
+      {{'confirm.yes' | translate}}
+    </button>
+    <button (click)="onNo()" mat-flat-button color="primary">
+      {{'confirm.no' | translate}}
+    </button>
+  </mat-card-content>
+</mat-card>

@@ -18,6 +18,8 @@ import {Colors} from "../domain/colors";
 import {ApartmentsHttpService} from "./apartments-http.service";
 import {Page} from "../util/search-criteria";
 import {Chip} from "../domain/chip.enum";
+import {TokenService} from "./token.service";
+import {ShareableService} from "./shareable.service";
 
 export interface ApartmentState {
   page: Page<Apartment>;
@@ -78,9 +80,10 @@ export const initialApartmentState: ApartmentState = {
 @Injectable()
 export class ApartmentStore extends ComponentStore<ApartmentState> {
   readonly service = inject(ApartmentsHttpService);
-  //readonly tokenService = inject(TokenService);
+ readonly tokenService = inject(TokenService);
   readonly router = inject(Router);
   readonly translateService = inject(TranslateService);
+    readonly shareableService = inject(ShareableService);
 
   apartmentsPage$: Observable<Page<Apartment>> = this.select((state) => state.page);
 
@@ -101,6 +104,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
   generatedDetailedUrl$: Observable<string | null> = this.select((state) => state.generatedDetailedUrl);
   segment$: Observable<string | null> = this.select((state) => state.segment);
 
+    header$: Observable<Header | null> = this.select((state) => state.header);
+
   selectedIso$: Observable<string | null> = this.select((state) => state.selectedIso);
 
   columns$: Observable<number> = this.select(
@@ -115,15 +120,17 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
   );
 
   // @ts-ignore
-  header$: Observable<Header> = this.select((state) => {
+ /*header$: Observable<Header> = this.select((state) => {
+      console.log("TRIGGER HEADER", state.header);
     if (state.header) {
       return state.header
     }
-  });
+  });*/
 
   colors$: Observable<Colors | null> = this.select(
     this.header$,
     (header) => {
+      //  console.log("TRIGGER COLORS", header?.colors);
       if (header?.colors) {
         return header.colors;
       } else return null;
@@ -201,12 +208,16 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
 
   loadHeaderByHostWithDetail = this.effect(
     (host$: Observable<string>) => host$.pipe(
+        tap(()=> console.log("TAP")),
       filter((host) => !!host),
       switchMap((host) => this.service.fetchHeaderByHost(host)
         .pipe(
           tapResponse({
             next: (response: Header) => {
-              this.patchState({header: response});
+
+              console.log("PATCH HEADER DETAIL ne radi", response);
+
+            //  this.patchState({header: response});
               if (response.detail.length > 0) {
                 this.loadDetailByRouteLabelsEffect(response);
               } else {
@@ -221,13 +232,14 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
       ),
     ));
 
-  loadHeaderByHost = this.effect(
+/*  loadHeaderByHost = this.effect(
     (host$: Observable<string>) => host$.pipe(
       filter((host) => !!host),
       switchMap((host) => this.service.fetchHeaderByHost(host)
         .pipe(
           tapResponse({
             next: (response: Header) => {
+                console.log("loadHeaderByHost PATCH", response);
               this.patchState({header: response});
               this.loadDetailByRouteLabelsEffect(response);
             },
@@ -238,7 +250,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         )
       ),
     ));
-
+*/
   loadMyApartmentEffect = this.effect(
     _ => _.pipe(
     //  filter(() => !this.tokenService.isTokenNotValid()),
@@ -432,9 +444,11 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         ))
   );
 
-  setUrlSegment(segment: string | null) {
-    this.patchState({segment: segment});
+
+  setHeader(header : Header){
+      this.patchState({header: header});
   }
+
 
   selectIso(country: string) {
     this.patchState({selectedIso: country});
@@ -470,6 +484,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
   }
 
   constructor() {
+     console.log("CONSTRUCTOR STORE");
     super(initialApartmentState);
   }
 }

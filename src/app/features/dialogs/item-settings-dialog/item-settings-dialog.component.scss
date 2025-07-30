@@ -1,0 +1,86 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$danger-color: var(--danger-color);
+$warn-color: var(--warn-color);
+$info-color: var(--info-color);
+$accept-color: var(--accept-color);
+
+.primaryColor{
+  --mat-standard-button-toggle-background-color: #{$primary-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$primary-color};
+  width: 50px;
+}
+.secondaryColor{
+  --mat-standard-button-toggle-background-color: #{$secondary-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
+  width: 50px;
+}
+.dangerColor{
+  --mat-standard-button-toggle-background-color: #{$danger-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$danger-color};
+  width: 50px;
+}
+
+.warnColor{
+  --mat-standard-button-toggle-background-color: #{$warn-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$warn-color};
+  width: 50px;
+}
+
+.infoColor{
+  --mat-standard-button-toggle-background-color: #{$info-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$info-color};
+  width: 50px;
+}
+
+.acceptColor{
+  --mat-standard-button-toggle-background-color: #{$accept-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$accept-color};
+  width: 50px;
+}
+
+.dashboard-card {
+  position: relative;
+  margin: 15px;
+  background-color: $primary-color;
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+}
+
+.dashboard-card mat-card-content {
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(1,1fr);
+  gap: 16px;
+}
+
+.mat-mdc-card-header {
+  display: flex;
+  padding: 8px 8px 8px 8px;
+  overflow: hidden;
+  //margin-right: 30%;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  .button-container-left {
+    margin-right: auto;
+  }
+
+  .row-input-container-left {
+    .mat-mdc-form-field{
+      width: 100%;
+    }
+  }
+
+
+
+}
+

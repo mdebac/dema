@@ -4,7 +4,6 @@ import {ApartmentStore} from "../../services/apartments-store.service";
 
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {CvDataDialogComponent} from "../dialogs/cv-data-dialog/cv-data-dialog.component";
 
 @Component({
     selector: 'reklame',

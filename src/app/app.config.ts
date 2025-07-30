@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
 import {provideNativeDateAdapter} from "@angular/material/core";
+import {provideTranslateService} from "@ngx-translate/core";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,5 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
     provideNativeDateAdapter(),
+    provideTranslateService(),
   ]
 };

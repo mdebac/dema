@@ -27,7 +27,7 @@ export interface ApartmentItem extends Audit{
 
 
 export interface ApartmentItemDialogData {
-  languages: string[];
+  languages: string[] | undefined | null;
   item: Partial<ApartmentItem>;
-  colors: Colors;
+  colors: Colors | null | undefined;
 }

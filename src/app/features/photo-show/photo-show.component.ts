@@ -10,6 +10,6 @@ import { ImageSliderComponent } from "../imageSlider/components/imageSlider/imag
 })
 export class PhotoShowComponent {
 
-  @Input() slides: SlideInterface[];
+  @Input() slides: SlideInterface[] = [];
 
 }

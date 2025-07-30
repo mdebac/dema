@@ -7,6 +7,6 @@ import {ApartmentItem} from "../../../../domain/apartment-item";
     styleUrl: './picture.component.scss'
 })
 export class PictureComponent {
-  @Input() item:ApartmentItem;
-  @Input() columns:number;
+  @Input() item:ApartmentItem | null = null;
+  @Input() columns:number = 1;
 }

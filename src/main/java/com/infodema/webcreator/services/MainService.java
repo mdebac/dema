@@ -1,15 +1,13 @@
 package com.infodema.webcreator.services;
 
-import com.infodema.webcreator.domain.core.Detail;
+import com.infodema.webcreator.domain.core.*;
 import com.infodema.webcreator.domain.mappers.DetailMapper;
 import com.infodema.webcreator.domain.mappers.MainMapper;
-import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.persistance.entities.detail.DetailIso;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.repositories.DetailRepository;
 import com.infodema.webcreator.persistance.repositories.MainRepository;
 import com.infodema.webcreator.domain.projections.MainProjection;
-import com.infodema.webcreator.controllers.MainCriteria;
 import com.infodema.webcreator.persistance.entities.security.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
@@ -21,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,6 +92,54 @@ public class MainService {
         }
 
         return savedMain;
+    }
+
+
+    public Header findHeaderByHost(String host) {
+
+        MainEntity entity = mainRepository.findByHost(host).isPresent() ? mainRepository.findByHost(host).get() : null;
+
+        if (entity == null) {
+            return Header.builder().colors(Colors.builder().primaryColor("green").secondaryColor("white").build()).build();
+        }
+
+        List<Detail> details = detailMapper.toDomain(entity.getDetails());
+
+        return Header.builder()
+                .iso(mainMapper.toDomainMainIso(entity.getIso()))
+                .languages(
+                        entity.getIso().stream()
+                                .map(d -> d.getIso().getCountryCode())
+                                .collect(Collectors.toList())
+                )
+                .detail(
+                        details.stream()
+                                .sorted(Comparator.comparing(Detail::getId))
+                                .map(detail -> HeaderDetail.builder()
+                                        .iso(detail.getIso())
+                                        .detailUrl(detail.getTitleUrl())
+                                        .icon(detail.getIcon())
+                                        .build()
+                                )
+                                .collect(Collectors.toList())
+                )
+                .activeDetailUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getTitleUrl())
+                .apartmentUrl(entity.getHost())
+                .colors(Colors.builder()
+                        .primaryColor(entity.getPrimaryColor())
+                        .secondaryColor(entity.getSecondaryColor())
+                        .primaryColorLight(entity.getPrimaryColorLight())
+                        .secondaryColorLight(entity.getSecondaryColorLight())
+                        .warnColor(entity.getWarnColor())
+                        .warnColorLight(entity.getWarnColorLight())
+                        .infoColor(entity.getInfoColor())
+                        .infoColorLight(entity.getInfoColorLight())
+                        .acceptColor(entity.getAcceptColor())
+                        .acceptColorLight(entity.getAcceptColorLight())
+                        .dangerColor(entity.getDangerColor())
+                        .dangerColorLight(entity.getDangerColorLight())
+                        .build())
+                .iconImage(entity.getContent()).build();
     }
 
     public Detail findDetailById(Long id) {

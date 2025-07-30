@@ -1,1 +1,104 @@
 /* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$danger-color: var(--danger-color);
+$warn-color: var(--warn-color);
+$info-color: var(--info-color);
+$accept-color: var(--accept-color);
+
+html{
+  background-color: $primary-color;
+  scrollbar-color: $secondary-color $primary-color;
+  --mat-form-field-error-text-color: $secondary-color;
+  --mdc-filled-text-field-error-label-text-color: $secondary-color;
+
+  --mat-menu-container-color: $primary-color;
+
+  /*
+  --mdc-outlined-text-field-error-caret-color: $primary-color;
+  --mdc-outlined-text-field-error-focus-label-text-color: $primary-color;
+  --mdc-outlined-text-field-error-label-text-color: $primary-color;
+  --mdc-outlined-text-field-error-hover-label-text-color: $primary-color;
+  --mdc-filled-text-field-error-label-text-color: $primary-color;
+  */
+}
+body{
+  background-color: $primary-color;
+}
+
+footer {
+  background-color: $primary-color;
+  text-align: right;
+  font-weight: bold;
+  font-size: 10px;
+  bottom: 0;
+  width: 100%;
+}
+.custom-style {
+  background: red;
+}
+.text{
+  color: $secondary-color;
+}
+
+/*
+https://www.fusonic.net/en/blog/angular-material-customization
+
+.mat-mdc-form-field-error {
+  --mat-form-field-error-text-color: $secondary-color;
+}
+.mat-mdc-floating-label {
+
+}
+*/
+.mat-button-toggle-group{
+  --mat-standard-button-toggle-height: 30px;
+  border-radius: 20px !important;
+  margin-right: 10px;
+  --mat-standard-button-toggle-background-color: #{$primary-color};
+  --mat-standard-button-toggle-text-color: #{$secondary-color};
+  --mat-standard-button-toggle-divider-color: #{$secondary-color};
+  --mat-standard-button-toggle-selected-state-text-color: #{$primary-color};
+  --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
+}
+
+.blue-snackbar {
+  background: darkcyan;
+}
+
+.success-snackbar {
+  background: darkolivegreen;
+}
+
+.error-snackbar {
+  background: darkred;
+}
+
+.login-container {
+  width: 800px !important;
+  margin-top: 5%;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+html, body { height: 100%; }
+body { border: 0; margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/*
+https://stackblitz.com/edit/angular-material-notification-service?file=src%2Fapp%2Fsnack-bar-overview-example.html,src%2Fstyles.scss
+ */
+
+
+/*
+.dialog-panel
+.mat-mdc-dialog-container
+.mdc-dialog__container
+.mat-mdc-dialog-surface {
+  background-color: transparent;
+  border-radius: 32px;
+}
+*/

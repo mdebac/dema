@@ -44,17 +44,6 @@ public class DetailController {
     }
 
 
-    @GetMapping(value = "/find/{host}/header")
-    public ResponseEntity<Header> fetchHeader(
-            @PathVariable("host") String host
-    ) {
-        log.debug("fetchHeader by host={}", host);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body( detailsService.findHeaderByHost(host));
-    }
-
-
     @PostMapping("/{apartmentId}/details")
     public ResponseEntity<Detail> add(
             @PathVariable("apartmentId") Long apartmentId, @Valid @RequestBody Detail detail) {

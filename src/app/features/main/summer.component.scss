@@ -1,0 +1,92 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  background-color: #{$primary-color};
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+  @include mat.card-overrides((
+    elevated-container-shape: 32px
+  ));
+}
+
+.dashboard-card mat-card-content {
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-col),1fr);
+  gap: 16px;
+}
+
+.mat-mdc-card-header {
+  display: flex;
+  padding: 8px 8px 8px 8px;
+  overflow: hidden;
+  //margin-right: 30%;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  .button-container-left {
+    margin-right: auto;
+  }
+
+}
+
+.button-container{
+padding: 2px;
+}
+
+.grb{
+  align-items: center;
+  color: $primary-color;
+  padding-right: 30px;
+  align-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 20px);
+  grid-template-rows: repeat(2, 20px);
+}
+.grb-crveno{
+  width: 20px;
+  height: 20px;
+  background-color: $secondary-color;
+}
+.grb-bijelo{
+  width: 20px;
+  height: 20px;
+  background-color: $primary-color;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  --ngx-editor-background-color: $primary-color;
+  --ngx-editor-border-color: $primary-color;
+  font-size: large;
+}
+
+.content {
+  width: 100%;
+  line-height: 30px;
+}
+
+.editor {
+  .NgxEditor {
+  }
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+    margin-bottom: 0.7rem;
+    pre {
+      white-space: pre !important;
+    }
+  }
+}

@@ -3,8 +3,8 @@ import {ApartmentItem} from "../../domain/apartment-item";
 import {Colors} from "../../domain/colors";
 
 export interface Widget {
-  item: ApartmentItem,
-  languages:string[],
-  component: Type<unknown>
-  colors: Colors,
+  item: ApartmentItem | null,
+  languages:string[] | null,
+  component: Type<unknown> | null
+  colors: Colors | undefined,
 }

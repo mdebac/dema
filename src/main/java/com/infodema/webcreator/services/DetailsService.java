@@ -99,52 +99,6 @@ public class DetailsService {
 
     }
 
-    public Header findHeaderByHost(String host) {
-
-        MainEntity entity = mainRepository.findByHost(host).isPresent() ? mainRepository.findByHost(host).get() : null;
-
-        if (entity == null) {
-            return Header.builder().colors(Colors.builder().primaryColor("green").secondaryColor("white").build()).build();
-        }
-
-        List<Detail> details = detailMapper.toDomain(entity.getDetails());
-
-        return Header.builder()
-                .iso(mainMapper.toDomainMainIso(entity.getIso()))
-                .languages(
-                        entity.getIso().stream()
-                                .map(d -> d.getIso().getCountryCode())
-                                .collect(Collectors.toList())
-                )
-                .detail(
-                        details.stream()
-                                .sorted(Comparator.comparing(Detail::getId))
-                                .map(detail -> HeaderDetail.builder()
-                                        .iso(detail.getIso())
-                                        .detailUrl(detail.getTitleUrl())
-                                        .icon(detail.getIcon())
-                                        .build()
-                                )
-                                .collect(Collectors.toList())
-                )
-                .activeDetailUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getTitleUrl())
-                .apartmentUrl(entity.getHost())
-                .colors(Colors.builder()
-                        .primaryColor(entity.getPrimaryColor())
-                        .secondaryColor(entity.getSecondaryColor())
-                        .primaryColorLight(entity.getPrimaryColorLight())
-                        .secondaryColorLight(entity.getSecondaryColorLight())
-                        .warnColor(entity.getWarnColor())
-                        .warnColorLight(entity.getWarnColorLight())
-                        .infoColor(entity.getInfoColor())
-                        .infoColorLight(entity.getInfoColorLight())
-                        .acceptColor(entity.getAcceptColor())
-                        .acceptColorLight(entity.getAcceptColorLight())
-                        .dangerColor(entity.getDangerColor())
-                        .dangerColorLight(entity.getDangerColorLight())
-                        .build())
-                .iconImage(entity.getContent()).build();
-    }
 
     public Detail findDetailByDetailId(Long detailId) {
         return detailMapper.toDomain(detailRepository.findById(detailId).orElseThrow(() -> new RuntimeException("Detail was not found with detailId [" + detailId + "]")));

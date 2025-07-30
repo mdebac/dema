@@ -1,6 +1,9 @@
 package com.infodema.webcreator.controllers;
 
+import com.infodema.webcreator.domain.core.Header;
 import com.infodema.webcreator.domain.core.Main;
+import com.infodema.webcreator.domain.core.MainCriteria;
+import com.infodema.webcreator.domain.core.Message;
 import com.infodema.webcreator.domain.projections.MainProjection;
 import com.infodema.webcreator.services.MainService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class MainController {
@@ -31,6 +34,18 @@ public class MainController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body( mainService.findMains(criteria,pageable));
     }
+
+    @GetMapping(value = "/find/{host}/header")
+    public ResponseEntity<Header> fetchHeader(
+            @PathVariable("host") String host
+    ) {
+        log.debug("fetchHeader by host={}", host);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body( mainService.findHeaderByHost(host));
+    }
+
+
 
     @GetMapping("/my")
     public ResponseEntity<Page<Main>> findMyApartments(Pageable pageable) {
@@ -52,7 +67,17 @@ public class MainController {
         return ResponseEntity.ok(apartmentService.saveApartment(Main, file));
     }*/
 
-    @GetMapping(produces = "application/vnd.ms-excel")
+  /* @GetMapping(path = "/api/v1/ping", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Message> generateUrl() {
+        //log.debug("generateUrl by title={}", title);
+        System.out.println("ping");
+        return new ResponseEntity<>(
+                Message.builder().text("pong").build(),
+                HttpStatus.OK);
+    }*/
+
+
+    @GetMapping(path = "/report",produces = "application/vnd.ms-excel")
     public ResponseEntity<ByteArrayResource> listExport(MainCriteria criteria) {
         ByteArrayResource resource = null;// = apartmentService.exportXls(criteria);
 
