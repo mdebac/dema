@@ -1,22 +1,12 @@
 @use '@angular/material' as mat;
 
-:host {
-  .mdc-button {
-    min-width: 30px;
-  }
-  @include mat.menu-overrides((
-    container-shape: orange,
-    divider-color: red,
-    container-color: red
-  ));
-}
-.mat-mdc-menu-panel{
-  background-color: blue !important;
-}
-.mat-menu-panel{
-  background-color: blue !important;
-}
-.mat-mdc-menu-content{
-  background-color: blue !important;
-  --mat-sys-on-surface: blue;
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--secondary-color), 0px 0px 3px 1px var(--secondary-color), 0px 0px 2px 1px var(--secondary-color);
+  --mdc-protected-button-container-color:$secondary-color;
 }

@@ -1,5 +1,4 @@
 import {Component, Inject, inject} from '@angular/core';
-import {ApartmentStore} from "../../../services/apartments-store.service";
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ApartmentItem, ApartmentItemDialogData} from "../../../domain/apartment-item";
@@ -18,7 +17,6 @@ import {Chip} from "../../../domain/chip.enum";
     imports: [MatCard, MatCardHeader, MatCardContent, FormsModule, ReactiveFormsModule, MatLabel, MatButtonToggleGroup, MatButtonToggle, MatDivider, MatButton]
 })
 export class ItemSettingsDialogComponent {
-  store = inject(ApartmentStore);
   fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<ItemSettingsDialogComponent>)
   form: FormGroup;
@@ -28,7 +26,7 @@ export class ItemSettingsDialogComponent {
 
     this.form = this.fb.group({
       id: [this.data.item.id],
-      apartmentDetailId: [this.data.item.apartmentDetailId, Validators.required],
+      detailId: [this.data.item.detailId, Validators.required],
       rowSpan: [this.data.item.rowSpan],
       colSpan: [this.data.item.colSpan],
       cornerRadius: [this.data.item.cornerRadius],

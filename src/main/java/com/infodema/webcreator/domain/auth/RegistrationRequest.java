@@ -26,4 +26,7 @@ public class RegistrationRequest {
     @NotNull(message = "Password is mandatory")
     @Size(min = 8, message = "Password should be 8 characters long minimum")
     private String password;
+    @NotEmpty(message = "Host is mandatory")
+    @NotNull(message = "Host is mandatory")
+    private String host;
 }

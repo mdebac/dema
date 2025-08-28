@@ -1,7 +1,6 @@
 package com.infodema.webcreator.domain.core;
 
 import com.infodema.webcreator.domain.mappers.AbstractAuditModel;
-import com.infodema.webcreator.persistance.entities.item.ItemIso;
 import com.infodema.webcreator.domain.enums.Chip;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

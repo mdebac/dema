@@ -3,6 +3,10 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {filter, map, shareReplay, tap} from 'rxjs/operators';
 import {AuthenticationService} from "../authentication.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {Router} from "@angular/router";
+import {Roles} from "../../domain/roles";
+import {Hosts} from "../../domain/hosts";
+import {User} from "../../domain/user";
 
 const AUTH_DATA = "auth_data";
 
@@ -11,36 +15,61 @@ const AUTH_DATA = "auth_data";
 })
 export class AuthStore {
     authService = inject(AuthenticationService);
-    private subject = new BehaviorSubject<string | null>(null);
+    router= inject(Router);
+    private tokenSubject = new BehaviorSubject<string | null>(null);
 
-    token$ : Observable<string | null> = this.subject.asObservable();
+    token$ : Observable<string | null> = this.tokenSubject.asObservable();
     isLoggedIn$ : Observable<boolean>;
     isLoggedOut$ : Observable<boolean>;
+    user$ : Observable<User>;
+    roles$ : Observable<string[]>;
 
     constructor() {
+
         this.isLoggedIn$ = this.token$.pipe(
             map(token => this.isTokenValid(token)),
         );
+
+        this.user$ = this.token$.pipe(
+            map(token => this.userFromToken(token)),
+        );
+
+        this.roles$ = this.token$.pipe(
+            map(token => this.rolesFromToken(token)),
+        );
+
         this.isLoggedOut$ = this.isLoggedIn$.pipe(map(loggedIn => !loggedIn));
         const token = localStorage.getItem(AUTH_DATA);
         if (token) {
-            this.subject.next(JSON.parse(token));
+            this.tokenSubject.next(JSON.parse(token));
         }
     }
 
-    isTokenValid(token:any|null) {
+    isTokenNotValid() {
 
+       const token = localStorage.getItem(AUTH_DATA);
+        /*    if (token) {
+               const token2 = JSON.parse(token);
+               const jwtHelper = new JwtHelperService();
+               const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
+               console.log("get userRoles", decodedToken.authorities);
+               return decodedToken.authorities;
+           }*/
+
+        return !this.isTokenValid(token);
+    }
+
+    isTokenValid(token:any|null) {
        // console.log("is token valid?", token)
         if (!token) {
-            console.log("token dont exist")
+          //  console.log("token dont exist")
             return false;
         }
       //  console.log("token exist")
-
         const jwtHelper = new JwtHelperService();
         const isTokenExpired = jwtHelper.isTokenExpired(token.token ? token.token : token);
         if (isTokenExpired) {
-            localStorage.clear();
+            this.logout();
            // console.log("token expired")
             return false;
         }
@@ -48,16 +77,60 @@ export class AuthStore {
         return true;
     }
 
+    userFromToken(token2:any|null) {
+        if(token2){
+            const jwtHelper = new JwtHelperService();
+            const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
+            return decodedToken.fullName;
+        }else{
+            return "";
+        }
+    }
+
+    rolesFromToken(token2:any|null) {
+        if(token2){
+            const jwtHelper = new JwtHelperService();
+            const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
+            return decodedToken.authorities;
+        }else{
+            return [];
+        }
+    }
+
     get userRoles(): string[] {
         const token = localStorage.getItem(AUTH_DATA);
         if (token) {
             const token2 = JSON.parse(token);
             const jwtHelper = new JwtHelperService();
-            const decodedToken = jwtHelper.decodeToken(token2);
+            const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
             console.log("get userRoles", decodedToken.authorities);
             return decodedToken.authorities;
         }
         return [];
+    }
+
+    get user(): string {
+        const token = localStorage.getItem(AUTH_DATA);
+        if (token) {
+            const token2 = JSON.parse(token);
+            const jwtHelper = new JwtHelperService();
+            const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
+
+            return decodedToken.fullName;
+        }
+        return "";
+    }
+
+    authorize(role: Roles): boolean {
+      return this.userRoles.includes(role.toUpperCase());
+    }
+
+    get token() {
+        const token = localStorage.getItem(AUTH_DATA);
+        if (token) {
+            const token2 = JSON.parse(token)
+            return token2.token;
+        }
     }
 
     login(email:string, password:string): Observable<string | undefined> {
@@ -67,7 +140,7 @@ export class AuthStore {
             .pipe(
                 tap(user => {
                     if(user.token){
-                        this.subject.next(user.token);
+                        this.tokenSubject.next(user.token);
                         localStorage.setItem(AUTH_DATA, JSON.stringify(user));
                     }
                 }),
@@ -76,29 +149,10 @@ export class AuthStore {
             );
     }
 
-    /*
-        this.authService.authenticate({
-      body: this.authRequest
-    }).subscribe({
-      next: (res) => {
-        this.tokenService.token = res.token as string;
-        this.router.navigate(['']);
-      },
-      error: (err) => {
-        console.log(err);
-        if (err.error.validationErrors) {
-          this.errorMsg = err.error.validationErrors;
-        } else {
-          this.errorMsg.push(err.error.error);
-        }
-      }
-    });
-     */
-
-
     logout() {
-        this.subject.next(null);
+        this.tokenSubject.next(null);
         localStorage.removeItem(AUTH_DATA);
+        this.router.navigate(['/']);
     }
 
 

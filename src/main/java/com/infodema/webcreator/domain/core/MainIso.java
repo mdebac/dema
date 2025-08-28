@@ -1,4 +1,4 @@
-package com.infodema.webcreator.persistance.entities.main;
+package com.infodema.webcreator.domain.core;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,9 +11,8 @@ import lombok.experimental.SuperBuilder;
 @Data
 public class MainIso {
 
-    private String text;
-    private String title;
+    private String description;
     private String iso;
     private String iconText;
-    private String iconTitle;
+    private String title;
 }

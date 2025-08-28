@@ -18,11 +18,10 @@ import lombok.experimental.SuperBuilder;
 public class MainIsoEntity {
 
     @Column(length = 2000)
-    private String text;
-    @Column(length = 100)
+    private String description;
+    @Column(length = 30)
     private String iconText;
     @Column(length = 15)
-    private String iconTitle;
     private String title;
 
     @Column(nullable = false)

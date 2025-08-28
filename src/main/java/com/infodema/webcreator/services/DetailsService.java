@@ -1,9 +1,6 @@
 package com.infodema.webcreator.services;
 
-import com.infodema.webcreator.domain.core.Colors;
 import com.infodema.webcreator.domain.core.Detail;
-import com.infodema.webcreator.domain.core.Header;
-import com.infodema.webcreator.domain.core.HeaderDetail;
 import com.infodema.webcreator.domain.mappers.DetailMapper;
 import com.infodema.webcreator.domain.mappers.MainMapper;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
@@ -92,9 +89,14 @@ public class DetailsService {
         if (detailLabel == null || detailLabel.isEmpty()) {
             return detailMapper.toDomain(
                     detailRepository.findByMainIdOrderByMainAsc(entity.getId()).stream().findFirst().orElseThrow(() -> new RuntimeException("first Detail was not found with host [" + host + "] an detailLabel [" + detailLabel + "]")));
-        } else {
+
+
+        } else if (entity.getDetails().stream().anyMatch(e -> e.getTitleUrl().equals(detailLabel))) {
             return detailMapper.toDomain(
                     detailRepository.findByTitleUrlAndMainId(detailLabel, entity.getId()).orElseThrow(() -> new RuntimeException("Detail was not found with host [" + host + "] an detailLabel [" + detailLabel + "]")));
+
+        }else{
+           throw new RuntimeException("Cant find detail by label [" + detailLabel + "]");
         }
 
     }

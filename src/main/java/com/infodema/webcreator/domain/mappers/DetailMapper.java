@@ -2,7 +2,7 @@ package com.infodema.webcreator.domain.mappers;
 
 import com.infodema.webcreator.domain.core.Detail;
 import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
-import com.infodema.webcreator.persistance.entities.detail.DetailIso;
+import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.persistance.entities.detail.DetailIsoEntity;
 import com.infodema.webcreator.domain.enums.Country;
 import lombok.RequiredArgsConstructor;

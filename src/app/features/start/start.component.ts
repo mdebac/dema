@@ -16,17 +16,17 @@ import {ReklameComponent} from "../reklame/reklame.component";
 import {ShareableService} from "../../services/shareable.service";
 import {Roles} from "../../domain/roles";
 import {Hosts} from "../../domain/hosts";
-import {Header} from "../../domain/header";
 import {AuthStore} from "../../services/authentication/auth-store";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {UserButtonsComponent} from "../user-buttons/user-buttons.component";
 
 @Component({
     selector: 'start',
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss'],
-    imports: [LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, MatGridList, MatGridTile, RouterOutlet, CalendarComponent, ReklameComponent]
+    imports: [UserButtonsComponent,TranslatePipe, LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, MatGridList, MatGridTile, RouterOutlet, CalendarComponent, ReklameComponent]
 })
 export class StartComponent implements OnInit, OnDestroy {
-
 
     store = inject(ApartmentStore);
     shareableService = inject(ShareableService);
@@ -42,21 +42,43 @@ export class StartComponent implements OnInit, OnDestroy {
     // header$ = this.shareableService.getHeader();
     selectedIso$ = this.shareableService.getSelectedIso();
     //selectedIso$ = this.store.selectedIso$;
-    role$ = of(Roles.ADMIN);
+    role$ = this.authStore.roles$;
     //segment$ = this.store.segment$;
-    segment$ = this.shareableService.getSegment();
+   // segment$ = this.shareableService.getSegment();
     loggedIn: boolean = true;
 
-    header: Header | null = null;
+    isLoggedIn$: Observable<boolean> | undefined;
+    user$ = this.authStore.user$;
+
+    isHostAdriaticSun: boolean = false;
+    isManager = this.authStore.authorize(Roles.MANAGER);
+    isAdmin = this.authStore.authorize(Roles.ADMIN);
+
+    header$ = this.store.header$;
 
     ngOnInit() {
         console.log("StartComponent ngOnInit")
+        this.user$ = this.authStore.user$;
+        this.isLoggedIn$ = this.authStore.isLoggedIn$;
+
+        this.store.selectIso(defaultIso);
 
         this.activatedRoute.data.pipe(map((data: Data) => data['myData'])).subscribe(
             data => {
-           //     console.log("StartComponent data", data);
+
                 this.store.setHeader(data);
-                this.header = data;
+                this.store.loadDetailByRouteLabelsEffect(this.store.activeDetailUrl$);
+                console.log("StartComponent data set Header into store", data);
+               // this.store.setPage(data.activeDetailUrl);
+
+                /*
+                if (response.detail.length > 0) {
+                                this.loadDetailByRouteLabelsEffect(response);
+                            }
+                 */
+               // this.header = data;
+                this.isHostAdriaticSun = data?.host === Hosts.ADRIATICSUN_EU
+
                 const variables = [
                     '--primary-color: ' + data.colors.primaryColor + ';',
                     '--secondary-color: ' + data.colors.secondaryColor + ';',
@@ -64,6 +86,7 @@ export class StartComponent implements OnInit, OnDestroy {
                     '--warn-color: ' + data.colors.warnColor + ';',
                     '--info-color: ' + data.colors.infoColor + ';',
                     '--accept-color: ' + data.colors.acceptColor + ';',
+                    '--myImageUrl: linear-gradient(to left, transparent, '+ data.colors.secondaryColor +' ' + data.linearPercentage +'%),url(data:image/jpg;base64,' + data.backgroundImage +')' + ';',
                 ];
                 const cssVariables = `:root{ ${variables.join('')}}`;
                 const blob = new Blob([cssVariables]);
@@ -73,7 +96,11 @@ export class StartComponent implements OnInit, OnDestroy {
                 cssElement.setAttribute('type', 'text/css');
                 cssElement.setAttribute('href', url);
                 document.head.appendChild(cssElement);
+
+               // console.log("navigate", data.activeDetailUrl);
+              //  this.router.navigate([data.activeDetailUrl]);
             }
+
         )
         // this.segment$.subscribe(
         //   s => {
@@ -114,11 +141,7 @@ export class StartComponent implements OnInit, OnDestroy {
         this.shareableService.setSelectedIso(active);
     }
 
-    logout() {
-     //   localStorage.removeItem('token');
-        this.authStore.logout();
-      //  window.location.reload();
-    }
+
 
     getIconText(country: string | null, iso: ApartmentIso[] | undefined) {
         if (country && iso) {
@@ -128,9 +151,16 @@ export class StartComponent implements OnInit, OnDestroy {
 
     getIconTitle(country: string | null, iso: ApartmentIso[] | undefined) {
         if (country && iso) {
-            return iso.find(iso => iso.iso === country)?.iconTitle;
+            return iso.find(iso => iso.iso === country)?.title;
         } else return "";
     }
+
+    getDescriptionText(country: string | null, iso: ApartmentIso[] | undefined) {
+        if (country && iso) {
+            return iso.find(iso => iso.iso === country)?.description;
+        } else return "";
+    }
+
 
     protected readonly Roles = Roles;
     protected readonly Hosts = Hosts;

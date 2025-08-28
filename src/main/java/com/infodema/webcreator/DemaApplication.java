@@ -2,7 +2,9 @@ package com.infodema.webcreator;
 
 import com.infodema.webcreator.domain.core.Message;
 import com.infodema.webcreator.persistance.entities.security.Role;
+import com.infodema.webcreator.persistance.entities.security.User;
 import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
+import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
@@ -32,7 +35,7 @@ public class DemaApplication {
 
 
     @Bean
-    public CommandLineRunner runner(RoleRepository roleRepository) {
+    public CommandLineRunner runner(RoleRepository roleRepository, UserRepository userRepository) {
         return args -> {
             if (roleRepository.findByName("USER").isEmpty()) {
                 roleRepository.save(
@@ -58,6 +61,33 @@ public class DemaApplication {
                                 .build()
                 );
             }
+            if (roleRepository.findByName("TEST").isEmpty()) {
+                roleRepository.save(
+                        Role.builder()
+                                .name("TEST")
+                                .createdDate(OffsetDateTime.now().toLocalDateTime())
+                                .build()
+                );
+            }
+
+            if (userRepository.findByEmail("markodebac@yahoo.com").isEmpty()) {
+                var adminRole = roleRepository.findByName("ADMIN")
+                        // todo - better exception handling
+                        .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
+                var user = User.builder()
+                        .firstname("Marko")
+                        .lastname("Debac")
+                        .email("markodebac@yahoo.com")
+                        .password("$2a$10$tA0mxZBXGJn5rw/1GlYNI.aCEP80NAFu1vsrj/vCfSJu1gVZ1zJoq")
+                        .accountLocked(false)
+                        .host("info-dema.eu")
+                        .enabled(true)
+                        .roles(List.of(adminRole))
+                        .build();
+                userRepository.save(user);
+            }
+
+
 		/*	apartmentService.saveApartment(
 					Apartment.builder()
 					.host("adriatic-sun.eu")
@@ -70,6 +100,10 @@ public class DemaApplication {
 
         };
     }
+
+
+
+
   @GetMapping(path = "/api/v1/ping", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Message> generateUrl() {
     //log.debug("generateUrl by title={}", title);

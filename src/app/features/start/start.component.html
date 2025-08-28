@@ -1,158 +1,125 @@
-<ng-container *ngrxLet="{isLoggedOut: authStore.isLoggedOut$, isLoggedIn: authStore.isLoggedIn$, selectedIso: selectedIso$, role: role$, segment: segment$ } as vm">
+<ng-container
+        *ngrxLet="{ header:header$,isLoggedOut: authStore.isLoggedOut$, isLoggedIn: authStore.isLoggedIn$, selectedIso: selectedIso$, role: role$, user:user$} as vm">
 
     <div class="grid-container">
 
-        <section>
-            <div class="flex-container">
-                <div class="header-left">
-                    <div class="logoSpace">
+        <div class="flex-container">
 
-                        <img width="200" *ngIf="header?.iconImage" (click)="toHome()"
-                             src="{{'data:image/jpg;base64,' + header?.iconImage}}" alt=""/>
+            <div class="iconSpace">
+                <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"
+                     src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>
+                <p>{{ getIconText(vm.selectedIso, vm.header?.iso) }}</p>
+            </div>
 
-                        <p>{{ getIconText(vm.selectedIso, header?.iso) }}</p>
+            <div class="rightSpace">
+
+                <div class="contentSpace">
+
+                    <div class="headerText">
+
+                        <div class="logoText">
+                            {{ getIconTitle(vm.selectedIso, vm.header?.iso) }}
+                            <div class="grb">
+                                <div class="grb-crveno"></div>
+                                <div class="grb-bijelo"></div>
+                                <div class="grb-bijelo"></div>
+                                <div class="grb-crveno"></div>
+                            </div>
+                        </div>
+
+                        <div class="descriptionText">
+                            {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}
+                        </div>
+
 
                     </div>
-                    <div class="logoText">
-                        {{ getIconTitle(vm.selectedIso, header?.iso) }}
-                    </div>
-                    <div class="grb">
-                        <div class="grb-crveno"></div>
-                        <div class="grb-bijelo"></div>
-                        <div class="grb-bijelo"></div>
-                        <div class="grb-crveno"></div>
-                    </div>
-
-                </div>
-
-                <div class="tabsSpace">
-
-                    @for (headerDetail of header?.detail; track headerDetail.detailUrl; let idx1 = $index, e = $even) {
-
-                        @for (iso of headerDetail.iso; track iso.iso; let idx2 = $index, e = $even) {
-
-                            @if (idx1 === 0) {
-                                @if (vm.selectedIso === iso.iso) {
-                                    <div class="button-container">
-                                        <button *ngIf="!vm.segment"
-                                                [routerLink]="['.']"
-                                                routerLinkActive="activebutton"
-                                                [routerLinkActiveOptions]="{exact: true}"
-                                                mat-fab extended>
-                                            <mat-icon *ngIf="headerDetail.icon">{{ headerDetail.icon }}</mat-icon>
-                                            {{ iso.label }}
-                                        </button>
-
-                                        <button *ngIf="vm.segment"
-                                                [routerLink]="[headerDetail.detailUrl]"
-                                                routerLinkActive="activebutton"
-                                                [routerLinkActiveOptions]="{exact: true}"
-                                                mat-fab extended>
-                                            <mat-icon *ngIf="headerDetail.icon">{{ headerDetail.icon }}</mat-icon>
-                                            {{ iso.label }}
-                                        </button>
-
-                                    </div>
-                                }
-                            } @else {
-                                @if (vm.selectedIso === iso.iso) {
-                                    <div class="button-container">
-                                        <button
-                                                routerLink="{{ headerDetail.detailUrl }}"
-                                                routerLinkActive="activebutton"
-                                                mat-fab extended>
-                                            <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}</mat-icon>
-                                            {{ iso.label }}
-                                        </button>
-                                    </div>
-                                }
-                            }
-                        }
-                    }
-                </div>
-
-                <div class="isoSpace">
-
                     <div class="isoSpaceLanguage">
-                        <iso-buttons *ngIf="header?.languages" [countries]="header?.languages"
+                        <iso-buttons *ngIf="vm.header?.languages" [countries]="vm.header?.languages"
                                      [selectedIn]="vm.selectedIso"
                                      (selectedOut)="activeIso($event)">
                         </iso-buttons>
+
+                        @if (vm.isLoggedIn) {
+                            <user-buttons [user]="vm.user">
+                            </user-buttons>
+                        }
+                    </div>
+                </div>
+
+
+                <div class="buttonSpace">
+
+                    <div class="tabButtons">
+
+                        @for (headerDetail of vm.header?.detail; track headerDetail.detailUrl; let idx1 = $index, e = $even) {
+
+                            @for (iso of headerDetail.iso; track iso.iso; let idx2 = $index, e = $even) {
+
+                                @if (vm.selectedIso === iso.iso) {
+
+                                        <div>
+                                            <button
+                                                    routerLink="{{ headerDetail.detailUrl }}"
+                                                    routerLinkActive="activebutton"
+                                                    mat-fab extended>
+                                                <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}
+                                                </mat-icon>
+                                                {{ iso.label }}
+                                            </button>
+                                        </div>
+                                }
+
+                            }
+                        }
+
                     </div>
 
-                    <div class="isoSpaceActions">
+                    <div class="dashboardButtons">
+                        @if (vm.isLoggedIn) {
+                            <ng-container>
+                                <button routerLink="/my"
+                                        routerLinkActive="activebutton"
+                                        mat-fab extended>
+                                    <mat-icon>dashboard</mat-icon>
+                                    {{ "my.dashboard" | translate }}
+                                </button>
+                            </ng-container>
+                        }
+
                         @if (vm.isLoggedOut) {
+                            <div class="button-container">
+                                <button routerLink="/login"
+                                        routerLinkActive="activebutton"
+                                        mat-fab extended>
+                                    <mat-icon>favorite</mat-icon>
+                                    Login
+                                </button>
+                            </div>
 
-                            <p class="myspace"></p>
-
-                                         <div class="button-container">
-                                           <button routerLink="/login"
-                                                   routerLinkActive="activebutton"
-                                                   mat-fab extended>
-                                             <mat-icon>favorite</mat-icon>
-                                             Login
-                                           </button>
-                                         </div>
-
-                                         <div class="button-container">
-                                           <button routerLink="/register"
-                                                   routerLinkActive="activebutton"
-                                                   mat-fab extended>
-                                             <mat-icon>favorite</mat-icon>
-                                             Register
-                                           </button>
-                                         </div>
-
-                        } @else {
-
-
-                            @if (vm.role && (vm.role === Roles.MANAGER || vm.role === Roles.ADMIN) && header?.apartmentUrl === Hosts.ADRIATICSUN_EU) {
-                                <ng-container class="button-container">
-                                    <button routerLink="/cv"
-                                            routerLinkActive="activebutton"
-                                            mat-fab extended>
-                                        <mat-icon>file_copy</mat-icon>
-                                        My CVs
-                                    </button>
-                                </ng-container>
-                            }
-
-
-                            @if (vm.role && vm.role === Roles.ADMIN) {
-                                <ng-container class="button-container">
-                                    <button routerLink="/my"
-                                            routerLinkActive="activebutton"
-                                            mat-fab extended>
-                                        <mat-icon>favorite</mat-icon>
-                                        My Tabs
-                                    </button>
-                                </ng-container>
-                            }
-
-                            @if (vm.role) {
-                                <ng-container class="button-container">
-                                    <button (click)="logout()"
-                                            routerLinkActive="activebutton"
-                                            mat-fab extended>
-                                        <mat-icon>favorite</mat-icon>
-                                        Logout
-                                    </button>
-                                </ng-container>
-                            }
+                            <div class="button-container">
+                                <button routerLink="/register"
+                                        routerLinkActive="activebutton"
+                                        mat-fab extended>
+                                    <mat-icon>favorite</mat-icon>
+                                    Register
+                                </button>
+                            </div>
                         }
 
                     </div>
 
 
                 </div>
+
+
             </div>
+        </div>
 
-        </section>
 
-        <mat-grid-list cols="8" rowHeight="8:6" gutterSize="0">
+        <mat-grid-list cols="8" rowHeight="8:6" [gutterSize]="'0px'">
 
             <mat-grid-tile class="dashboard-tile" [colspan]="6" [rowspan]="5">
-                <router-outlet></router-outlet>
+                <router-outlet  [routerOutletData]="vm.selectedIso"></router-outlet>
             </mat-grid-tile>
 
             <mat-grid-tile class="reklame-tile" [colspan]="2" [rowspan]="2">
@@ -164,7 +131,7 @@
                     <reklame></reklame>
                 </div>
             </mat-grid-tile>
-
         </mat-grid-list>
+
     </div>
 </ng-container>

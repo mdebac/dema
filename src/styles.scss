@@ -9,6 +9,7 @@ $warn-color: var(--warn-color);
 $info-color: var(--info-color);
 $accept-color: var(--accept-color);
 
+
 html{
   background-color: $primary-color;
   scrollbar-color: $secondary-color $primary-color;
@@ -24,6 +25,37 @@ html{
   --mdc-outlined-text-field-error-hover-label-text-color: $primary-color;
   --mdc-filled-text-field-error-label-text-color: $primary-color;
   */
+
+  //  @include mat.form-field-overrides((
+           // --mat-form-field-container-text-font: $primary-color;
+            //disabled-leading-icon-color: red,
+            //error-text-color: yellow,
+            //filled-caret-color: yellow,
+            //filled-container-color: yellow,
+            //filled-active-indicator-color: yellow,
+            //filled-label-text-color: yellow,
+            //outlined-caret-color: yellow,
+            //outlined-hover-outline-color: yellow,
+            //outlined-hover-label-text-color: yellow,
+            //outlined-focus-label-text-color: yellow,
+            //outlined-input-text-placeholder-color: yellow,
+            //outlined-label-text-color: yellow,
+            //trailing-icon-color: yellow,
+            //state-layer-color: yellow,
+            //select-option-text-color: yellow,
+            //outlined-outline-color: yellow,
+            //focus-select-arrow-color: yellow,
+            //focus-state-layer-opacity: yellow,
+            //hover-state-layer-opacity: yellow,
+            //filled-input-text-placeholder-color: yellow,
+            //filled-input-text-color: yellow,
+            //filled-hover-label-text-color: yellow,
+            //filled-hover-active-indicator-color: yellow,
+            //filled-focus-label-text-color: yellow,
+            //filled-focus-active-indicator-color: yellow,
+            //outlined-focus-outline-color: yellow,
+            //outlined-input-text-color: yellow,
+  //}
 }
 body{
   background-color: $primary-color;
@@ -43,7 +75,9 @@ footer {
 .text{
   color: $secondary-color;
 }
-
+.text-light{
+  color: $primary-color;
+}
 /*
 https://www.fusonic.net/en/blog/angular-material-customization
 

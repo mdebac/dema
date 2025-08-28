@@ -1,16 +1,19 @@
 import {HeaderDetail} from "./header-detail";
-import {ApartmentDetailIso} from "./apartment-detail-iso";
 import {ApartmentIso} from "./apartment-iso";
 import {Colors} from "./colors";
+import {Hosts} from "./hosts";
 
 export interface Header{
   iconImage: any;
+  backgroundImage: any;
+  linearPercentage: number;
   languages: string[];
   detail: HeaderDetail[];
-  apartmentUrl:string;
+//  apartmentUrl:string;
   activeDetailUrl:string;
   iso: ApartmentIso [];
   colors: Colors;
+  host: Hosts;
 
   /*primaryColor$: primaryColor$ = this.store.primaryColor$.pipe(filter((e) => !!e));
 primaryColorLight$: primaryColorLight$ = this.store.primaryColorLight$.pipe(filter((e) => !!e));

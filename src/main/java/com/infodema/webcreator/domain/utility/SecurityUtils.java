@@ -1,7 +1,10 @@
 package com.infodema.webcreator.domain.utility;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 @UtilityClass
 public class SecurityUtils {
@@ -16,6 +19,17 @@ public class SecurityUtils {
             return SecurityContextHolder.getContext().getAuthentication().getName();
         } else{
             return ANONYMOUS_USER;
+        }
+    }
+
+    public static List<String> getUserRoles() {
+        if(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()){
+            return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                    .stream().                    map(GrantedAuthority::getAuthority)
+                    .toList();
+        }
+        else {
+            return List.of();
         }
     }
 

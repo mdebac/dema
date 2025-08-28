@@ -3,7 +3,7 @@ package com.infodema.webcreator.domain.mappers;
 import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
-import com.infodema.webcreator.persistance.entities.main.MainIso;
+import com.infodema.webcreator.domain.core.MainIso;
 import com.infodema.webcreator.persistance.entities.main.MainIsoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,13 +18,6 @@ public class MainMapper extends AbstractMapper {
 
     private final DetailMapper detailMapper;
 
-    public Page<Main> toDomain(Page<MainEntity> entities) {
-        return convertPageCollection(entities, this::toDomain);
-    }
-
-    public List<Main> toDomain(List<MainEntity> entities) {
-        return convertCollection(entities, this::toDomain);
-    }
 
     public Set<MainIso> toDomainMainIso(Set<MainIsoEntity> entities) {
         return convertCollection(entities, this::toDomainMainIso);
@@ -94,9 +87,8 @@ public class MainMapper extends AbstractMapper {
     private MainIso toDomainMainIso(MainIsoEntity entity) {
         return MainIso.builder()
                 .iso(entity.getIso().getCountryCode())
-                .text(entity.getText())
+                .description(entity.getDescription())
                 .iconText(entity.getIconText())
-                .iconTitle(entity.getIconTitle())
                 .title(entity.getTitle())
                 .build();
     }
@@ -105,9 +97,8 @@ public class MainMapper extends AbstractMapper {
     private MainIsoEntity toEntityMainIso(MainIso domain) {
         return MainIsoEntity.builder()
                 .iso(Country.fromCode(domain.getIso()))
-                .text(domain.getText())
+                .description(domain.getDescription())
                 .iconText(domain.getIconText())
-                .iconTitle(domain.getIconTitle())
                 .title(domain.getTitle())
                 .build();
     }

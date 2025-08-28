@@ -14,7 +14,7 @@ export interface ApartmentItem extends Audit{
   elevation: number;
   url: string;
   chip: Chip;
-  apartmentDetailId: number;
+  detailId: number;
   iso: ApartmentItemIso[];
   editorContent:string;
 

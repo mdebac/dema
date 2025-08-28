@@ -1,15 +1,19 @@
 import {Component, inject, Inject, Input} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {CountryIso} from "../../../domain/countries-iso";
+import {CountryIso, getValueByKeyForStringEnum} from "../../../domain/countries-iso";
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
-import {ApartmentItem} from "../../../domain/apartment-item";
-import { MatButton } from '@angular/material/button';
+import {MatButton, MatFabButton} from '@angular/material/button';
+import {NgClass} from "@angular/common";
+import {TranslatePipe} from "@ngx-translate/core";
+import {RouterLink, RouterLinkActive} from "@angular/router";
+import {MatCard, MatCardContent} from "@angular/material/card";
+import {MatLabel} from "@angular/material/form-field";
 
 @Component({
     selector: 'choose-iso-dialog',
     templateUrl: './choose-iso-dialog.component.html',
     styleUrl: './choose-iso-dialog.component.scss',
-    imports: [CdkDropList, CdkDrag, MatButton]
+    imports: [MatLabel, CdkDropList, CdkDrag, NgClass, TranslatePipe, MatFabButton, RouterLink, RouterLinkActive, MatCard, MatCardContent, MatLabel]
 })
 export class ChooseIsoDialogComponent{
 
@@ -46,4 +50,9 @@ export class ChooseIsoDialogComponent{
        this.dialogRef.close(this.chosen);
   }
 
+    flag(country:string){
+        return "fi fi-"+country.toLowerCase();
+    }
+
+    protected readonly getValueByKeyForStringEnum = getValueByKeyForStringEnum;
 }

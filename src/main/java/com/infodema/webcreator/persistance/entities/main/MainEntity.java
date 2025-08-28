@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.io.IOUtils;
+import org.hibernate.type.TrueFalseConverter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -38,6 +39,9 @@ public class MainEntity extends BaseAuditEntity {
     private String acceptColor;
     private String acceptColorLight;
 
+    @Convert(converter = TrueFalseConverter.class)
+    private Boolean removePicture;
+
     @Column(unique=true)
     private String host;
 
@@ -48,6 +52,11 @@ public class MainEntity extends BaseAuditEntity {
             setMimeType(multipartFile.getContentType());
             setSize(multipartFile.getSize());
             setContent(IOUtils.toByteArray(multipartFile.getInputStream()) );
+        }else{
+            setContent(null);
+            setSize(0);
+            setMimeType(null);
+            setFileName(null);
         }
     }
 

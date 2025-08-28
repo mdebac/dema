@@ -4,7 +4,7 @@ import com.infodema.webcreator.domain.core.Item;
 import com.infodema.webcreator.domain.enums.Chip;
 import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.persistance.entities.item.ItemEntity;
-import com.infodema.webcreator.persistance.entities.item.ItemIso;
+import com.infodema.webcreator.domain.core.ItemIso;
 import com.infodema.webcreator.persistance.entities.item.ItemIsoEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

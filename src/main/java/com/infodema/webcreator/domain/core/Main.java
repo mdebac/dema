@@ -2,10 +2,10 @@ package com.infodema.webcreator.domain.core;
 
 
 import com.infodema.webcreator.domain.mappers.AbstractAuditModel;
-import com.infodema.webcreator.persistance.entities.main.MainIso;
 import com.infodema.webcreator.persistance.entities.security.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,4 +40,6 @@ public class Main extends AbstractAuditModel {
     private String infoColorLight;
     private String acceptColor;
     private String acceptColorLight;
+    private Boolean removePicture;
+    private List<Customer> customers;
 }

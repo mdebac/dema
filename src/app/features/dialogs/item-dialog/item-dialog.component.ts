@@ -25,7 +25,7 @@ import { Chip } from "../../../domain/chip.enum";
     imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, MatButton, TranslatePipe]
 })
 export class ItemDialogComponent implements OnDestroy {
-  store = inject(ApartmentStore);
+  //store = inject(ApartmentStore);
   fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<ItemDialogComponent>)
   translateService = inject(TranslateService);
@@ -65,7 +65,7 @@ export class ItemDialogComponent implements OnDestroy {
     this.editorMap = new Map<string, Editor>();
     this.form = this.fb.group({
       id: [this.data.item.id],
-      apartmentDetailId: [this.data.item.apartmentDetailId, Validators.required],
+      detailId: [this.data.item.detailId, Validators.required],
       url: [this.data.item.url],
       chip: [!!this.data.item.chip ? this.data.item.chip : Chip.TEXT],
       iso: this.fb.array([]),
@@ -195,10 +195,10 @@ export class ItemDialogComponent implements OnDestroy {
     this.selectedType = change.value;
 
     if (change.value === Chip.PICTURE) {
-      this.form.controls['image'].addValidators([Validators.required,ValidateImageSize]);
+      this.form.controls['image'].addValidators([Validators.required,ValidateImageSize(1090000)]);
       this.form.controls['image'].updateValueAndValidity();
     } else {
-      this.form.controls['image'].removeValidators([Validators.required, ValidateImageSize]);
+      this.form.controls['image'].removeValidators([Validators.required, ValidateImageSize(1090000)]);
       this.form.controls['image'].updateValueAndValidity();
     }
   }

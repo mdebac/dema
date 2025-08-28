@@ -1,25 +1,21 @@
 import {Routes} from '@angular/router';
 import {StartComponent} from "./features/start/start.component";
-import {RegisterComponent} from "./features/register/register.component";
 import {LoginComponent} from "./features/login/login.component";
 import {ActivateAccountComponent} from "./features/activate-account/activate-account.component";
 import {ApartmentsHttpService} from "./services/apartments-http.service";
 import {headerResolver} from "./services/guard/header-resolver";
 import {ApartmentStore} from "./services/apartments-store.service";
 import {ShareableService} from "./services/shareable.service";
+import {authGuard} from "./services/guard/auth.guard";
+import {DashboardComponent} from "./features/dashboard/dashboard.component";
+import {TranslateModule, TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {headerWithDetailResolver} from "./services/guard/header-with-detail-resolver";
 
 export const routes: Routes = [
-
-
-    //   {
-    //  path: 'lazy',
-    //   loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
-//   }
-
     {
         path: '',
         component: StartComponent,
-        providers: [ShareableService, ApartmentsHttpService, ApartmentStore, headerResolver],
+        providers: [ShareableService, ApartmentsHttpService, ApartmentStore, headerResolver, TranslateService,TranslateModule, TranslatePipe],
         resolve: {
             myData: headerResolver,
         },
@@ -27,12 +23,10 @@ export const routes: Routes = [
             {
                 path: '',
                 loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
-
             },
             {
                 path: 'register',
                 loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent),
-
             },
             {
                 path: 'login',
@@ -42,12 +36,31 @@ export const routes: Routes = [
                 path: 'activate-account',
                 component: ActivateAccountComponent,
             },
+            {
+                path: 'my', component: DashboardComponent,
+                canActivate: [authGuard]
+            },
+            {
+                path: ':detail',
+                loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
+                resolve: {
+                    headerWithDetailResolver
+                }
+            },
         ]
     }
 ];
 
 
 /*
+
+ {
+        path: ':detail', component: MainPageComponent,
+        resolve: {
+          headerWithDetailResolver
+        }
+      },
+
 const routes: Routes = [
 
   { path: '', component: StartComponent,

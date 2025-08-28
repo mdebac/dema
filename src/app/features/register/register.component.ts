@@ -21,7 +21,7 @@ import {ApartmentStore} from "../../services/apartments-store.service";
 })
 export class RegisterComponent {
 
-  registerRequest: RegistrationRequest = {email: '', firstname: '', lastname: '', password: ''};
+  registerRequest: RegistrationRequest = {email: '', firstname: '', lastname: '', password: '', host: ''};
   errorMsg: Array<string> = [];
 
   constructor(

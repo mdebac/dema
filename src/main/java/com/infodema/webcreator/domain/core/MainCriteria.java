@@ -8,8 +8,8 @@ import lombok.*;
 @Getter
 @Builder
 public class MainCriteria {
-
     private String chip;
     private Long userId;
     private String title;
+    private String host;
 }

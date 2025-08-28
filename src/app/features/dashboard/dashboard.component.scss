@@ -1,0 +1,56 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+.dashboard-card {
+  position: absolute;
+  top: 1px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  background-color: $primary-color;
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+}
+.icon-size-transform {
+  transform: scale(2);
+}
+
+.dashboard-card mat-card-content {
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(1,1fr);
+  gap: 16px;
+}
+
+.button-container-left {
+  margin-right: auto;
+}
+
+.dashboard-title{
+  display: flex;
+  gap: 20px;
+}
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  background-color: $primary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--secondary-color), 0px 0px 3px 1px var(--secondary-color), 0px 0px 2px 1px var(--secondary-color);
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+}
+
+.activebutton
+{
+  background-color: $primary-color;
+  color: $secondary-color;
+  --mdc-extended-fab-container-elevation-shadow: 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color;
+}
+
+.mat-mdc-extended-fab:hover{
+  background-color: $secondary-color;
+  color: $primary-color;
+
+}

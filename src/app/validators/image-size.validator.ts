@@ -1,11 +1,11 @@
-import { AbstractControl } from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
-export function ValidateImageSize(control: AbstractControl) {
-
-  console.log("ValidateImageSize", control.value?.size)
-
-  if (control.value?.size > 1090000) {
-    return { invalidImageSize: true };
+export function ValidateImageSize(sizeLimit: number): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value?.size > sizeLimit) {
+      return { invalidImageSize: true };
+    }
+    return null;
   }
-  return null;
 }
+// 1090000  =  1Mb

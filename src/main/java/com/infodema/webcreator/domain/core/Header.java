@@ -1,6 +1,5 @@
 package com.infodema.webcreator.domain.core;
 
-import com.infodema.webcreator.persistance.entities.main.MainIso;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class Header {
     private byte[] iconImage;
     private String name;
     private String activeDetailUrl;
-    private String apartmentUrl;
+    private String host;
     private Colors colors;
     private Set<MainIso> iso;
 }

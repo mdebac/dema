@@ -3,8 +3,55 @@
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
 
-:host .mdc-button {
- min-width: 30px;
+:host{
+  @include mat.form-field-overrides((
+          //disabled-input-text-placeholder-color: orange,
+          //disabled-leading-icon-color: red,
+          //error-text-color: yellow,
+          //filled-caret-color: yellow,
+          //filled-container-color: yellow,
+          //filled-active-indicator-color: yellow,
+          //filled-label-text-color: var(--secondary-color),
+          outlined-caret-color: var(--secondary-color),
+          outlined-hover-outline-color: var(--secondary-color),
+          outlined-hover-label-text-color: var(--secondary-color),
+          outlined-focus-label-text-color: var(--secondary-color),
+          outlined-input-text-placeholder-color: var(--secondary-color),
+          outlined-label-text-color: var(--secondary-color),
+          //trailing-icon-color: yellow,
+          //state-layer-color: yellow,
+          //select-option-text-color: yellow,
+          outlined-outline-color: var(--secondary-color),
+          //focus-select-arrow-color: yellow,
+          //focus-state-layer-opacity: yellow,
+          //hover-state-layer-opacity: yellow,
+          //filled-input-text-placeholder-color: yellow,
+          //filled-input-text-color: yellow,
+          //filled-hover-label-text-color: yellow,
+          //filled-hover-active-indicator-color: yellow,
+          //filled-focus-label-text-color: yellow,
+          //filled-focus-active-indicator-color: yellow,
+          outlined-focus-outline-color: var(--secondary-color),
+          outlined-input-text-color: var(--secondary-color)
+  ));
+
+  @include mat.checkbox-overrides((
+          label-text-color: var(--secondary-color),
+          label-text-font: var(--secondary-color),
+          selected-icon-color: var(--secondary-color),
+          selected-hover-icon-color: var(--secondary-color),
+          selected-checkmark-color: var(--primary-color),
+          selected-focus-icon-color: var(--secondary-color),
+          unselected-icon-color: var(--secondary-color),
+          unselected-pressed-state-layer-color: var(--secondary-color),
+          unselected-hover-state-layer-color: var(--secondary-color),
+          unselected-hover-icon-color: var(--secondary-color),
+          unselected-focus-state-layer-color: var(--secondary-color),
+          selected-pressed-state-layer-color: var(--secondary-color),
+          selected-pressed-icon-color: var(--secondary-color),
+          selected-focus-state-layer-color: var(--secondary-color),
+          selected-hover-state-layer-color: var(--secondary-color),
+  ));
 }
 
 .dashboard-card {
@@ -33,19 +80,132 @@ $secondary-color: var(--secondary-color);
   }
 }
 
+
+.buttonSpace{
+  flex: 1;
+}
+
 .row-container {
   display: flex;
   .row-container-left {
     margin-right: auto;
-   .mat-mdc-form-field{
-     background-color: #24a7e9;
-   }
+ //  .mat-mdc-form-field{
+ //    background-color: #24a7e9;
+ //  }
   }
 }
 
 .row-input-container-left {
-  .mat-mdc-form-field{
+  margin-bottom: 30px;
+  .mat-mdc-form-field {
     width: 100%;
   }
 }
 
+
+input[type=file]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+input[type=file]::file-selector-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+input{
+  width: 70%;
+}
+.form{
+  display: flex;
+  flex-direction: row;
+
+}
+.dialog-right{
+  flex-grow: 0.4;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  width: 30%;
+}
+.dialog-left{
+  flex-grow: 0.6;
+  flex-direction: column;
+  display: flex;
+  padding-right: 10px;
+}
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  background-color: $primary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--secondary-color), 0px 0px 3px 1px var(--secondary-color), 0px 0px 2px 1px var(--secondary-color);
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+}
+
+.activebutton
+{
+  background-color: $primary-color;
+  color: $secondary-color;
+  --mdc-extended-fab-container-elevation-shadow: 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color;
+}
+
+.mat-mdc-extended-fab:hover{
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.custom-panel {
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header-title {
+  color: $secondary-color;
+  align-items: center;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header-description {
+  font-weight: lighter;
+  color: $secondary-color;
+}
+
+.mat-expansion-panel-body {
+  color: $secondary-color;
+  background-color: $primary-color;
+}
+
+.mat-expansion-panel-header {
+  color: $secondary-color;
+  background-color: $primary-color;
+}
+
+mat-expansion-panel-header.mat-expanded,
+mat-expansion-panel-header.mat-expanded:focus {
+  background-color: $primary-color;
+}
+
+.mat-expansion-panel:not(.mat-expanded)
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+  background-color: $primary-color;
+}
+
+.mat-expansion-panel.mat-expanded
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+  background-color: $primary-color;
+}
+
+.mat-expansion-panel:not(.mat-expanded) {
+  border-radius: 8px !important;
+  margin: 16px 0;
+}
+
+.mat-expansion-panel.mat-expanded .mat-expansion-panel-header {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.languageSpace{
+  display: flex;
+  flex-direction: row;
+}

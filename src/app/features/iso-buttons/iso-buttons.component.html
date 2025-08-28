@@ -1,19 +1,22 @@
 <div>
-  {{getValueByKeyForStringEnum(selectedIso)}}
-  <button mat-button [matMenuTriggerFor]="iso"><div [ngClass]="flag(selectedIso)"></div></button>
+    {{ getValueByKeyForStringEnum(selectedIso) }}
+    <button mat-button [matMenuTriggerFor]="iso">
+        <div [ngClass]="flag(selectedIso)"></div>
+    </button>
 </div>
+<div>
+    <mat-menu #iso="matMenu">
+        @for (country of countriesIso; track $index) {
 
-<mat-menu class="custom-style" #iso="matMenu">
-@for (country of countriesIso; track $index){
-
-  @if(country===selectedIso){
-      <button mat-raised-button mat-button>
-        <div [ngClass]="flag(country)"></div>
-      </button>
-  }@else{
-  <button mat-button (click)="selectIso(country)">
-    <div [ngClass]="flag(country)"></div>
-  </button>
-  }
-}
-</mat-menu>
+            @if (country === selectedIso) {
+                <button mat-raised-button>
+                    <div [ngClass]="flag(country)"></div>
+                </button>
+            } @else {
+                <button mat-button (click)="selectIso(country)">
+                    <div [ngClass]="flag(country)"></div>
+                </button>
+            }
+        }
+    </mat-menu>
+</div>

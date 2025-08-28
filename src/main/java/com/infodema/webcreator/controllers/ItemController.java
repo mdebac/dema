@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/apartments")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class ItemController {

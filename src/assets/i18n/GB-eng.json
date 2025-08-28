@@ -13,6 +13,7 @@
   "update.page": "Update page",
   "delete.page": "Delete page",
   "create.page": "Create new page",
+  "new.page": "New page",
   "create.item": "Create new item",
   "update.item": "Update item",
   "item.dialog.description": "Description",
@@ -21,6 +22,16 @@
   "item.dialog.remaining.size": "Remaining size {{length}} / 2500",
   "detail.dialog.remaining.size": "Remaining size {{length}} / 150",
   "detail.dialog.title": "Title",
-  "detail.dialog.title.error": "Min 2, Max 150"
-
+  "detail.dialog.title.error": "Min 2, Max 150",
+  "my.dashboard": "Dashboard",
+  "save.languages": "Save",
+  "dialog.main.colors": "Colors",
+  "dialog.main.title": "Main title of the page",
+  "dialog.main.description.hint": "Description text below Main title",
+  "dialog.main.icon.text.hint": "Small text below Icon",
+  "remove.image": "Remove image",
+  "update.domain.page": "Update domain page",
+  "name.customer.table": "Customer",
+  "email.customer.table": "E-mail",
+  "role.customer.table": "Role"
 }

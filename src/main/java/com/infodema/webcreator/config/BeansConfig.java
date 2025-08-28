@@ -75,7 +75,7 @@ public class BeansConfig {
 
     }
 
-    @Bean
+  /*  @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -83,6 +83,6 @@ public class BeansConfig {
                 registry.addMapping("/").allowedOrigins("http://localhost:8081");
             }
         };
-    }
+    }*/
 
 }

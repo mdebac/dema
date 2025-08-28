@@ -7,6 +7,7 @@ create table _user (
                        enabled bit not null,
                        firstname varchar(255),
                        last_modified_date datetime(6),
+                       host varchar(50),
                        lastname varchar(255),
                        password varchar(255),
                        primary key (id)
@@ -80,7 +81,7 @@ create table detail (
     
 create table detail_iso (
                             detail_id bigint not null,
-                            iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','CZ') not null,
+                            iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI', 'NO', 'UA', 'RU', 'IT','HU','PL','CZ') not null,
                             label varchar(255),
                             title varchar(255)
 ) engine=InnoDB;
@@ -151,16 +152,16 @@ create table main (
                       warn_color varchar(255),
                       warn_color_light varchar(255),
                       owner_id bigint,
+                      remove_picture char(1) check (remove_picture in ('F','T')),
                       primary key (id)
 ) engine=InnoDB;
     
 create table main_iso (
                           main_id bigint not null,
-                          icon_text varchar(100),
-                          icon_title varchar(15),
-                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','CZ') not null,
-                          text varchar(2000),
-                          title varchar(255)
+                          icon_text varchar(30),
+                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI', 'NO', 'UA', 'RU', 'IT','HU','PL','CZ') not null,
+                          description varchar(2000),
+                          title varchar(15)
 ) engine=InnoDB;
     
 create table main_seq (

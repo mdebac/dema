@@ -45,12 +45,10 @@ import {ApartmentItemIso} from "../../domain/apartment-item-iso";
 export class WidgetComponent implements OnDestroy, OnInit {
   private dialog = inject(MatDialog);
   private store = inject(ApartmentStore);
-  private tokenService = inject(TokenService);
   private translateService = inject(TranslateService);
 
   private _data: Widget | undefined;
   elevation: string | undefined;
-  loggedIn: boolean = true;
   @HostBinding("style.--rowSpan")
   rowSpan: number | undefined;
   @HostBinding("style.--colSpan")
@@ -63,6 +61,7 @@ export class WidgetComponent implements OnDestroy, OnInit {
   backgroundColor: string | undefined;
 
   @Input() columns: number | undefined;
+  @Input() loggedIn: boolean = false;
 
   @Input() set data(value: Widget) {
     this._data = value;
@@ -175,7 +174,6 @@ export class WidgetComponent implements OnDestroy, OnInit {
 
 
   ngOnInit() {
-    this.loggedIn = this.tokenService.isTokenValid();
   }
 
   openDialogItem(data: ApartmentItemDialogData) {

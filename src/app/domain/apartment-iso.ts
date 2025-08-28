@@ -1,7 +1,6 @@
 export interface ApartmentIso {
-  text :string;
-  title: string;
+  description :string;
   iso: string;
   iconText: string,
-  iconTitle: string,
+  title: string,
 }

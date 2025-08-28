@@ -1,6 +1,7 @@
 package com.infodema.webcreator.domain.cv;
 
 import com.infodema.webcreator.domain.mappers.AbstractMapper;
+import com.infodema.webcreator.domain.utility.UtilityHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class CvDataProjectionMapper extends AbstractMapper {
     public CvData toDomain(CvDataProjection entity) {
         return CvData.builder()
                 .id(entity.getId())
-                .createdOn(toOffsetDateTime(entity.getCreatedOn()))
+                .createdOn(UtilityHelper.toOffsetDateTime(entity.getCreatedOn()))
                 .name(entity.getName())
                 .email(entity.getEmail())
                 .coverLetterText(entity.getCoverLetterText())
@@ -35,11 +36,4 @@ public class CvDataProjectionMapper extends AbstractMapper {
                 .build();
     }
 
-
-
-    private OffsetDateTime toOffsetDateTime(Instant instant) {
-        ZoneId z = ZoneId.of( "Europe/Berlin" ) ;
-        ZonedDateTime zdt = instant.atZone( z ) ;
-        return zdt.toOffsetDateTime();
-    }
 }

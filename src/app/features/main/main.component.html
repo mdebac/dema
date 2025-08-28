@@ -1,10 +1,11 @@
-MAIN COMPONENT
+<div class="text">NOTHING TO SEE</div>
 <ng-container *ngrxLet="{
   columns: columns$,
-  colors: colors$,
+  isLoggedIn: loggedIn$,
+  selectedIso: selectedIso$
 } as vm">
-    <summer
+    <summer [loggedIn]="vm.isLoggedIn"
             [col]="vm.columns"
-            [colors]="vm.colors"
+            [selectedIso]="vm.selectedIso"
     ></summer>
 </ng-container>

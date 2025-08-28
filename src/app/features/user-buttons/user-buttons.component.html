@@ -1,0 +1,18 @@
+<div>
+    {{user}}
+  <button mat-button [matMenuTriggerFor]="iso">
+      <mat-icon>person</mat-icon>
+  </button>
+</div>
+<mat-menu #iso="matMenu">
+    <div class="actionButtons">
+            <ng-container  >
+                <button (click)="logout()"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                    <mat-icon>favorite</mat-icon>
+                    Logout
+                </button>
+            </ng-container>
+    </div>
+</mat-menu>

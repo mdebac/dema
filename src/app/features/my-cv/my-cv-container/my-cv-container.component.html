@@ -1,0 +1,18 @@
+<mat-card class="dashboard-card">
+  <mat-card-header>
+    <h2 class="button-container-left text">CV Data</h2>
+  </mat-card-header>
+  <mat-card-content>
+    <ng-container *ngrxLet="{ cvCount: cvCount$ } as vm">
+
+      <my-cv-table
+        [cvCount]="vm.cvCount"
+      ></my-cv-table>
+
+    </ng-container>
+  </mat-card-content>
+</mat-card>
+
+
+
+

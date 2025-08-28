@@ -28,7 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getServletPath().contains("/api/v1/auth")) {
+        if (request.getServletPath().contains("/api/v1/auth")
+                || request.getServletPath().contains("/api/v1/find")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,8 +54,11 @@ public class JwtFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }else{
+                System.out.println("NIJE VALID------------------------");
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

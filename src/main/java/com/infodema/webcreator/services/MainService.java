@@ -1,16 +1,22 @@
 package com.infodema.webcreator.services;
 
 import com.infodema.webcreator.domain.core.*;
+import com.infodema.webcreator.domain.enums.Roles;
+import com.infodema.webcreator.domain.mappers.CustomerMapper;
 import com.infodema.webcreator.domain.mappers.DetailMapper;
+import com.infodema.webcreator.domain.mappers.MainCustomerMapper;
 import com.infodema.webcreator.domain.mappers.MainMapper;
-import com.infodema.webcreator.persistance.entities.detail.DetailIso;
+import com.infodema.webcreator.domain.core.DetailIso;
+import com.infodema.webcreator.domain.utility.SecurityUtils;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.repositories.DetailRepository;
 import com.infodema.webcreator.persistance.repositories.MainRepository;
 import com.infodema.webcreator.domain.projections.MainProjection;
 import com.infodema.webcreator.persistance.entities.security.User;
+import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +40,69 @@ public class MainService {
     private final AuditorAware<User> auditorAware;
     private final DetailMapper detailMapper;
     private final DetailsService detailsService;
+    private final UserRepository userRepository;
+    private final CustomerMapper customerMapper;
+    private final MainCustomerMapper mainCustomerMapper;
 
     public Page<MainProjection> findMains(MainCriteria criteria, Pageable pageable) {
         return mainRepository.findMainsByCriteria(criteria, pageable);
     }
 
-    public Page<Main> findMyMains(Pageable pageable) {
-        return mainMapper.toDomain(mainRepository.findByOwner(auditorAware.getCurrentAuditor().orElseThrow(() -> new RuntimeException("LoggedIn user Not Found not found")), pageable));
+    public Page<Main> findCustomers(String host, Pageable mainPageable) {
+
+        String role = String.join(",", SecurityUtils.getUserRoles());
+
+        if (role.equals(Roles.ADMIN.name())) {
+            Page<Main> allEntities =  mainCustomerMapper.toDomain(mainRepository.findAll(mainPageable));
+            allEntities.getContent().forEach(main -> {
+                main.setCustomers(customerMapper.toDomain(userRepository.findByHost(main.getHost())));
+            });
+            return allEntities;
+        }
+
+        if (role.equals(Roles.MANAGER.name())) {
+            Main main = mainCustomerMapper.toDomain(mainRepository.findByHost(host).orElseThrow());
+            main.setCustomers(customerMapper.toDomain(userRepository.findByHost(host)));
+            return new PageImpl<>(Collections.singletonList(main));
+        }
+
+
+      /*
+           @PostMapping(
+            value = "/search",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<DecisionHeaderDto> searchDecisions(@RequestBody DecisionQuery query) {
+        Sort sort = query.getPageable() == null || query.getPageable().getSort().isEmpty()
+                ? Sort.by(Sort.Direction.DESC, DecisionQuery.SortType.DECISION_DATE.getField())
+                : Sort.by(
+                        query.getPageable().getDirection(),
+                        query.getPageable().getSort().stream()
+                                .map(DecisionQuery.SortType::getField)
+                                .toArray(String[]::new));
+
+        return decisionService
+                .search(
+                        query.getCriteria(),
+                        (query.getPageable() == null
+                                ? Pageable.unpaged()
+                                : PageRequest.of(
+                                        query.getPageable().getPage(),
+                                        query.getPageable().getSize(),
+                                        sort)))
+                .map(decisionMapperService::constructFrom);
+    }
+       userRepository.findCustomersByCriteria(
+                CustomerProjectionCriteria.builder()
+                        .role(String.join(",", SecurityUtils.getUserRoles()))
+                        .host(host)
+                        .build(),
+                pageable);*/
+        return null;
     }
 
     @Transactional
-    public void deleteMain
-(Long id) {
+    public void deleteMain(Long id) {
         detailRepository.deleteByMain_Id(id);
         mainRepository.deleteById(id);
     }
@@ -60,14 +117,23 @@ public class MainService {
 
         MainEntity entity = mainMapper.toEntity(main);
         if (file != null) {
-            entity.setImage(file);
-        }else{
-            mainRepository.findById(main.getId()).ifPresent(current -> {
-                entity.setFileName(current.getFileName());
-                entity.setMimeType(current.getMimeType());
-                entity.setSize(current.getSize());
-                entity.setContent(current.getContent());
-            });
+
+            if (main.getRemovePicture() != null && main.getRemovePicture()) {
+                entity.setImage(null);
+                entity.setRemovePicture(false);
+            } else {
+                entity.setImage(file);
+            }
+
+        } else {
+            if (main.getId() != null) {
+                mainRepository.findById(main.getId()).ifPresent(current -> {
+                    entity.setFileName(current.getFileName());
+                    entity.setMimeType(current.getMimeType());
+                    entity.setSize(current.getSize());
+                    entity.setContent(current.getContent());
+                });
+            }
         }
         Main savedMain = mainMapper.toDomain(mainRepository.save(entity));
 
@@ -124,7 +190,7 @@ public class MainService {
                                 .collect(Collectors.toList())
                 )
                 .activeDetailUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getTitleUrl())
-                .apartmentUrl(entity.getHost())
+                .host(entity.getHost())
                 .colors(Colors.builder()
                         .primaryColor(entity.getPrimaryColor())
                         .secondaryColor(entity.getSecondaryColor())

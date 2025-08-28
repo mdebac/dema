@@ -1,6 +1,8 @@
 package com.infodema.webcreator.persistance.repositories;
 
+import com.infodema.webcreator.domain.core.CustomerProjectionCriteria;
 import com.infodema.webcreator.domain.core.MainCriteria;
+import com.infodema.webcreator.domain.projections.CustomerProjection;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.security.User;
 import com.infodema.webcreator.domain.projections.MainProjection;
@@ -43,9 +45,12 @@ public interface MainRepository extends JpaRepository<MainEntity, Long> {
             nativeQuery = true)
     Page<MainProjection> findMainsByCriteria(MainCriteria criteria, Pageable pageable);
 
+
     Page<MainEntity> findByOwner(User owner, Pageable pageable);
 
     Optional<MainEntity> findByHost(String host);
+
+    Page<MainEntity> findAll(Pageable pageable);
 
     Optional<MainEntity> findById(Long id);
 

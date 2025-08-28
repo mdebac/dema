@@ -2,7 +2,6 @@ package com.infodema.webcreator.controllers;
 
 import com.infodema.webcreator.services.DetailsService;
 import com.infodema.webcreator.domain.core.Detail;
-import com.infodema.webcreator.domain.core.Header;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/apartments")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class DetailController {
@@ -22,15 +21,15 @@ public class DetailController {
     private final DetailsService detailsService;
 
 
-    @GetMapping(value = "/find/{apartmentUrl}/details")
+    @GetMapping(value = "/find/details")
     public ResponseEntity<Detail> fetchDetailPage(
-            @PathVariable("apartmentUrl") String apartmentUrl,
+            @RequestParam("host") String host,
             @RequestParam("detailUrl") String detailUrl
     ) {
-        log.debug("fetchDetailPage by apartmentUrl={}, detailUrl={}", apartmentUrl, detailUrl);
+        log.debug("fetchDetailPage by host={}, detailUrl={}", host, detailUrl);
 
      return ResponseEntity.status(HttpStatus.OK)
-           .body( detailsService.findDetailByUrlLabels(apartmentUrl, detailUrl));
+           .body( detailsService.findDetailByUrlLabels(host, detailUrl));
     }
 
     @GetMapping(value = "/detail/{detailId}")

@@ -52,6 +52,11 @@ public class User implements UserDetails, Principal {
   //  @OneToMany(mappedBy = "user")
 //private List<BookTransactionHistory> histories;
 
+    //jedan user jedan host
+   private String host;
+   //ako su apartmani, više pageva/main, jedan user, jedan host
+    //ako nisu,        jedan page/main,  jedan user MANAGER, jedan host
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;

@@ -1,4 +1,4 @@
-<ng-container *ngrxLet="{ activeDetail: activeDetail$, country: selectedIso$, header: header$} as vm">
+<ng-container *ngrxLet="{ activeDetail: activeDetail$, header: header$} as vm">
 
   <mat-card class="dashboard-card">
     <mat-card-header>
@@ -7,7 +7,7 @@
           <div class="content">
             <div class="editor">
               <ngx-editor [editor]="editor"
-                          [ngModel]="getTitle(vm.country, vm.activeDetail?.iso)"
+                          [ngModel]="getTitle(selectedIso, vm.activeDetail?.iso)"
                           [disabled]="true"
                           [placeholder]="''"
               >
@@ -47,8 +47,9 @@
             {{ "update.page" | translate }}
           </button>
         </div>
+
         <div class="button-container">
-          <button color="accent" mat-flat-button (click)="deleteDetail(vm.activeDetail)">
+          <button [disabled]="onlyOne(vm.header?.detail?.length)" color="accent" mat-flat-button (click)="deleteDetail(vm.activeDetail)">
             <mat-icon>delete</mat-icon>
             {{ "delete.page" | translate }}
           </button>
@@ -66,7 +67,7 @@
         @for (data of vm.activeDetail?.items; track data.id) {
 
           @if (vm.activeDetail.iso) {
-            <widget [selectedIso]="vm.country" [columns]="vm.activeDetail.columns" cdkDrag
+            <widget [loggedIn]="loggedIn" [selectedIso]="selectedIso" [columns]="vm.activeDetail.columns" cdkDrag
                     [data]="transformItemToWidget(vm.activeDetail, data, vm.header?.colors)"></widget>
           }
         }

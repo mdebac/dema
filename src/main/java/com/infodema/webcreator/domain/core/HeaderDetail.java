@@ -1,6 +1,5 @@
 package com.infodema.webcreator.domain.core;
 
-import com.infodema.webcreator.persistance.entities.detail.DetailIso;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

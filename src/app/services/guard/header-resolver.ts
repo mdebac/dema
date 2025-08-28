@@ -4,6 +4,7 @@ import {environment} from "../../../environments/environment";
 import {ApartmentsHttpService} from "../apartments-http.service";
 import {Observable} from "rxjs";
 import {Header} from "../../domain/header";
+import {Hosts} from "../../domain/hosts";
 
 Injectable({
   providedIn: 'root',
@@ -18,7 +19,8 @@ export class headerResolver implements Resolve<Header> {
     let host = window.location.host.toLowerCase();
     console.log("window location host", host);
     if (local) {
-      host = "adriaticsun.eu";
+    //  host = Hosts.ADRIATICSUN_EU;
+      host = Hosts.INFO_DEMA_EU;
     }
     console.log("actual host", host);
 

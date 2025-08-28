@@ -2,10 +2,7 @@ import {Component, inject, Inject} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {CvData} from "../../../domain/cv-data";
 import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
-import {environment} from "../../../../../../environments/environment";
 import {ValidateCVSize} from "../../../validators/cv-size.validator";
-import {CVStore} from "../../../services/cv-store.service";
-import {Apartment} from "../../../domain/apartment";
 import { MatCard, MatCardHeader, MatCardContent } from '@angular/material/card';
 import { MatFormField, MatLabel, MatSuffix, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -14,6 +11,8 @@ import { MatButton } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { RecaptchaModule } from 'ng-recaptcha-2';
 import { TranslatePipe } from '@ngx-translate/core';
+import {environment} from "../../../../environments/environment";
+import {CVStore} from "../../../services/cv-store.service";
 
 @Component({
     selector: 'cv-data-dialog',
@@ -29,7 +28,7 @@ export class CvDataDialogComponent {
   form:FormGroup;
   captchaKey:string = environment.recaptcha.siteKey;
   captchaResolved : boolean = false;
-  captchaResponse:string;
+  captchaResponse:string = "";
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: number) {
     this.form = this.fb.group({

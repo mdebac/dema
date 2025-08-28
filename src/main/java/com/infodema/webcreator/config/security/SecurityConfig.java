@@ -36,9 +36,8 @@ public class SecurityConfig {
                                 "/",
                                 "/*",
                                 "api/v1/auth/**",
-                                "api/v1/find/**",
-                           //     "/main/find/**",
-                                "api/v1/ping")
+                                "api/v1/find/**"
+                        )
                         .permitAll()
                         .anyRequest().authenticated()
                 )

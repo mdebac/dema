@@ -12,9 +12,7 @@ export interface ApartmentDetail extends Audit{
   label:string;
   show:boolean;
   titleUrl:string;
-
-  apartmentUrl:string;
-  apartmentId:number;
+  mainId:number;
 
   items: ApartmentItem[];
   iso: ApartmentDetailIso[];
@@ -24,4 +22,5 @@ export interface ApartmentDetailDialogData {
   languages: string[] | undefined;
   detail: Partial<ApartmentDetail>;
   colors: Partial<Colors> | undefined;
+  host: string | undefined;
 }

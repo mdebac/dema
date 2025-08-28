@@ -1,4 +1,4 @@
-package com.infodema.webcreator.persistance.entities.detail;
+package com.infodema.webcreator.domain.core;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

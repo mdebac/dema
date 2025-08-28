@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +48,14 @@ public class MainController {
     }
 
 
+    @GetMapping("/customers/{host}")
+    public ResponseEntity<Page<Main>> findCustomers(
+            @PathVariable("host") String host,
+            Pageable pageable) {
 
-    @GetMapping("/my")
-    public ResponseEntity<Page<Main>> findMyApartments(Pageable pageable) {
-        log.info("findMyApartments by pageable={}", pageable);
+        log.info("findCustomers by Main pageable={}", pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(mainService.findMyMains(pageable));
+                .body(mainService.findCustomers(host, pageable));
     }
 
     @DeleteMapping("/{id}")

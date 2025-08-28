@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormGroup, Validators, FormsModule, ReactiveFor
 
 import {ApartmentDetail, ApartmentDetailDialogData} from "../../../domain/apartment-detail";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {ApartmentStore} from "../../../services/apartments-store.service";
 import {debounceTime, Subject} from "rxjs";
 import {ApartmentDetailIso} from "../../../domain/apartment-detail-iso";
 import {defaultIso} from "../../../domain/countries-iso";
@@ -24,7 +23,7 @@ import { MatButton } from '@angular/material/button';
     imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, NgFor, MatLabel, NgxEditorMenuComponent, NgxEditorComponent, MatFormField, MatInput, MatError, MatHint, MatIcon, MatButton, TranslatePipe]
 })
 export class DetailDialogComponent implements OnDestroy{
-  store = inject(ApartmentStore);
+ // store = inject(ApartmentStore);
   translateService = inject(TranslateService);
 
   private searchSubject = new Subject<string>();
@@ -33,7 +32,7 @@ export class DetailDialogComponent implements OnDestroy{
   fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<DetailDialogComponent>)
   //title:string|undefined;
-  generatedDetailedUrl$ = this.store.generatedDetailedUrl$;
+ // generatedDetailedUrl$ = this.store.generatedDetailedUrl$;
 
   form:FormGroup;
   languages: string[] | undefined = [];
@@ -61,8 +60,8 @@ export class DetailDialogComponent implements OnDestroy{
 
     this.form = this.fb.group({
       id: [this.data.detail.id],
-      apartmentId: [this.data.detail.apartmentId, Validators.required],
-      apartmentUrl: [this.data.detail.apartmentUrl, Validators.required],
+      mainId: [this.data.detail.mainId, Validators.required],
+      host: [this.data.host, Validators.required],
       columns: [this.data.detail.columns ? this.data.detail.columns : 1],
       show: [this.data.detail.show],
       icon: [this.data.detail.icon],
