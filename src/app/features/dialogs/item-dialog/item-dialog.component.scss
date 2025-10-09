@@ -20,21 +20,39 @@ $secondary-color: var(--secondary-color);
 }
 
 .dashboard-card mat-card-content {
+  --ngx-editor-menubar-bg-color: $secondary-color;
   text-align: left;
   display: grid;
   grid-template-columns: repeat(1,1fr);
   gap: 16px;
 }
 
+.ngx-editor-menu{
+  color:red;
+}
+
+input[type=file]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+input[type=file]::file-selector-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+input{
+  width: 70%;
+}
 
 .mat-mdc-card-header {
   display: flex;
-  padding: 8px 8px 8px 8px;
   overflow: hidden;
   //margin-right: 30%;
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding: 30px 8px;
+
   .button-container-left {
     margin-right: auto;
   }
@@ -47,3 +65,15 @@ $secondary-color: var(--secondary-color);
 
 }
 
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-fab-container-color: $secondary-color !important;
+  border: 2px solid $secondary-color;
+}
+.mat-mdc-extended-fab:hover{
+  background-color: $primary-color;
+  color: $secondary-color;
+}

@@ -30,6 +30,7 @@
         <mat-button-toggle [value]="2">2</mat-button-toggle>
         <mat-button-toggle [value]="3">3</mat-button-toggle>
         <mat-button-toggle [value]="4">4</mat-button-toggle>
+        <mat-button-toggle [value]="5">5</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
 
@@ -50,19 +51,18 @@
 
     <mat-divider></mat-divider>
 
-    <div>
-      <mat-label><p>Elevation (Z)</p></mat-label>
-      <mat-button-toggle-group hideSingleSelectionIndicator="true"
-                               [value]="elevation"
-                               (change)="onChangeElevation($event)">
-        <mat-button-toggle [value]="0">0</mat-button-toggle>
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
-        <mat-button-toggle [value]="2">2</mat-button-toggle>
-        <mat-button-toggle [value]="3">3</mat-button-toggle>
-        <mat-button-toggle [value]="4">4</mat-button-toggle>
-        <mat-button-toggle [value]="5">5</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+      <div>
+          <mat-label><p>Shadow Color </p></mat-label>
+          <mat-button-toggle-group [value]="shadowColor"
+                                   (change)="onChangeShadowColor($event)">
+              <mat-button-toggle class="primaryColor" [value]=colors?.primaryColor></mat-button-toggle>
+              <mat-button-toggle class="secondaryColor" [value]=colors?.secondaryColor></mat-button-toggle>
+              <mat-button-toggle class="dangerColor" [value]=colors?.dangerColor></mat-button-toggle>
+              <mat-button-toggle class="warnColor" [value]=colors?.warnColor></mat-button-toggle>
+              <mat-button-toggle class="infoColor" [value]=colors?.infoColor></mat-button-toggle>
+              <mat-button-toggle class="acceptColor" [value]=colors?.acceptColor></mat-button-toggle>
+          </mat-button-toggle-group>
+      </div>
 
     <mat-divider></mat-divider>
 

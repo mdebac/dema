@@ -1,6 +1,7 @@
 package com.infodema.webcreator;
 
 import com.infodema.webcreator.domain.core.Message;
+import com.infodema.webcreator.domain.enums.Hosts;
 import com.infodema.webcreator.persistance.entities.security.Role;
 import com.infodema.webcreator.persistance.entities.security.User;
 import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
@@ -31,7 +32,6 @@ public class DemaApplication {
     public static void main(String[] args) {
         SpringApplication.run(DemaApplication.class, args);
     }
-
 
 
     @Bean
@@ -70,7 +70,7 @@ public class DemaApplication {
                 );
             }
 
-            if (userRepository.findByEmail("markodebac@yahoo.com").isEmpty()) {
+            if (userRepository.findByEmailAndHost("markodebac@yahoo.com", Hosts.INFO_DEMA_EU.getHostsCode()).isEmpty()) {
                 var adminRole = roleRepository.findByName("ADMIN")
                         // todo - better exception handling
                         .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
@@ -87,31 +87,17 @@ public class DemaApplication {
                 userRepository.save(user);
             }
 
-
-		/*	apartmentService.saveApartment(
-					Apartment.builder()
-					.host("adriatic-sun.eu")
-							.iso(Collections.singleton(ApartmentIso.builder()
-									.iso("GB-eng")
-									.title("Adriatic Sun")
-									.build()))
-					.build(), null);
-					*/
-
         };
     }
 
 
-
-
-  @GetMapping(path = "/api/v1/ping", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Message> generateUrl() {
-    //log.debug("generateUrl by title={}", title);
-      System.out.println("ping");
-    return new ResponseEntity<>(
-      Message.builder().text("pong").build(),
-      HttpStatus.OK);
-  }
+    @GetMapping(path = "/api/v1/ping", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Message> generateUrl() {
+        System.out.println("ping");
+        return new ResponseEntity<>(
+                Message.builder().text("pong").build(),
+                HttpStatus.OK);
+    }
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {

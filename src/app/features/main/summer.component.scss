@@ -2,47 +2,94 @@
 
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
+$corner-radius: var(--corner-radius);
+$left: var(--left-padding);
+$right: var(--right-padding);
+$background-color: var(--background-color);
+$actions-border-color: var(--actions-border-color);
+
+:host {
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+}
+
+mat-slide-toggle {
+  margin: 8px 0;
+  display: block;
+  font-weight: normal;
+}
 
 .dashboard-card {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
-  background-color: #{$primary-color};
+  top: 1px;
+
+  left: $left;
+  right: $right;
+  bottom: 10px;
+
+  background-color: $background-color;
+  border: 2px solid $primary-color;
   overflow-y: auto;
   //scrollbar-color: $secondary-color $primary-color;
   @include mat.card-overrides((
-    elevated-container-shape: 32px
+          elevated-container-shape: $corner-radius
   ));
 }
 
 .dashboard-card mat-card-content {
+  padding-top: 0.5rem;
   text-align: left;
   display: grid;
-  grid-template-columns: repeat(var(--grid-col),1fr);
+ grid-template-columns: repeat(var(--grid-col), 1fr);
+ // grid-template-columns: repeat(1, 1fr);
   gap: 16px;
 }
 
 .mat-mdc-card-header {
   display: flex;
-  padding: 8px 8px 8px 8px;
-  overflow: hidden;
-  //margin-right: 30%;
-  align-items: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  .button-container-left {
-    margin-right: auto;
-  }
-
+  overflow: visible;
+  flex-direction: column;
+  align-items: start;
 }
 
-.button-container{
-padding: 2px;
+.header-actions{
+  display: flex;
+  flex-direction: row;
+  border-bottom: solid 2px $actions-border-color;
+;
+  width: 100%;
 }
 
-.grb{
+.header-title{
+  display: flex;
+  flex-direction: row;
+}
+
+
+.container {
+  justify-content: left;
+  justify-items: left;
+  justify-self: left;
+  align-items: start;
+  align-content: start;
+  align-self: start;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  // align-items: start;
+  // justify-content: left;
+  --ngx-editor-background-color: $primary-color;
+  --ngx-editor-border-color: $primary-color;
+  font-size: large;
+}
+
+
+.button-container {
+  padding: 2px;
+}
+
+.grb {
   align-items: center;
   color: $primary-color;
   padding-right: 30px;
@@ -51,42 +98,118 @@ padding: 2px;
   grid-template-columns: repeat(2, 20px);
   grid-template-rows: repeat(2, 20px);
 }
-.grb-crveno{
+
+.grb-crveno {
   width: 20px;
   height: 20px;
   background-color: $secondary-color;
 }
-.grb-bijelo{
+
+.grb-bijelo {
   width: 20px;
   height: 20px;
   background-color: $primary-color;
 }
 
-.container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  --ngx-editor-background-color: $primary-color;
-  --ngx-editor-border-color: $primary-color;
-  font-size: large;
-}
 
 .content {
   width: 100%;
   line-height: 30px;
+  justify-content: left;
+  justify-items: left;
+  justify-self: left;
+  align-items: start;
+  align-content: start;
+  align-self: start;
 }
 
 .editor {
   .NgxEditor {
   }
+
   .CodeMirror {
     border: 1px solid #eee;
     height: auto;
     margin-bottom: 0.7rem;
+
     pre {
       white-space: pre !important;
     }
   }
 }
+
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 8px;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
+  --mdc-protected-button-container-color: $secondary-color;
+
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border: 2px solid $secondary-color;
+}
+
+
+.mat-mdc-unelevated-button {
+  background-color: $primary-color ;
+  color: $secondary-color;
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+  justify-content: left;
+}
+.mat-mdc-unelevated-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+  @include mat.icon-overrides((
+          color: $primary-color,
+  ));
+  justify-content: left;
+}
+
+.mat-mdc-extended-fab:hover {
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+
+.mat-mdc-extended-fab {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.mat-mdc-mini-fab {
+  background-color: $primary-color;
+  color: $secondary-color;
+
+}
+.actionButtons{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+
+.mat-mdc-standard-chip.mdc-evolution-chip__text-label{
+  color: $secondary-color;
+}
+
+.mat-mdc-standard-chip.mdc-evolution-chip--selected:not(.mdc-evolution-chip--disabled) {
+  background-color: $primary-color;
+  --mdc-chip-selected-label-text-color:  var(--secondary-color);
+  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
+}
+
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+  background-color: $primary-color;
+  --mdc-chip-selected-label-text-color:  var(--secondary-color);
+  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
+  --mdc-chip-label-text-color: var(--secondary-color);
+  --mdc-chip-label-text-weight: large;
+}
+
+//https://www.fusonic.net/en/blog/angular-material-customization
+
+//mat-flat-button

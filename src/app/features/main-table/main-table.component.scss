@@ -46,6 +46,17 @@ $row-color: #f6f6f1;
   flex: 0 0 60%;
 }
 
+
+.mat-column-name {
+  flex: 0 0 30%;
+}
+.mat-column-email {
+  flex: 0 0 30%;
+}
+.mat-column-role {
+  flex: 0 0 16%;
+}
+
 .mat-mdc-paginator{
   background-color: $secondary-color;
   color: $primary-color;
@@ -76,7 +87,7 @@ $row-color: #f6f6f1;
   color: $primary-color;
   background-color: $secondary-color ;
   border-radius: 10px;
-  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary), 0px 0px 2px 1px var(--primary);
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
   --mdc-extended-fab-pressed-container-elevation-shadow: none;
 }
 /*
@@ -90,7 +101,6 @@ $row-color: #f6f6f1;
 .mat-mdc-extended-fab:hover{
   background-color: $primary-color;
   color: $secondary-color;
-
 }
 /*
 .mat-mdc-row.example-detail-row {

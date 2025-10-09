@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {Apartment} from "../domain/apartment";
-import {catchError, EMPTY, finalize, Observable, of, switchMap, take, tap, withLatestFrom} from "rxjs";
+import {catchError, EMPTY, finalize, Observable, switchMap, tap, withLatestFrom} from "rxjs";
 import {ApartmentCriteria} from "../domain/apartment-criteria";
 import {ComponentStore} from '@ngrx/component-store';
 import {ApiError} from "../domain/api-error";
@@ -16,9 +16,13 @@ import {Colors} from "../domain/colors";
 import {ApartmentsHttpService} from "./apartments-http.service";
 import {Page} from "../util/search-criteria";
 import {Chip} from "../domain/chip.enum";
-import {TokenService} from "./token.service";
-import {ShareableService} from "./shareable.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {ActiveMenu} from "../domain/active-menu";
+import {Menu} from "../domain/menu";
+import {Layout, layoutMap} from "../domain/layout";
+import {Side} from "../domain/side";
+import {LayoutState} from "../domain/layout-state";
+import {ShareableService} from "./shareable.service";
 
 export interface ApartmentState {
     page: Page<Apartment>;
@@ -34,18 +38,23 @@ export interface ApartmentState {
     paginationSize: number,
     paginationSort: string,
 
-    //ako nema niti apartmentUrl niti detailUrl, loadaj pr
     selectedDetailPage: ApartmentDetail | null,
     header: Header | null,
-    loadHeader: boolean,
+    //   loadHeader: boolean,
     headerLoading: boolean,
 
-    activeDetailUrl: string | null;
+    activeMenuUrl: string | null;
+    activePanelUrl: string | null;
+
     segment: string | null;
     selectedApartmentId: number | null,
 
     filterChip: Chip | null;
     filterTitle: string | null;
+
+    footerVisible: boolean,
+
+    shrinkMenu: boolean,
 
     loading: boolean;
     error: ApiError | null;
@@ -64,9 +73,10 @@ export const initialApartmentState: ApartmentState = {
     selectedIso: null,
     loading: false,
     header: null,
-    loadHeader: false,
+    //   loadHeader: false,
     headerLoading: false,
-    activeDetailUrl: null,
+    activeMenuUrl: null,
+    activePanelUrl: null,
     segment: null,
 
     filterChip: null,
@@ -74,6 +84,9 @@ export const initialApartmentState: ApartmentState = {
     paginationPage: 0,
     paginationSize: 20,
     paginationSort: 'created_on,DESC',
+    shrinkMenu: true,
+
+    footerVisible: false,
 
     error: null,
 };
@@ -81,30 +94,58 @@ export const initialApartmentState: ApartmentState = {
 @Injectable()
 export class ApartmentStore extends ComponentStore<ApartmentState> {
     readonly service = inject(ApartmentsHttpService);
-    readonly tokenService = inject(TokenService);
     readonly router = inject(Router);
     readonly translateService = inject(TranslateService);
     readonly shareableService = inject(ShareableService);
 
     apartmentsPage$: Observable<Page<Apartment>> = this.select((state) => state.page);
-
     loading$: Observable<boolean> = this.select((state) => state.loading);
     error$: Observable<ApiError | null> = this.select((state) => state.error);
     paginationPage$: Observable<number> = this.select((state) => state.paginationPage);
     paginationSize$: Observable<number> = this.select((state) => state.paginationSize);
     paginationSort$: Observable<string> = this.select((state) => state.paginationSort);
-
     filterChip$: Observable<Chip | null> = this.select((state) => state.filterChip);
     filterTitle$: Observable<string | null> = this.select((state) => state.filterTitle);
-
     selectedDetailPage$: Observable<ApartmentDetail | null> = this.select((state) => state.selectedDetailPage);
-
-    activeDetailUrl$: Observable<string | null> = this.select((state) => state.activeDetailUrl);
-
+    activeMenuUrl$: Observable<string | null> = this.select((state) => state.activeMenuUrl);
+    activePanelUrl$: Observable<string | null> = this.select((state) => state.activePanelUrl);
     header$: Observable<Header | null> = this.select((state) => state.header);
+    shrinkMenu$: Observable<boolean> = this.select((state) => state.shrinkMenu);
 
-    loadHeader$: Observable<boolean> = this.select((state) => state.loadHeader);
+    selectedIso$: Observable<string|null> = this.select((state) => state.selectedIso);
 
+    footerVisible$: Observable<boolean> = this.select((state) => state.footerVisible);
+
+
+    menuPanelVisible$: Observable<boolean> = this.select(
+        this.selectedDetailPage$,
+        (detail) => {
+            if (!detail?.menu.hideMenuPanelIfOne) {
+                return true;
+            } else {
+                if (detail?.menu?.panels?.length ? detail?.menu?.panels?.length < 2 : false) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    );
+
+
+    activeMenu$: Observable<ActiveMenu> = this.select(
+        this.header$,
+        this.activeMenuUrl$,
+        this.activePanelUrl$,
+        (header, menu, panel) => {
+
+            if (menu) {
+                return {activeMenuUrl: menu, activePanelUrl: panel} as ActiveMenu;
+            } else {
+                return {activeMenuUrl: header?.activeDetailUrl, activePanelUrl: header?.activePanelUrl} as ActiveMenu;
+            }
+        }
+    );
 
     columns$: Observable<number> = this.select(
         this.selectedDetailPage$,
@@ -113,6 +154,97 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 return page?.columns;
             } else {
                 return 1;
+            }
+        }
+    );
+
+    hideMenuPanelIfOne$: Observable<boolean> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.menu.hideMenuPanelIfOne) {
+                return page?.menu.hideMenuPanelIfOne;
+            } else {
+                return false;
+            }
+        }
+    );
+
+
+    disableAddingNewPanels$: Observable<boolean> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+
+            return !(page?.menu?.panels?.length ? page?.menu?.panels?.length > 5 : true);
+
+        }
+    );
+
+    // onlyOne(menus: Menu[] | undefined) {
+    //     if (menus) {
+    //         if (menus.length) {
+    //             if (menus.length < 2) {
+    //                 return menus[0].panels.length < 2;
+    //             } else {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+
+    panelOn$: Observable<boolean> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.menu.panelOn) {
+                return page?.menu.panelOn;
+            } else {
+                return false;
+            }
+        }
+    );
+
+    side$: Observable<Side> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.menu.side) {
+                return page?.menu.side;
+            } else {
+                return Side.LEFT;
+            }
+        }
+    );
+
+    layout$: Observable<Layout> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.menu.layout) {
+                return page?.menu.layout;
+            } else {
+                return Layout.FULL;
+            }
+        }
+    );
+
+    cornerRadius$: Observable<number> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.cornerRadius) {
+                return page?.cornerRadius;
+            } else {
+                return 32;
+            }
+        }
+    );
+
+    cornerRadiusPanel$: Observable<number> = this.select(
+        this.selectedDetailPage$,
+        (page) => {
+            if (page && page.cornerRadiusPanel) {
+                return page?.cornerRadiusPanel;
+            } else {
+
+                console.log("cornerRadiusPanel$");
+                return 32;
             }
         }
     );
@@ -151,31 +283,79 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         }
     );
 
-
-    /*    isHostAdriaticSun$: Observable<boolean> = this.select(
-            this.header$,
-            page => {
-                return page?.host.toUpperCase() === Hosts.ADRIATICSUN_EU;
+    backgroundColorSummer$: Observable<string> = this.select(
+        this.selectedDetailPage$,
+        this.header$,
+        (detail, header) => {
+            if (detail?.backgroundColorOn) {
+                return header?.colors.primaryColor ? header?.colors.primaryColor : "";
+            } else {
+                return "";
             }
-        );
+        }
+    );
 
-        isHostDemaApartments$: Observable<boolean> = this.select(
-            this.header$,
-            page => {
-                return page?.host.toUpperCase() === Hosts.DEMA_APARTMENTS;
+    backgroundColorPanel$: Observable<string> = this.select(
+        this.selectedDetailPage$,
+        this.header$,
+        (detail, header) => {
+            if (detail?.backgroundColorOn) {
+                return header?.colors.primaryColor ? header?.colors.primaryColor : "";
+            } else {
+                return "";
             }
-        );
+        }
+    );
 
-        isHostInfoDema$: Observable<boolean> = this.select(
-            this.header$,
-            page => {
-                return page?.host.toUpperCase() === Hosts.INFO_DEMA_EU;
+    actionsBorderColorSummer$: Observable<string> = this.select(
+        this.backgroundColorSummer$,
+        this.header$,
+        (color, header) => {
+            if (header?.colors?.primaryColor && header?.colors?.secondaryColor) {
+                console.log("actionsBorderColorSummer$ color", color);
+               console.log("actionsBorderColorSummer$", color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor)
+                return color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor;
+            } else {
+                console.log("actionsBorderColorSummer no");
+                return "";
             }
-        );*/
+        }
+    );
 
-    //   this.isHostAdriaticSun = data?.host === Hosts.ADRIATICSUN_EU
+    actionsBorderColorPanel$: Observable<string> = this.select(
+        this.backgroundColorPanel$,
+        this.header$,
+        (color, header) => {
+            if (header?.colors?.primaryColor && header?.colors?.secondaryColor) {
+                return color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor;
+            } else {
+                return "";
+            }
+        }
+    );
 
-    loadApartmentEffect = this.effect(
+    stateLayout$: Observable<LayoutState | undefined> = this.select(
+        this.side$,
+        this.layout$,
+        this.hideMenuPanelIfOne$,
+        this.panelOn$,
+        this.shrinkMenu$,
+        (side, layout, hideMenuPanelOn, panelOn, shrinkedMenu) => {
+
+            const sN: number = side === Side.LEFT ? 0 : 1;
+            const lN: number = layout === Layout.CENTER ? 0 : 1;
+            const hN: number = hideMenuPanelOn ? 1 : 0;
+            const pN: number = panelOn ? 1 : 0;
+            const shN: number = shrinkedMenu ? 1 : 0;
+
+            const key = sN + "," + lN + "," + hN + "," + pN + "," + shN;
+
+            return layoutMap.get(key);
+        }
+    );
+
+
+    loadApartmentsByFilterEffect = this.effect(
         (criteria$: Observable<ApartmentCriteria>) => criteria$.pipe(
             tap(() => this.patchState({loading: true})),
             switchMap(
@@ -193,35 +373,25 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     );
 
     readonly loadDetailByRouteLabelsEffect = this.effect(
-        (activeDetailUrl$: Observable<string | null>) => activeDetailUrl$.pipe(
+        (activeMenu$: Observable<ActiveMenu | null>) => activeMenu$.pipe(
             withLatestFrom(
                 this.header$,
-                this.loadHeader$,
+                //   this.loadHeader$,
             ),
-            tap(([activeDetailUrl, header, loadHeader]) => {
-                //  this.patchState({loading: true});
-                console.log("(effect) loadDetailByRouteLabelsEffect activeDetailUrl", activeDetailUrl);
+            tap(([activeMenu, header]) => {
+                console.log("(effect) loadDetailByRouteLabelsEffect activeDetailUrl", activeMenu);
                 console.log("(effect) loadDetailByRouteLabelsEffect header", header);
-                console.log("(effect) loadDetailByRouteLabelsEffect loadHeader", loadHeader);
-                console.log("(effect) loadDetailByRouteLabelsEffect filter", !(!!header && header?.detail.find(a => a.detailUrl !== activeDetailUrl)));
-
             }),
-         //   filter(([activeDetailUrl, header, loadHeader]) => !(!!header && header?.detail.find(a => a.detailUrl !== activeDetailUrl))),
-            tap(([activeDetailUrl, header, loadHeader]) => {
-                //  this.patchState({loading: true});
-                console.log("(effect) loadDetailByRouteLabelsEffect PROŠO");
-
-            }),
-            switchMap(([activeDetailUrl, header, loadHeader]) =>
-                this.service.fetchDetailByRouteLabels(header, activeDetailUrl)
+            switchMap(([activeMenu, header]) =>
+                this.service.fetchDetailByRouteLabels(header, activeMenu?.activeMenuUrl, activeMenu?.activePanelUrl)
                     .pipe(
                         tapResponse({
                             next: (response: ApartmentDetail | null) => {
                                 this.patchState({selectedDetailPage: response})
-                                if (header?.host && loadHeader) {
-                                    this.loadHeaderByHost(header.host);
-                                    this.setLoadHeader(false);
-                                }
+                                // if (loadHeader) {
+                                //     this.loadHeaderByHost();
+                                //    // this.setLoadHeader(false);
+                                // }
                             },
                             error: (error: HttpErrorResponse) => this.patchState({error: error.error}),
                         }),
@@ -233,13 +403,18 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     );
 
     loadHeaderByHost = this.effect(
-        (host$: Observable<string>) => host$.pipe(
-            filter((host) => !!host),
-            switchMap((host) => this.service.fetchHeaderByHost(host)
+        _ => _.pipe(
+            withLatestFrom(
+                this.activeMenu$,
+            ),
+            tap(([_, activeMenu]) => {
+                console.log("(effect) loadHeaderByHost activeMenu", activeMenu);
+            }),
+            switchMap(([_, activeMenu]) => this.service.fetchHeader()
                 .pipe(
                     tapResponse({
                         next: (response: Header) => {
-                            console.log("loadHeaderByHost PATCH", response);
+                            //console.log("load Header By Host", response);
                             this.patchState({header: response});
                             //    this.loadDetailByRouteLabelsEffect(response);
                         },
@@ -257,7 +432,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 this.header$,
             ),
             switchMap(
-                ([_,header]) => this.service.myApartments(header?.host)
+                ([_, header]) => this.service.myApartments()
                     .pipe(
                         tapResponse({
                             next: (response: Page<Apartment>) => {
@@ -267,9 +442,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                                         a.customersDS = new MatTableDataSource(a.customers);
                                     }
                                 );
-
-                                console.log("transformed", response);
-
                                 this.patchState({page: response})
                             },
                             error: (error: HttpErrorResponse) => this.patchState({error: error.error}),
@@ -330,20 +502,15 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
 
     readonly deleteDetailEffect = this.effect(
         (detail$: Observable<ApartmentDetail>) => detail$.pipe(
-            withLatestFrom(
-                this.header$,
-            ),
-            tap(([detail, header]) => console.log("(effect) delete Detail, id", detail.id)),
+            tap((detail) => console.log("(effect) delete Detail, id", detail.id)),
             switchMap(
-                ([detail, header]) => this.service.deleteApartmentDetail(detail)
+                (detail) => this.service.deleteApartmentDetail(detail)
                     .pipe(
                         tap({
                             next: (response) => {
-                                if (header?.host) {
-                                    this.patchState({activeDetailUrl: null});
-                                    this.loadHeaderByHost(header.host);
-                                    this.router.navigate(['/']);
-                                }
+                                // this.patchState({activeMenuUrl: null});
+                                this.loadHeaderByHost();
+                                // this.router.navigate(['/']);
 
                                 //this.router.navigate(['/']);
                                 //     this.patchState({activeDetailUrl: null});
@@ -422,14 +589,20 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         (detail$: Observable<Partial<ApartmentDetail>>) => detail$.pipe(
             tap(() => console.log("(effect) create Detail")),
             switchMap(
-                (detail) => this.service.createApartmentDetail(detail)
+                (detail) => this.service.createDetail(detail)
                     .pipe(
                         tap({
                             next: (response) => {
-                                //this.router.navigate([response.titleUrl]);
-                                console.log("set new active detail", response.titleUrl);
-                                //  this.patchState({activeDetailUrl: response.titleUrl});
-                                this.router.navigate([response.titleUrl], {queryParams: {loadHeader: true}});
+                                this.patchState({selectedDetailPage: response.detail});
+                                const menuUrl = response.detail.menu.menuUrl ? response.detail.menu.menuUrl : response.header.activeDetailUrl;
+                                const panelUrl = response.detail.panel.panelUrl ? response.detail.panel.panelUrl : response.header.activePanelUrl;
+                                const header: Header = {
+                                    ...response.header,
+                                    activeDetailUrl: menuUrl,
+                                    activePanelUrl: panelUrl,
+                                }
+                                this.patchState({header: header});
+                                this.router.navigate([menuUrl, panelUrl]);
                             },
                             error: (error) => this.patchState({error: error.error}),
                         }),
@@ -441,24 +614,57 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         ));
 
 
-    readonly updateApartmentDetailEffect = this.effect(
+    readonly updateDetailEffect = this.effect(
         (detail$: Observable<Partial<ApartmentDetail>>) => detail$.pipe(
             tap(() => console.log("(effect) update Detail")),
             withLatestFrom(
-                this.activeDetailUrl$
+                this.activeMenu$
             ),
             switchMap(
-                ([detail, active]) => this.service.updateApartmentDetail(detail)
+                ([detail, activeMenu]) => this.service.updateDetail(detail)
                     .pipe(
                         tap({
                             next: (response) => {
-                                if (active === response.titleUrl) {
-                                    // this.patchState({selectedDetailPage: response});
+                                this.patchState({selectedDetailPage: response.detail});
+                                const menuUrl = response.detail.menu.menuUrl ? response.detail.menu.menuUrl : response.header.activeDetailUrl;
+                                const panelUrl = response.detail.panel.panelUrl ? response.detail.panel.panelUrl : response.header.activePanelUrl;
+                                const header: Header = {
+                                    ...response.header,
+                                    activeDetailUrl: menuUrl,
+                                    activePanelUrl: panelUrl,
+                                }
+                                this.patchState({header: header});
+                                this.router.navigate([menuUrl, panelUrl]);
+                            },
+                            error: (error) => this.patchState({error: error.error}),
+                        }),
+                        catchError(() => EMPTY),
+                        finalize(() => {
+                            },
+                        )),
+            ),
+        ));
+
+
+    readonly updateMenuEffect = this.effect(
+        (detail$: Observable<Partial<Menu>>) => detail$.pipe(
+            tap(() => console.log("(effect) update Menu")),
+            withLatestFrom(
+                this.activeMenu$
+            ),
+            switchMap(
+                ([menu, activeMenu]) => this.service.updateMenu(menu)
+                    .pipe(
+                        tap({
+                            next: (response) => {
+                                if (activeMenu.activeMenuUrl === response.menuUrl) {
+                                    this.loadHeaderByHost();
+                                    // this.patchState({header: response});
                                     // this.patchState({activeDetailUrl: response.titleUrl});
                                     //this.router.navigate([response.titleUrl]);
-                                    this.loadDetailByRouteLabelsEffect(response.titleUrl);
+                                    // this.loadDetailByRouteLabelsEffect(response.menuUrl);
                                 } else {
-                                    this.router.navigate([response.titleUrl], {queryParams: {loadHeader: true}});
+                                    this.router.navigate([response.menuUrl], {queryParams: {loadHeader: true}});
                                 }
                             },
                             error: (error) => this.patchState({error: error.error}),
@@ -469,6 +675,20 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                         )),
             ),
         ));
+
+    readonly updateUserRoleEffect = this.effect((params$: Observable<{ userId: number; role: string }>) => params$.pipe(
+        switchMap(({userId, role}) => this.service.updateUsersRole(userId, role).pipe(
+            tapResponse(
+                () => console.log("Role updated"),
+                (error: HttpErrorResponse) =>
+                    this.patchState({error: error.error}),
+            ),
+            catchError(() => EMPTY),
+            finalize(() => {
+                },
+            )),
+        ),
+    ));
 
 
     readonly deleteApartmentByIdEffect = this.effect(
@@ -486,21 +706,16 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 ))
     );
 
-
     setHeader(header: Header) {
         console.log("Header je setan", header);
         this.patchState({header: header});
     }
 
-    setLoadHeader(load: boolean) {
-        console.log("LoadHeader je setan", load);
-        this.patchState({loadHeader: load});
-    }
-
     selectIso(country: string) {
         console.log("ISO selected", country);
-        this.patchState({selectedIso: country});
         this.translateService.use(country);
+        this.patchState({selectedIso: country});
+        this.shareableService.setSelectedIso(country);
     }
 
     loadApartments(chip: Chip | null = null,
@@ -509,12 +724,12 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                    pageIndex: number = 0,
                    pageSize: number = 20) {
 
-        console.log("-------------loadApartments");
-        console.log("chip", chip);
-        console.log("title", title);
-        console.log("sortDirection", sortDirection);
-        console.log("pageIndex", pageIndex);
-        console.log("pageSize", pageSize);
+        // console.log("-------------loadApartments");
+        // console.log("chip", chip);
+        // console.log("title", title);
+        // console.log("sortDirection", sortDirection);
+        // console.log("pageIndex", pageIndex);
+        // console.log("pageSize", pageSize);
 
         this.patchState({
             filterChip: chip,
@@ -525,17 +740,12 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         });
     }
 
-    setPage(label: string) {
-        console.log("PAGE JE SETTAN trigger now")
-        this.patchState({
-            activeDetailUrl: label
-            //     selectedDetailPageLabel: label
-        });
+    setActiveMenuAndPanel(menu: string, panel: string) {
+        this.patchState({activeMenuUrl: menu, activePanelUrl: panel});
     }
 
-    setDetail(detail: string) {
-        console.log("activeDetailUrl JE SETTAN trigger now")
-        this.patchState({activeDetailUrl: detail});
+    shrinkMenu(shrinkMenu: boolean) {
+        this.patchState({shrinkMenu: shrinkMenu});
     }
 
     constructor() {

@@ -1,0 +1,16 @@
+<nav aria-label="Breadcrumb">
+    <ul>
+        <li>
+            <a [routerLink]="'/'">Home</a><span>></span>
+        </li>
+        @for (breadcrumb of breadcrumbs; track breadcrumb; let last = $last) {
+            <li>
+                <a
+                        [routerLink]="breadcrumb.path"
+                        routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: breadcrumb.exact ?? true }"
+                        ariaCurrentWhenActive="page">{{ breadcrumb.label }}</a>@if (!last) {<span>></span>}
+            </li>
+        }
+    </ul>
+</nav>

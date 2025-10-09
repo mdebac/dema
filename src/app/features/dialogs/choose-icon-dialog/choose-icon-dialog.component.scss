@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+:host {
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+}
+
+.dashboard-card {
+  position: relative;
+  margin: 15px;
+  background-color: $primary-color;
+  overflow-y: auto;
+  color: $secondary-color;
+  //scrollbar-color: $secondary-color $primary-color;
+}
+
+.dashboard-card mat-card-content {
+ display: flex;
+
+}

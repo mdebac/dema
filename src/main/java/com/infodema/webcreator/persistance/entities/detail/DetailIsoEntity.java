@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,10 +15,14 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@EqualsAndHashCode
 @Data
 public class DetailIsoEntity {
 
+    @EqualsAndHashCode.Exclude
     private String label;
+
+    @EqualsAndHashCode.Exclude
     private String title;
 
     @Column(nullable = false)

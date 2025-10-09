@@ -5,38 +5,47 @@
         header: header$,
         } as vm">
 
-<mat-card class="dashboard-card">
-    <mat-card-header>
+    <mat-grid-list cols="8" rowHeight="8:6" gutterSize="0px">
+        <mat-grid-tile class="main-tile" [colspan]="6" [rowspan]="5">
+            <mat-card class="dashboard-card">
+                <mat-card-header>
+                    <h2 class="button-container-left text">
+                        <div class="dashboard-title">
+                            <mat-icon class="button-container-left text icon-size-transform">dashboard</mat-icon>
+                            <p> {{ "my.dashboard" | translate }} </p>
+                        </div>
+                    </h2>
+                    @if (isAdmin || isManager && vm.header?.host === Hosts.DEMA_APARTMENTS){
+                        <div>
+                            <button (click)="createApartment()"
+                                    mat-fab extended>
+                                <mat-icon>add_circle</mat-icon>
+                                {{ "create.page" | translate }}
+                            </button>
+                        </div>
+                    }
+                </mat-card-header>
+                <mat-card-content>
+                    @if (isAdmin || isManager){
+                        <my-apartments-table
+                                [chip]="vm.chip"
+                                [title]="vm.title"
+                                [apartmentsCount]="vm.apartmentsCount"
+                        ></my-apartments-table>
+                    }
+                </mat-card-content>
+            </mat-card>
 
-        <h2 class="button-container-left text">
-            <div class="dashboard-title">
-                <mat-icon class="button-container-left text icon-size-transform">dashboard</mat-icon>
-                <p> {{ "my.dashboard" | translate }} </p>
-            </div>
-        </h2>
+        </mat-grid-tile>
+        <mat-grid-tile class="panel-tile" [colspan]="2" [rowspan]="5">
+<!--            <panel [loggedIn]="vm.isLoggedIn"-->
+<!--                   [cornerRadius]="vm.cornerRadius"-->
+<!--                   [selectedIso]="vm.selectedIso"-->
+<!--                   [activeDetail]="vm.activeDetail"-->
+<!--                   [header]="vm.header"-->
+<!--            ></panel>-->
+        </mat-grid-tile>
+    </mat-grid-list>
 
-        @if (isAdmin || isManager && vm.header?.host === Hosts.DEMA_APARTMENTS){
-            <div>
-                <button (click)="createApartment()"
-                        mat-fab extended>
-                    <mat-icon>add_circle</mat-icon>
-                    {{ "create.page" | translate }}
-                </button>
-            </div>
-        }
-
-
-    </mat-card-header>
-    <mat-card-content>
-
-
-            <my-apartments-table
-                    [chip]="vm.chip"
-                    [title]="vm.title"
-                    [apartmentsCount]="vm.apartmentsCount"
-            ></my-apartments-table>
-
-    </mat-card-content>
-</mat-card>
 
 </ng-container>

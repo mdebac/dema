@@ -10,9 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,6 @@ public class ItemMapper extends AbstractMapper {
     public Set<ItemIso> toDomainItemIso(Set<ItemIsoEntity> entities) {
         return convertCollection(entities, this::toDomainItemIso);
     }
-
     public Set<ItemIsoEntity> toEntityItemIso(Set<ItemIso> entities) {
         return convertCollection(entities, this::toEntityItemIso);
     }
@@ -37,11 +37,12 @@ public class ItemMapper extends AbstractMapper {
                 .id(entity.getId())
                 .rowSpan(entity.getRowSpan())
                 .colSpan(entity.getColSpan())
+                .orderNum(entity.getOrderNum())
                 .cornerRadius(entity.getCornerRadius())
                 .backgroundColor(entity.getBackgroundColor())
                 .minHeight(entity.getMinHeight())
                 .iso(toDomainItemIso(entity.getIso()))
-                .elevation(entity.getElevation())
+                .shadowColor(entity.getShadowColor())
                 .url(entity.getUrl())
                 .chip(entity.getChip())
                 .image(entity.getContent() != null ? entity.getContent() : null)
@@ -63,11 +64,12 @@ public class ItemMapper extends AbstractMapper {
         newItemEntity.setChip(item.getChip());
         newItemEntity.setId(item.getId());
         newItemEntity.setRowSpan(item.getRowSpan());
+        newItemEntity.setOrderNum(item.getOrderNum());
         newItemEntity.setColSpan(item.getColSpan());
         newItemEntity.setCornerRadius(item.getCornerRadius());
         newItemEntity.setBackgroundColor(item.getBackgroundColor());
         newItemEntity.setMinHeight(item.getMinHeight());
-        newItemEntity.setElevation(item.getElevation());
+        newItemEntity.setShadowColor(item.getShadowColor());
         newItemEntity.setIso(toEntityItemIso(item.getIso()));
         newItemEntity.setUrl(item.getUrl());
         newItemEntity.setCreatedOn(item.getCreatedOn());
@@ -86,7 +88,7 @@ public class ItemMapper extends AbstractMapper {
             entity.setColSpan(item.getColSpan());
             entity.setCornerRadius(item.getCornerRadius());
             entity.setBackgroundColor(item.getBackgroundColor());
-            entity.setElevation(item.getElevation());
+            entity.setShadowColor(item.getShadowColor());
             entity.setMinHeight(item.getMinHeight());
         }
         if(item.getChip() != Chip.SETTINGS) {

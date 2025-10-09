@@ -1,15 +1,15 @@
 package com.infodema.webcreator.domain.mappers;
 
+import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.domain.enums.Country;
+import com.infodema.webcreator.persistance.entities.detail.DetailIsoEntity;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.domain.core.MainIso;
 import com.infodema.webcreator.persistance.entities.main.MainIsoEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -17,7 +17,7 @@ import java.util.Set;
 public class MainMapper extends AbstractMapper {
 
     private final DetailMapper detailMapper;
-
+    private final MenuMapper menuMapper;
 
     public Set<MainIso> toDomainMainIso(Set<MainIsoEntity> entities) {
         return convertCollection(entities, this::toDomainMainIso);
@@ -26,6 +26,18 @@ public class MainMapper extends AbstractMapper {
     public Set<MainIsoEntity> toEntityMainIso(Set<MainIso> entities) {
         return convertCollection(entities, this::toEntityMainIso);
     }
+
+ /*
+   public Map<Country,MainIsoEntity> toEntityMainIso(Set<MainIso> entities) {
+        return entities.stream()
+                .collect(
+                        Collectors
+                                .toMap( country -> Country.fromCode(country.getIso()), this::toEntityMainIso));
+    }
+    public Set<MainIso> toDomainMainIso(Map<Country,MainIsoEntity> mainIsoEntityMap) {
+        return mainIsoEntityMap.values().stream().map(this::toDomainMainIso).collect(Collectors.toSet());
+    }
+  */
 
     public Main toDomain(MainEntity entity) {
         return Main.builder()
@@ -51,7 +63,7 @@ public class MainMapper extends AbstractMapper {
                 .price(entity.getPrice())
               //  .usedCountries(Arrays.stream(entity.getLanguages().split(",")).toList())
           //        .comments(ApartmentCommentMapper.toDomain(entity.getComments()))
-                .details(detailMapper.toDomain(entity.getDetails()))
+                .menus(menuMapper.toDomain(entity.getMenus()))
                 .iso(toDomainMainIso(entity.getIso()))
                 .build();
     }
@@ -79,7 +91,7 @@ public class MainMapper extends AbstractMapper {
                 .createdBy(main.getCreatedBy())
                 .modifiedOn(main.getModifiedOn())
                 .modifiedBy(main.getModifiedBy())
-                .details(detailMapper.toEntity(main.getDetails()))
+               // .details(detailMapper.toEntity(main.getDetails()))
                 .build();
     }
 

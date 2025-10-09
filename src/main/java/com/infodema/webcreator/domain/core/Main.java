@@ -3,10 +3,15 @@ package com.infodema.webcreator.domain.core;
 
 import com.infodema.webcreator.domain.mappers.AbstractAuditModel;
 import com.infodema.webcreator.persistance.entities.security.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.domain.Page;
+import lombok.ToString;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +30,7 @@ public class Main extends AbstractAuditModel {
     private BigDecimal price;
     private byte[] image;
     private List<Comment> comments;
-    private List<Detail>  details;
+    private List<Menu>  menus;
     private Set<MainIso> iso;
 
     private String primaryColor;

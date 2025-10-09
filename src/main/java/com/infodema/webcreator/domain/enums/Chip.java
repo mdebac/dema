@@ -8,4 +8,5 @@ public enum Chip {
    FORM,
    TABLE,
    SETTINGS,
+   SHOP
 }

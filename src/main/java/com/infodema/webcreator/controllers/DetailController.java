@@ -1,5 +1,6 @@
 package com.infodema.webcreator.controllers;
 
+import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.DetailsService;
 import com.infodema.webcreator.domain.core.Detail;
 import jakarta.validation.Valid;
@@ -20,16 +21,16 @@ public class DetailController {
 
     private final DetailsService detailsService;
 
-
     @GetMapping(value = "/find/details")
     public ResponseEntity<Detail> fetchDetailPage(
-            @RequestParam("host") String host,
-            @RequestParam("detailUrl") String detailUrl
+            @RequestParam("menuUrl") String menuUrl,
+            @RequestParam("panelUrl") String panelUrl,
+            @RequestHeader("Host") String host
     ) {
-        log.debug("fetchDetailPage by host={}, detailUrl={}", host, detailUrl);
+        log.info("fetchDetailPage by menuUrl={}, panelUrl={}", menuUrl, panelUrl);
 
-     return ResponseEntity.status(HttpStatus.OK)
-           .body( detailsService.findDetailByUrlLabels(host, detailUrl));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(detailsService.findDetailByUrlLabels(UtilityHelper.resolveHostForDevelopment(host), menuUrl, panelUrl));
     }
 
     @GetMapping(value = "/detail/{detailId}")
@@ -39,38 +40,39 @@ public class DetailController {
         log.debug("fetchDetailByDetailId by detailId={}", detailId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body( detailsService.findDetailByDetailId(detailId));
+                .body(detailsService.findDetailByDetailId(detailId));
     }
 
-
-    @PostMapping("/{apartmentId}/details")
-    public ResponseEntity<Detail> add(
-            @PathVariable("apartmentId") Long apartmentId, @Valid @RequestBody Detail detail) {
-        Detail model =
-                detailsService.addToMain(apartmentId, detail);
-
+    @PostMapping("/details")
+    public ResponseEntity<Detail> create(
+            @Valid @RequestBody Detail payload
+    ) {
+        Detail detail = detailsService.create(payload);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(model.getId())
+                .buildAndExpand(detail.getId())
                 .toUri();
-
-        return ResponseEntity.created(location).body(model);
+        return ResponseEntity.created(location).body(detail);
     }
 
-    @DeleteMapping("/{apartmentId}/details/{id}")
-    public ResponseEntity<Void> remove(@PathVariable("apartmentId") Long mainId, @PathVariable("id") Long id) {
 
-        detailsService.removeFromMain(mainId, id);
+    @DeleteMapping("/{mainId}/{menuId}/{panelId}/details/{detailId}")
+    public ResponseEntity<Void> remove(
+            @PathVariable("mainId") Long mainId,
+            @PathVariable("menuId") Long menuId,
+            @PathVariable("panelId") Long panelId,
+            @PathVariable("detailId") Long detailId) {
+        detailsService.removeDetail(mainId, menuId, panelId, detailId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{apartmentId}/details/{id}")
+    @PutMapping("/details/{id}")
     public Detail update(
-            @PathVariable("apartmentId") Long apartmentId,
             @PathVariable("id") Long id,
             @Valid @RequestBody Detail detail) {
 
-        return detailsService.updateInMain(apartmentId, id, detail);
+        return detailsService.updateDetail(id, detail);
     }
+
 
 }

@@ -9,10 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String username);
+
+    Optional<User> findByEmailAndHost(String email, String host);
+
+    Optional<User> findById(Long id);
 
     List<User> findByHost(String host);
 
     Page<User> findAll(Pageable pageable);
 
+    void deleteByHost(String host);
 }

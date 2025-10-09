@@ -13,11 +13,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Header {
-    private List<HeaderDetail> detail;
+    private Long id;
+    private List<Menu> menus;
     private List<String> languages;
     private byte[] iconImage;
     private String name;
     private String activeDetailUrl;
+    private String activePanelUrl;
     private String host;
     private Colors colors;
     private Set<MainIso> iso;

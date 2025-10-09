@@ -2,14 +2,15 @@ import {Component, inject, Input} from '@angular/core';
 import {MatButton, MatFabButton} from '@angular/material/button';
 import {MatMenuTrigger, MatMenu} from '@angular/material/menu';
 import {MatIcon} from "@angular/material/icon";
-import {RouterLinkActive} from "@angular/router";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 import {AuthStore} from "../../services/authentication/auth-store";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'user-buttons',
     templateUrl: './user-buttons.component.html',
     styleUrl: './user-buttons.component.scss',
-    imports: [ MatButton, MatMenuTrigger,  MatMenu, MatIcon, MatFabButton,  RouterLinkActive]
+    imports: [MatButton, MatMenuTrigger, MatMenu, MatIcon, MatFabButton, RouterLinkActive, RouterLink, TranslatePipe]
 })
 export class UserButtonsComponent {
 

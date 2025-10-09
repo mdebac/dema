@@ -6,6 +6,7 @@ import {AuthenticationRequest} from "../../domain/authentication-request";
 import {AuthenticationService} from "../../services/authentication.service";
 import {TokenService} from "../../services/token.service";
 import {AuthStore} from "../../services/authentication/auth-store";
+import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
 
 @Component({
     selector: 'app-login',
@@ -15,6 +16,10 @@ import {AuthStore} from "../../services/authentication/auth-store";
         NgIf,
         NgFor,
         FormsModule,
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardFooter,
     ],
 })
 export class LoginComponent {

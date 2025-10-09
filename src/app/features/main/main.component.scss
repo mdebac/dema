@@ -6,3 +6,82 @@ $secondary-color: var(--secondary-color);
 .text{
   color: $primary-color;
 }
+.mytile{
+  display: flex;
+  flex-direction: row;
+}
+
+
+.main-tile {
+  padding: 0;
+  margin: 0;
+  background-color: $secondary-color;
+}
+
+.menu-tile {
+  padding: 0;
+  margin: 0;
+}
+//.panel-tile {
+//  padding: 0;
+//  margin: 0;
+//  background-color: $secondary-color;
+//}
+//.menu-tile {
+//  padding: 0;
+//  margin: 0;
+//  background-color: $secondary-color;
+//}
+//.summer-tile {
+//  padding: 0;
+//  margin: 0;
+//  background-color: $secondary-color;
+//}
+
+mat-grid-tile {
+  transition: all 0.3s ease-in-out;
+  background-color: $primary-color;
+  padding: 0;
+  margin: 0;
+
+}
+
+
+.mat-grid-tile-content{
+  // background-color: darkcyan;
+  //  border-radius: 16px;
+  padding: 0;
+  margin: 0;
+  // border: darkcyan solid 1px;
+  background-color: $secondary-color;
+}
+
+.content-panel-tile-right{
+ // background-color: darkcyan;
+//  border-radius: 16px;
+  padding: 0;
+  margin: 0;
+ // border: darkcyan solid 1px;
+  background-color: $secondary-color;
+}
+.content-panel-tile-left{
+ // background-color: darkcyan;
+ // border-radius: 16px;
+  padding: 0;
+  margin: 0;
+//  border: darkcyan solid 1px;
+  background-color: $secondary-color;
+}
+
+.mat-grid-tile.gap-tile{
+  background-color: $secondary-color;
+}
+.menu-tile{
+// background-color: orange;
+  padding: 0;
+  margin: 0;
+
+}
+.textic{
+  color: red;
+}

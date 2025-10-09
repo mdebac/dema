@@ -1,19 +1,27 @@
 package com.infodema.webcreator.services;
 
 import com.infodema.webcreator.domain.core.*;
+import com.infodema.webcreator.domain.enums.Country;
+import com.infodema.webcreator.domain.enums.Layout;
 import com.infodema.webcreator.domain.enums.Roles;
-import com.infodema.webcreator.domain.mappers.CustomerMapper;
-import com.infodema.webcreator.domain.mappers.DetailMapper;
-import com.infodema.webcreator.domain.mappers.MainCustomerMapper;
-import com.infodema.webcreator.domain.mappers.MainMapper;
+import com.infodema.webcreator.domain.enums.Side;
+import com.infodema.webcreator.domain.mappers.*;
 import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.domain.utility.SecurityUtils;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
+import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
+import com.infodema.webcreator.persistance.entities.menu.MenuIsoEntity;
+import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
+import com.infodema.webcreator.persistance.entities.panel.PanelIsoEntity;
 import com.infodema.webcreator.persistance.repositories.DetailRepository;
 import com.infodema.webcreator.persistance.repositories.MainRepository;
 import com.infodema.webcreator.domain.projections.MainProjection;
 import com.infodema.webcreator.persistance.entities.security.User;
+import com.infodema.webcreator.persistance.repositories.MenuRepository;
+import com.infodema.webcreator.persistance.repositories.PanelRepository;
+import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
 import com.infodema.webcreator.persistance.repositories.security.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,9 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,20 +40,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MainService {
 
+    private final RoleRepository roleRepository;
     private final MainRepository mainRepository;
+    private final MenuRepository menuRepository;
     private final DetailRepository detailRepository;
+    private final PanelRepository panelRepository;
     private final MainMapper mainMapper;
     private final AuditorAware<User> auditorAware;
-    private final DetailMapper detailMapper;
     private final DetailsService detailsService;
     private final UserRepository userRepository;
     private final CustomerMapper customerMapper;
     private final MainCustomerMapper mainCustomerMapper;
+    private final PanelMapper panelMapper;
+    private final MenuMapper menuMapper;
 
+    @Transactional(readOnly = true)
     public Page<MainProjection> findMains(MainCriteria criteria, Pageable pageable) {
         return mainRepository.findMainsByCriteria(criteria, pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Main> findCustomers(String host, Pageable mainPageable) {
 
         String role = String.join(",", SecurityUtils.getUserRoles());
@@ -55,58 +67,28 @@ public class MainService {
         if (role.equals(Roles.ADMIN.name())) {
             Page<Main> allEntities =  mainCustomerMapper.toDomain(mainRepository.findAll(mainPageable));
             allEntities.getContent().forEach(main -> {
-                main.setCustomers(customerMapper.toDomain(userRepository.findByHost(main.getHost())));
+                main.setCustomers(customerMapper.toDomain(userRepository.findByHost(main.getHost())).stream().filter(a-> !a.getRole().equals(Roles.ADMIN.name())).toList());
             });
             return allEntities;
         }
 
         if (role.equals(Roles.MANAGER.name())) {
             Main main = mainCustomerMapper.toDomain(mainRepository.findByHost(host).orElseThrow());
-            main.setCustomers(customerMapper.toDomain(userRepository.findByHost(host)));
+            main.setCustomers(customerMapper.toDomain(userRepository.findByHost(host)).stream().filter(a-> a.getRole().equals(Roles.USER.name())).toList());
             return new PageImpl<>(Collections.singletonList(main));
         }
 
-
-      /*
-           @PostMapping(
-            value = "/search",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<DecisionHeaderDto> searchDecisions(@RequestBody DecisionQuery query) {
-        Sort sort = query.getPageable() == null || query.getPageable().getSort().isEmpty()
-                ? Sort.by(Sort.Direction.DESC, DecisionQuery.SortType.DECISION_DATE.getField())
-                : Sort.by(
-                        query.getPageable().getDirection(),
-                        query.getPageable().getSort().stream()
-                                .map(DecisionQuery.SortType::getField)
-                                .toArray(String[]::new));
-
-        return decisionService
-                .search(
-                        query.getCriteria(),
-                        (query.getPageable() == null
-                                ? Pageable.unpaged()
-                                : PageRequest.of(
-                                        query.getPageable().getPage(),
-                                        query.getPageable().getSize(),
-                                        sort)))
-                .map(decisionMapperService::constructFrom);
-    }
-       userRepository.findCustomersByCriteria(
-                CustomerProjectionCriteria.builder()
-                        .role(String.join(",", SecurityUtils.getUserRoles()))
-                        .host(host)
-                        .build(),
-                pageable);*/
         return null;
     }
 
     @Transactional
-    public void deleteMain(Long id) {
-        detailRepository.deleteByMain_Id(id);
+    public void deleteMain(Long id, String host) {
+        userRepository.deleteByHost(host);
+        detailRepository.deleteByMenu_Id(id);
         mainRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Main findById(Long id) {
         return mainMapper.toDomain(mainRepository.findById(id).orElseThrow(() -> new RuntimeException("Main was not found with id [" + id + "]")));
     }
@@ -135,24 +117,64 @@ public class MainService {
                 });
             }
         }
-        Main savedMain = mainMapper.toDomain(mainRepository.save(entity));
+
+        MainEntity mainEntity = mainRepository.save(entity);
+        Main savedMain = mainMapper.toDomain(mainEntity);
 
         if (main.getId() == null) {
-            //create default detail
-            detailsService.addToMain(
-                    savedMain.getId(),
-                    Detail.builder()
-                            .host(savedMain.getHost())
-                            .mainId(savedMain.getId())
+
+           Set<MenuIsoEntity> menuIso = new HashSet<>();
+            menuIso.add(
+                    MenuIsoEntity.builder()
+                            .iso(Country.fromCode("GB-eng"))
+                            .title("title")
+                            .build()
+            );
+
+            Set<PanelIsoEntity> menuPanelIso = new HashSet<>();
+            menuPanelIso.add(
+                    PanelIsoEntity.builder()
+                            .iso(Country.fromCode("GB-eng"))
+                            .title("Panel title")
+                            .build()
+            );
+
+            MenuEntity menuEntity = menuRepository.save(
+                    MenuEntity.builder()
+                            .iso(menuIso)
                             .icon("favorite")
-                            .titleUrl("test")
+                            .side(Side.RIGHT)
+                            .layout(Layout.FULL)
+                            .hideMenuPanelIfOne(false)
+                            .panelOn(false)
+                            .main(mainEntity)
+                            .build()
+            );
+
+            PanelEntity panelEntity = panelRepository.save(
+                    PanelEntity.builder()
+                            .iso(menuPanelIso)
+                            .menu(menuEntity)
+                            .build()
+            );
+
+            detailsService.addDetail(
+                    menuEntity.getId(),
+                    panelEntity.getId(),
+                    Detail.builder()
+                           // .host(savedMain.getHost())
+                          //  .mainId(savedMain.getId())
                             .columns(1)
+                            .backgroundColorOn(true)
+                       //     .menuSide(menu.getMenuSide())
                             .show(false)
-                            .iso(Collections.singleton(DetailIso.builder()
+                            .iso(
+                                    Collections.singleton(DetailIso.builder()
                                     .iso("GB-eng")
                                     .label("Test")
                                     .title("Test title")
-                                    .build()))
+                                    .build())
+                            )
                             .build()
             );
         }
@@ -160,36 +182,44 @@ public class MainService {
         return savedMain;
     }
 
-
+    @Transactional(readOnly = true)
     public Header findHeaderByHost(String host) {
-
         MainEntity entity = mainRepository.findByHost(host).isPresent() ? mainRepository.findByHost(host).get() : null;
-
         if (entity == null) {
             return Header.builder().colors(Colors.builder().primaryColor("green").secondaryColor("white").build()).build();
         }
 
-        List<Detail> details = detailMapper.toDomain(entity.getDetails());
-
+        List<MenuEntity> menus = entity.getMenus();
+      //  List<MenuPanelItem> menuPanelItem =  panelMapper.toDomain(details.ge)).collect(Collectors.toList());
         return Header.builder()
+                .id(entity.getId())
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))
                 .languages(
                         entity.getIso().stream()
-                                .map(d -> d.getIso().getCountryCode())
+                                .map(a->a.getIso().getCountryCode())
                                 .collect(Collectors.toList())
                 )
-                .detail(
-                        details.stream()
-                                .sorted(Comparator.comparing(Detail::getId))
-                                .map(detail -> HeaderDetail.builder()
-                                        .iso(detail.getIso())
-                                        .detailUrl(detail.getTitleUrl())
-                                        .icon(detail.getIcon())
+                .menus(
+                        menus.stream()
+                                .sorted(Comparator.comparing(MenuEntity::getOrderNum))
+                                .map(menu -> Menu.builder()
+                                        .iso(menuMapper.toDomainMenuIso(menu.getIso()))
+                                        .menuUrl(menu.getMenuUrl())
+                                        .side(menu.getSide())
+                                        .layout(menu.getLayout())
+                                        .panelOn(menu.getPanelOn())
+                                        .hideMenuPanelIfOne(menu.getHideMenuPanelIfOne())
+                                        .mainId(menu.getMain().getId())
+                                        .orderNum(menu.getOrderNum())
+                                        .panels(panelMapper.toDomain(menu.getPanels()))
+                                        .icon(menu.getIcon())
                                         .build()
                                 )
                                 .collect(Collectors.toList())
                 )
-                .activeDetailUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getTitleUrl())
+                .activeDetailUrl(menus.get(0).getMenuUrl())
+                .activePanelUrl(menus.get(0).getPanels().get(0).getPanelUrl())
+              //  .activePanelUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getPanelUrl())
                 .host(entity.getHost())
                 .colors(Colors.builder()
                         .primaryColor(entity.getPrimaryColor())
@@ -208,8 +238,18 @@ public class MainService {
                 .iconImage(entity.getContent()).build();
     }
 
-    public Detail findDetailById(Long id) {
-        return detailMapper.toDomain(detailRepository.findById(id).orElseThrow(() -> new RuntimeException("Detail not found")));
+    @Transactional
+    public void updateUserRole(Long userId, String roleToSet) {
+        log.info("Updating Users {} Role {}", userId, roleToSet);
+
+        var role = roleRepository.findByName(roleToSet).orElseThrow(() -> new EntityNotFoundException("No role found with Name:" + roleToSet));
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("No user found with ID:" + userId));
+
+        user.getRoles().clear();
+        user.getRoles().add(role);
+
+        userRepository.save(user);
     }
+
 
 }

@@ -1,8 +1,13 @@
 package com.infodema.webcreator.domain.cv;
 
 import com.infodema.webcreator.domain.mappers.AbstractAuditModel;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import lombok.ToString;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
 import java.sql.Blob;
 

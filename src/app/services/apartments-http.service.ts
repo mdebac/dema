@@ -2,7 +2,7 @@
 /* eslint-disable */
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {catchError, Observable, of, tap, throwError} from 'rxjs';
+import {catchError, concatMap, Observable, of, tap, throwError} from 'rxjs';
 import {BaseService} from './base-service';
 import {ApiConfiguration} from './api-configuration';
 import {Header} from '../domain/header';
@@ -15,6 +15,9 @@ import {Util} from "../util/skip-nulls";
 import {ApartmentDetail} from "../domain/apartment-detail";
 import {ApartmentItem} from "../domain/apartment-item";
 import {Customer} from "../domain/customer";
+import {Menu} from "../domain/menu";
+import {map} from "rxjs/operators";
+import {DetailWithHeader} from "../domain/detail-with-header";
 
 @Injectable({providedIn: 'root'})
 export class ApartmentsHttpService extends BaseService {
@@ -27,34 +30,61 @@ export class ApartmentsHttpService extends BaseService {
         this.url = this.rootUrl;
     }
 
-    fetchDetailByRouteLabels(header: Header | null, detailUrl: string | null): Observable<ApartmentDetail | null> {
-
+    fetchDetailByRouteLabels(header: Header | null,
+                             detailUrl: string | null | undefined,
+                             panelUrl: string | null | undefined): Observable<ApartmentDetail | null> {
         let detail = "";
+        let panel = "";
+        console.log("--header", header);
+        console.log("--detailUrl", detailUrl);
 
         if (header) {
+            if (header.id) {
 
-            if (!(!!header && header?.detail.find(a => a.detailUrl !== detailUrl))) {
-                if (detailUrl) {
-                    detail = detailUrl;
-                } else {
-                    detail = header.activeDetailUrl;
+                if(detailUrl){
+
+                    const menu = header?.menus.find(a => a.menuUrl === detailUrl);
+                    if (menu) {
+                        console.log("--1");
+                        if (detailUrl) {
+                            detail = detailUrl;
+                            if (panelUrl && menu.panels.find(a => a.panelUrl === panelUrl)) {
+                                console.log("--2");
+                                panel = panelUrl;
+                            } else {
+                                console.log("--3 kad ne ulazi panelUrl, uzmi prvi iz menu panels");
+                                panel = menu.panels[0].panelUrl;
+                            }
+                        } else {
+                            console.log("--4");
+                            detail = header.activeDetailUrl;
+                            panel = header.activePanelUrl;
+                        }
+                    } else {
+                        console.log("--5");
+
+                        detail = header.activeDetailUrl;
+                        panel = header.activePanelUrl;
+                    }
+
+                }else{
+
+                    const menu = header?.menus.find(a => a.menuUrl === detailUrl);
+
                 }
+
             } else {
-                if (detailUrl) {
-                    return of(null);
-                } else {
-                    detail = header.detail[0].detailUrl;
-                }
+                console.log("--6");
+                detail = header.activeDetailUrl;
+                panel = header.activePanelUrl;
             }
 
             const url = this.url + '/find/details';
-            console.log('(http request) fetch DetailByRouteLabels URL', url, header.host);
-            console.log('(http request) fetch DetailByRouteLabels URL', url, detail);
-
+            console.log('(http request) fetch DetailByRouteLabels URL', url, detail, panel);
             // @ts-ignore
             return this.http
                 .get<ApartmentDetail>(url, {
-                    params: new HttpParams().set("host", header.host).set("detailUrl", detail)
+                    params: new HttpParams().set("menuUrl", detail).set("panelUrl", panel)
                 })
                 .pipe(
                     tap((res) => console.log('(http response) fetch DetailByRouteLabels', res)),
@@ -70,8 +100,8 @@ export class ApartmentsHttpService extends BaseService {
         }
     }
 
-    myCustomers(host: string | undefined): Observable<Page<Customer>> {
-        const url = this.url + '/customers/' + host;
+    myCustomers(): Observable<Page<Customer>> {
+        const url = this.url + '/customers';
         console.log('(http request) Customers URL ---' + url);
         // @ts-ignore
         return this.http
@@ -86,15 +116,14 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
-    myApartments(host: string | undefined): Observable<Page<Apartment>> {
-        const url = this.url + '/customers/' + host;
+    myApartments(): Observable<Page<Apartment>> {
+        const url = this.url + '/customers';
         console.log('(http request) Customers URL ---' + url);
         // @ts-ignore
         return this.http
             .get<Page<Apartment>>(url)
             .pipe(
                 tap((res) => console.log('(http response) Customers', res)),
-
                 catchError((err) => {
                     console.log("(http error) Customers", err);
                     return this.errorService.handleError(err);
@@ -108,12 +137,28 @@ export class ApartmentsHttpService extends BaseService {
         return this.http.delete(url)
             .pipe(
                 tap((response) => console.log('(http response) Apartment deleted')),
-                catchError((err) => this.errorService.handleError(err)),
+                catchError((err) => {
+                    console.log("(http error) delete Apartment", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
+    updateUsersRole(userId: number, role: string) {
+        const url = this.url + '/users/ ' + userId + ' /roles/' + role;
+        console.log('(http request) update UsersRole URL', url);
+        return this.http.get(url)
+            .pipe(
+                tap((response) => console.log('(http response)  update UsersRole')),
+                catchError((err) => {
+                    console.log("(http error) update UsersRole", err);
+                    return this.errorService.handleError(err);
+                }),
             );
     }
 
     deleteApartmentDetail(detail: ApartmentDetail) {
-        const url = this.url + '/' + detail.mainId + '/details/' + detail.id;
+        const url = this.url  + '/' + detail.menu.mainId +  '/' + detail.menu.id +  '/' + detail.panel.id + '/details/' + detail.id;
         console.log('(http request) delete Detail URL', url);
         return this.http.delete(url)
             .pipe(
@@ -132,11 +177,32 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
-    createApartmentDetail(detail: Partial<ApartmentDetail>): Observable<ApartmentDetail> {
-        const url = this.url + "/" + detail.mainId + "/details";
+    createDetail(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
+        const url = this.url + "/details";
+        const fetchHeader = this.fetchHeader();
         console.log('(http request) create Detail', detail, url);
         return this.http.post<ApartmentDetail>(url, detail).pipe(
             tap((response) => console.log('(http response) Detail created', response)),
+            concatMap(detail => {
+                return fetchHeader.pipe(
+                    map(h=> { return { detail: detail, header: h }})
+                );
+            }),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
+    updateDetail(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
+        const url = this.url + "/details/" + detail.id;
+        const fetchHeader = this.fetchHeader();
+        console.log('(http request) update detail service', detail);
+        return this.http.put<ApartmentDetail>(url, detail).pipe(
+            tap((response) => console.log('(http response) update detail service', response)),
+            concatMap(detail => {
+                return fetchHeader.pipe(
+                    map(h=> { return { detail: detail, header: h }})
+                );
+            }),
             catchError((err) => this.errorService.handleError(err)),
         );
     }
@@ -199,17 +265,18 @@ export class ApartmentsHttpService extends BaseService {
         );
     }
 
-    updateApartmentDetail(detail: Partial<ApartmentDetail>): Observable<ApartmentDetail> {
-        const url = this.url + "/" + detail.mainId + "/details/" + detail.id;
-        console.log('(http request) update detail service', detail);
-        return this.http.put<ApartmentDetail>(url, detail).pipe(
-            tap((response) => console.log('(http response) update detail service', response)),
+
+    updateMenu(menu: Partial<Menu>): Observable<Menu> {
+        const url = this.url + "/menu/" + menu.id;
+        console.log('(http request) update Menu', menu);
+        return this.http.put<Menu>(url, menu).pipe(
+            tap((response) => console.log('(http response) update Menu', response)),
             catchError((err) => this.errorService.handleError(err)),
         );
     }
 
-    fetchHeaderByHost(host: string): Observable<Header> {
-        const url = this.url + '/find/' + host + '/header';
+    fetchHeader(): Observable<Header> {
+        const url = this.url + '/find/header';
         console.log('(http request) fetch Header URL ---' + url);
         // @ts-ignore
         return this.http
@@ -222,6 +289,7 @@ export class ApartmentsHttpService extends BaseService {
                 }),
             );
     }
+
 
     fetchDetailById(detailId: number): Observable<ApartmentDetail> {
         const url = this.url + '/detail/' + detailId;

@@ -15,14 +15,14 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { NgIf, NgFor } from '@angular/common';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import {MatButton, MatFabButton} from '@angular/material/button';
 import { Chip } from "../../../domain/chip.enum";
 
 @Component({
     selector: 'item-dialog',
     templateUrl: './item-dialog.component.html',
     styleUrl: './item-dialog.component.scss',
-    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, MatButton, TranslatePipe]
+    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, MatButton, TranslatePipe, MatFabButton]
 })
 export class ItemDialogComponent implements OnDestroy {
   //store = inject(ApartmentStore);

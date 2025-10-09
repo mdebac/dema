@@ -5,14 +5,12 @@ import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
 import com.infodema.webcreator.domain.enums.Chip;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.HashSet;
 import java.util.Set;
 
-
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,10 +23,10 @@ public class ItemEntity extends BaseAuditEntity {
     private Integer rowSpan;
     private Integer colSpan;
     private Integer cornerRadius;
-    private Integer elevation;
     private Integer minHeight;
     private String backgroundColor;
-
+    private Integer orderNum;
+    private String shadowColor;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -38,12 +36,12 @@ public class ItemEntity extends BaseAuditEntity {
     @JoinColumn(name = "detail_id", nullable = false)
     private DetailEntity detail;
 
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "item_iso",
             joinColumns = @JoinColumn(name = "item_id", nullable = false)
     )
+    @Builder.Default
     private Set<ItemIsoEntity> iso = new HashSet<>();
 
     @SneakyThrows

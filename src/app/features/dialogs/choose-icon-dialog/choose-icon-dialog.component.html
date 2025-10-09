@@ -1,0 +1,21 @@
+<mat-card class="dashboard-card ">
+    <mat-card-content>
+        @for (icon of toChoose; track $index) {
+
+            <div>
+                <button mat-button (click)="selectIcon(icon)">
+                    <mat-icon>{{ icon }}</mat-icon>
+                </button>
+                @if (icon === 'close') {
+                    <div>
+                        No Icon
+                    </div>
+                }
+
+            </div>
+
+        }
+
+    </mat-card-content>
+</mat-card>
+

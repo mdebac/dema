@@ -101,8 +101,6 @@ $secondary-color: var(--secondary-color);
     width: 100%;
   }
 }
-
-
 input[type=file]::file-selector-button {
   cursor: pointer;
   border: 0;
@@ -117,11 +115,12 @@ input[type=file]::file-selector-button:hover {
 input{
   width: 70%;
 }
+
 .form{
   display: flex;
   flex-direction: row;
-
 }
+
 .dialog-right{
   flex-grow: 0.4;
   display: flex;
@@ -208,4 +207,13 @@ mat-expansion-panel-header.mat-expanded:focus {
 .languageSpace{
   display: flex;
   flex-direction: row;
+}
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border: 2px solid $secondary-color;
 }

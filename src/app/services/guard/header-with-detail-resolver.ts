@@ -4,19 +4,11 @@ import {ApartmentStore} from "../apartments-store.service";
 
 export const headerWithDetailResolver: ResolveFn<any> = (activatedRoute, state) => {
     const store = inject(ApartmentStore);
-    console.log("(header resolver with detail) param", activatedRoute.params['detail']);
-
-    if (activatedRoute.params['detail']) {
-        console.log("headerWithDetailResolver set activeDetailUrl activatedRoute", activatedRoute)
-
-        if (activatedRoute.queryParams['loadHeader']) {
-            store.setLoadHeader(true);
-        } else {
-            store.setLoadHeader(false);
-        }
-
-        store.setDetail(activatedRoute.params['detail'])
+    console.log("(header resolver) menu", activatedRoute.params['menu']);
+    console.log("(header resolver) panel", activatedRoute.params['panel']);
+    if (activatedRoute.params['menu']) {
+        console.log("(header resolver) set Active Menu And Panel");
+        store.setActiveMenuAndPanel(activatedRoute.params['menu'], activatedRoute.params['panel'])
     }
-
     return true;
 };

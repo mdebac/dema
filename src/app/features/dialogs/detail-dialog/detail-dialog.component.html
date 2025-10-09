@@ -1,66 +1,122 @@
 <mat-card class="dashboard-card">
-  <mat-card-header>
-    <h2 class="button-container-left text">@if (isNew) {
-      {{"create.page" | translate}}
-    } @else {
-      {{"update.page" | translate}}
-    }</h2>
-    <ng-container>
-      <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle"  (selectedOut)="activeIso($event)">
-      </iso-buttons>
-    </ng-container>
-  </mat-card-header>
+    <mat-card-header>
+        <h2 class="button-container-left text">@if (isNew) {
+            {{ "create.page" | translate }}
+        } @else {
+            {{ "update.page" | translate }}
+        }</h2>
+        <ng-container>
+            <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle" (selectedOut)="activeIso($event)">
+            </iso-buttons>
+        </ng-container>
+    </mat-card-header>
 
-  <mat-card-content [formGroup]="form">
-    <ng-container formArrayName="iso">
-      <ng-container *ngFor="let item of isoArray.controls; let i = index">
+    <mat-card-content [formGroup]="form">
 
-        @if (isIsoSelected(item.value)){
-          <ng-container  class="row-input-container-left" [formGroupName]="i">
 
-            <mat-label class="text">{{"detail.dialog.title" | translate}}</mat-label>
-            <ngx-editor-menu [editor]="editor(item.value.iso)"  [colorPresets]="colorPresets" [toolbar]="toolbar">
-            </ngx-editor-menu>
-            <ngx-editor [editor]="editor(item.value.iso)" formControlName="title">
-            </ngx-editor>
-            <div class="text">
-              {{ remainingSize(item.value.iso) }}
-            </div>
+        <ng-container formArrayName="iso">
+            <ng-container *ngFor="let item of isoArray.controls; let i = index">
+                @if (isIsoSelected(item.value)) {
+                    <div class="container">
+                        <ng-container class="row-input-container-left" [formGroupName]="i">
+                            <div class="text title">{{ "detail.dialog.title" | translate }}</div>
+                            <ngx-editor-menu [editor]="editor(item.value.iso)" [colorPresets]="colorPresets"
+                                             [toolbar]="toolbar">
+                            </ngx-editor-menu>
+                            <ngx-editor [editor]="editor(item.value.iso)" formControlName="title">
+                            </ngx-editor>
+                            <div class="text">
+                                {{ remainingSize(item.value.iso) }}
+                            </div>
+                        </ng-container>
+                    </div>
+                }
+            </ng-container>
+        </ng-container>
 
-          </ng-container>
+        @if (isNew && !isNewMenu && isNewPanel){
 
-          <ng-container class="row-input-container-left" [formGroupName]="i">
-            <mat-form-field>
-              <mat-label>Label</mat-label>
-              <input matInput formControlName="label" placeholder="Label">
-              <mat-error>Min 2, Max 10</mat-error>
-            </mat-form-field>
-          </ng-container>
+        } @else {
+            <ng-container formGroupName="menu">
+                <ng-container formArrayName="iso">
+                    <ng-container *ngFor="let item of isoArray.controls; let i = index">
+                        @if (isIsoSelected(item.value)) {
+                            <div class="container">
+                                <ng-container [formGroupName]="i">
+                                    <div class="text title2">Menu label</div>
+
+                                    <mat-form-field class="mylabel">
+                                        <mat-label>Label</mat-label>
+                                        <input matInput formControlName="title" placeholder="Label">
+                                        <mat-error>Min 2, Max 10</mat-error>
+                                    </mat-form-field>
+
+                                    @if (menuIcon){
+                                        <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
+                                            <mat-icon>{{ menuIcon }}</mat-icon>
+                                        </button>
+                                    } @else {
+                                        <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    }
+
+                                </ng-container>
+                            </div>
+                        }
+                    </ng-container>
+                </ng-container>
+            </ng-container>
 
         }
-      </ng-container>
-    </ng-container>
 
-    <div class="row-container">
-      <mat-form-field>
-        <mat-label>Icon</mat-label>
-        <input matInput type="string" formControlName="icon" placeholder="Mat-Icon">
-        <mat-hint>
-          <a href="https://www.angularjswiki.com/angular/angular-material-icons-list-mat-icon-list/" target="_blank">Icons</a>
-        </mat-hint>
-      </mat-form-field>
-      <div class="button-container-left">
-        <mat-icon size="50">{{icon}}</mat-icon>
-      </div>
+        @if (menuSide === Side.LEFT || menuSide === Side.RIGHT){
+            <ng-container formGroupName="panel">
+                <ng-container formArrayName="iso">
+                    <ng-container *ngFor="let item of isoArray.controls; let i = index">
+                        @if (isIsoSelected(item.value)) {
+                            <div class="container">
+                                <ng-container [formGroupName]="i">
 
-    </div>
-      <button [disabled]="!form.valid" (click)="onCreateDetail()"  mat-flat-button color="primary">
-      @if (isNew) {
-        Create
-      } @else {
-        Update
-      }
-      </button>
+                                    <div class="text title2">Panel label</div>
+                                    <mat-form-field class="mylabel">
+                                        <mat-label>Label</mat-label>
+                                        <input matInput formControlName="title" placeholder="Label">
+                                        <mat-error>Min 2, Max 10</mat-error>
+                                    </mat-form-field>
 
-  </mat-card-content>
+                                    @if (panelIcon){
+                                        <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
+                                            <mat-icon>{{ panelIcon }}</mat-icon>
+                                        </button>
+                                    }
+                                    @else {
+                                        <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    }
+
+                                    <mat-form-field>
+                                        <mat-label>Description</mat-label>
+                                        <input matInput formControlName="description" placeholder="Description">
+                                        <mat-error>Max 50</mat-error>
+                                    </mat-form-field>
+
+                                </ng-container>
+                            </div>
+                        }
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        }
+
+        <button [disabled]="!form.valid" (click)="onCreateDetail()" mat-fab extended>
+            @if (isNew) {
+                Create
+            } @else {
+                Update
+            }
+        </button>
+
+    </mat-card-content>
 </mat-card>

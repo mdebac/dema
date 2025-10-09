@@ -14,8 +14,10 @@ import {ApartmentDialogComponent} from "../dialogs/apartment-dialog/apartment-di
 import {TranslatePipe} from "@ngx-translate/core";
 import {Roles} from "../../domain/roles";
 import {AuthStore} from "../../services/authentication/auth-store";
-import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
 import {Hosts} from "../../domain/hosts";
+import {MatGridList, MatGridTile} from "@angular/material/grid-list";
+import {SummerComponent} from "../main/summer.component";
+import {MenuComponent} from "../main/menu.component";
 
 @Component({
     selector: 'dashboard',
@@ -30,6 +32,10 @@ import {Hosts} from "../../domain/hosts";
         LetDirective,
         MainTableComponent,
         MatFabButton,
+        MatGridList,
+        MatGridTile,
+        SummerComponent,
+        MenuComponent,
     ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -72,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe((detailProps) => {
                 this.store.createApartmentEffect(detailProps);
-                window.location.reload();
+               // window.location.reload();
             }
         );
     }

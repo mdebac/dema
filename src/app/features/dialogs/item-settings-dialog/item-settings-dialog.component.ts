@@ -30,7 +30,7 @@ export class ItemSettingsDialogComponent {
       rowSpan: [this.data.item.rowSpan],
       colSpan: [this.data.item.colSpan],
       cornerRadius: [this.data.item.cornerRadius],
-      elevation: [this.data.item.elevation],
+      shadowColor: [this.data.item.shadowColor],
       backgroundColor: [this.data.item.backgroundColor],
       chip: Chip.SETTINGS
     });
@@ -44,14 +44,13 @@ export class ItemSettingsDialogComponent {
     }
   }
 
-  onChangeElevation($event: any) {
-    this.form.patchValue({elevation: $event.value});
-  }
-
   onChangeBackgroundColor($event: any) {
     this.form.patchValue({backgroundColor: $event.value});
   }
 
+  onChangeShadowColor($event: any) {
+    this.form.patchValue({shadowColor: $event.value});
+  }
 
   onChangeRowSpan($event: any) {
     this.form.patchValue({rowSpan: $event.value});
@@ -72,11 +71,11 @@ export class ItemSettingsDialogComponent {
     return "";
   }
 
-  get elevation(): number {
-    if (this.form.value?.elevation) {
-      return this.form.value.elevation;
+  get shadowColor(): string {
+    if (this.form.value?.shadowColor) {
+      return this.form.value.shadowColor;
     }
-    return 0;
+    return "";
   }
 
   get rowSpan(): number {

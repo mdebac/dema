@@ -1,0 +1,47 @@
+<ng-container>
+    <mat-card class="dashboard-card">
+        <mat-card-header>
+            @if (loggedIn) {
+            <!-- if admin/manager -->
+            <div class="header-actions">
+                    <div class="grb">
+                        <div class="grb-crveno"></div>
+                        <div class="grb-bijelo"></div>
+                        <div class="grb-bijelo"></div>
+                        <div class="grb-crveno"></div>
+                    </div>
+                    <mat-chip-listbox (change)="fillBackground($event, activeDetail)">
+                        <mat-chip-option [selected]="activeDetail?.backgroundColorOn">
+                            <mat-icon>format_color_fill</mat-icon>
+                        </mat-chip-option>
+                    </mat-chip-listbox>
+                    <div class="button-container">
+                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors)">
+                            <mat-icon>add_circle</mat-icon>
+                            new Item
+                        </button>
+                    </div>
+            </div>
+            }
+        </mat-card-header>
+
+
+        @if (activeDetail?.items) {
+            <mat-card-content
+                    cdkDropList
+                    [cdkDropListDisabled]="false"
+                    [cdkDropListData]="activeDetail!.items"
+                    (cdkDropListDropped)="drop($event)"
+            >
+                @for (data of activeDetail?.items; track data.id) {
+
+                    @if (activeDetail && activeDetail?.iso) {
+                        <widget [loggedIn]="loggedIn" [selectedIso]="selectedIso" [columns]="activeDetail.columns"
+                                cdkDrag
+                                [data]="transformItemToWidget(activeDetail, data, header?.colors)"></widget>
+                    }
+                }
+            </mat-card-content>
+        }
+    </mat-card>
+</ng-container>

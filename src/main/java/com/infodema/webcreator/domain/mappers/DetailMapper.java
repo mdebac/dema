@@ -7,7 +7,6 @@ import com.infodema.webcreator.persistance.entities.detail.DetailIsoEntity;
 import com.infodema.webcreator.domain.enums.Country;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +15,8 @@ import java.util.Set;
 public class DetailMapper extends AbstractMapper {
 
     private final ItemMapper itemMapper;
+    private final MenuMapper menuMapper;
+    private final PanelMapper panelMapper;
 
     public List<Detail> toDomain(List<DetailEntity> entities) {
         return convertCollection(entities, this::toDomain);
@@ -33,17 +34,17 @@ public class DetailMapper extends AbstractMapper {
         return Detail.builder()
                 .id(entity.getId())
                 .show(entity.getShowProgram())
-                .titleUrl(entity.getTitleUrl())
-                .host(entity.getMain().getHost())
                 .columns(entity.getColumns())
-                .mainId(entity.getMain().getId())
-                .icon(entity.getIcon())
+                .backgroundColorOn(entity.isBackgroundColorOn())
+                .cornerRadius(entity.getCornerRadius())
                 .items(itemMapper.toDomain(entity.getItems()))
                 .iso(toDomainDetailIso(entity.getIso()))
                 .createdOn(entity.getCreatedOn())
                 .createdBy(entity.getCreatedBy())
                 .modifiedOn(entity.getModifiedOn())
                 .modifiedBy(entity.getModifiedBy())
+                .menu(menuMapper.toDomain(entity.getMenu()))
+                .panel(panelMapper.toDomain(entity.getPanel()))
                 .build();
     }
 
@@ -57,8 +58,8 @@ public class DetailMapper extends AbstractMapper {
                 .iso(toEntityDetailIso(detail.getIso()))
                 .showProgram(detail.isShow())
                 .columns(detail.getColumns())
-                .icon(detail.getIcon())
-                .titleUrl(detail.getIso().stream().filter(iso -> iso.getIso().equals("GB-eng")).findFirst().orElseThrow().getLabel().toLowerCase().replaceAll(" ", "_"))
+                .backgroundColorOn(detail.isBackgroundColorOn())
+                .cornerRadius(detail.getCornerRadius())
                 .items(itemMapper.toEntity(detail.getItems()))
                 .createdOn(detail.getCreatedOn())
                 .createdBy(detail.getCreatedBy())
@@ -69,12 +70,18 @@ public class DetailMapper extends AbstractMapper {
 
     //no id, and apartmentId
     public void updateEntityByModel(DetailEntity entity, Detail detail) {
-        entity.setIso(toEntityDetailIso(detail.getIso()));
+
+       if(detail.getIso() != null) {
+           entity.setIso(toEntityDetailIso(detail.getIso()));
+        }
         entity.setShowProgram(detail.isShow());
         entity.setColumns(detail.getColumns());
-        entity.setIcon(detail.getIcon());
-        entity.setTitleUrl(detail.getIso().stream().filter(iso -> iso.getIso().equals("GB-eng")).findFirst().orElseThrow().getLabel().toLowerCase().replaceAll(" ", "_"));
-        entity.setItems(itemMapper.toEntity(detail.getItems()));
+        entity.setBackgroundColorOn(detail.isBackgroundColorOn());
+        entity.setCornerRadius(detail.getCornerRadius());
+
+        if(detail.getItems() != null) {
+            entity.setItems(itemMapper.toEntity(detail.getItems()));
+        }
         entity.setCreatedBy(entity.getCreatedBy());
         entity.setCreatedOn(entity.getCreatedOn());
         entity.setModifiedOn(entity.getModifiedOn());

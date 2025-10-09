@@ -1,24 +1,13 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    ElementRef,
-    HostBinding,
-    inject,
-    Input,
-    OnDestroy,
-    OnInit
-} from '@angular/core';
-import {CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag} from "@angular/cdk/drag-drop";
+import {Component, HostBinding, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {filter, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {TranslateService, TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Editor, NgxEditorComponent} from "ngx-editor";
-import {LetDirective} from '@ngrx/component';
-import {MatCard, MatCardHeader, MatCardContent} from '@angular/material/card';
+import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {FormsModule} from '@angular/forms';
-import {MatButtonToggleGroup, MatButtonToggle} from '@angular/material/button-toggle';
+import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {WidgetComponent} from "../widget/widget.component";
@@ -34,13 +23,20 @@ import {Widget} from "../widget/widget";
 import {ChipMap} from "../../domain/chip-map";
 import {ApartmentDetailIso} from "../../domain/apartment-detail-iso";
 import {defaultIso} from "../../domain/countries-iso";
+import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
+import {Menu} from "../../domain/menu";
+import {Side} from "../../domain/side";
+import {Layout} from "../../domain/layout";
+import {LayoutState} from "../../domain/layout-state";
+import {MatChipListbox, MatChipOption} from "@angular/material/chips";
+import {Roles} from "../../domain/roles";
+import {AuthStore} from "../../services/authentication/auth-store";
 
 @Component({
     selector: 'summer',
     templateUrl: './summer.component.html',
     styleUrl: './summer.component.scss',
     imports: [
-        LetDirective,
         MatCard,
         MatCardHeader,
         NgxEditorComponent,
@@ -54,20 +50,135 @@ import {defaultIso} from "../../domain/countries-iso";
         WidgetComponent,
         CdkDrag,
         TranslatePipe,
+        MatMenu,
+        MatMenuTrigger,
+        MatChipListbox,
+        MatChipOption,
     ],
 })
 export class SummerComponent implements OnInit, OnDestroy {
     private store = inject(ApartmentStore);
+    private authStore = inject(AuthStore);
     private dialog = inject(MatDialog);
     private translateService = inject(TranslateService);
 
+    @Input() activeDetail: ApartmentDetail | null = null;
+    @Input() header: Header | null = null;
+
     @HostBinding("style.--grid-col")
-    gridCol: number = 1;
+    cssGridCol: number = 1;
+
+    @HostBinding("style.--right-padding")
+    cssRightPadding: any = "0";
+
+    @HostBinding("style.--left-padding")
+    cssLeftPadding: any = "0";
+
+    @HostBinding("style.--corner-radius")
+    cssCornerRadius: string = "16px";
+
+    @Input()
+    @HostBinding("style.--background-color")
+    backgroundColor: string = "";
+
+    @Input()
+    @HostBinding("style.--actions-border-color")
+    actionsBorderColor: string = "";
+
+    @Input() set cornerRadius(cornerRadius: number | null) {
+        if (cornerRadius) {
+            this.cssCornerRadius = cornerRadius + "px";
+        }
+    }
+
+    @Input() set stateLayout(stateLayout: LayoutState | undefined) {
+        if (stateLayout) {
+            if (stateLayout?.gapL === 0 && stateLayout?.menuL === 0) {
+                console.log("left", 10);
+                this.cssLeftPadding = "10px";
+            } else {
+                console.log("left", 0);
+                this.cssLeftPadding = "0";
+                if (stateLayout.panelL !== 0) {
+                    this.cssLeftPadding = "10px";
+                }
+            }
+
+            if (stateLayout?.gapR === 0 && stateLayout?.menuR === 0) {
+                console.log("right", 10);
+                this.cssRightPadding = "10px";
+            } else {
+                console.log("right", 0);
+
+                this.cssRightPadding = "0";
+
+                if (stateLayout.panelR !== 0) {
+                    this.cssRightPadding = "10px";
+                }
+            }
+        }
+    }
+
+    isManager = this.authStore.authorize(Roles.MANAGER);
+    isAdmin = this.authStore.authorize(Roles.ADMIN);
+
+    backgroundColorSwitch(onOff: boolean, detail: ApartmentDetail | null) {
+        const detailUpdate: Partial<ApartmentDetail> = {
+            ...detail,
+            items: undefined,
+            iso: undefined,
+            backgroundColorOn: onOff,
+        }
+        this.store.updateDetailEffect(detailUpdate);
+    }
+
+
+    fillBackground($event: any, detail: ApartmentDetail | null) {
+        if ($event.value) {
+            this.backgroundColorSwitch(true, detail);
+        } else {
+            this.backgroundColorSwitch(false, detail);
+        }
+    }
+
+    // @Input() set rightPadding(rightPadding: number | null) {
+    //     if (rightPadding) {
+    //         this.cssRightPadding = rightPadding === 0 ? "0" : rightPadding + "px";
+    //         console.log("this.cssRightPadding",this.cssRightPadding);
+    //     }
+    // }
+
+    // @Input() set layout(layout: Layout | null | undefined) {
+    //     if (layout) {
+    //         if(layout === Layout.CENTER){
+    //             this.cssRight = 0;
+    //             this.cssLeft = 0;
+    //         }
+    //         if(layout === Layout.FULL){
+    //             // this.cssRight = '10px'
+    //             // this.cssLeft = '10px'
+    //             this.cssRight = 0;
+    //             this.cssLeft = 0;
+    //         }
+    //     }
+    // }
+    //
+    // @Input() set side(side: Side | null | undefined) {
+    //     if (side) {
+    //         if(side === Side.LEFT){
+    //             this.cssLeft = 0;
+    //             this.cssRight = '10px'
+    //         }
+    //         if(side === Side.RIGHT){
+    //             this.cssRight = 0;
+    //             this.cssLeft = '10px'
+    //         }
+    //     }
+    // }
 
     @Input() set col(col: number | null) {
         if (col) {
-
-            this.gridCol = col;
+            this.cssGridCol = col;
         }
     }
 
@@ -77,34 +188,24 @@ export class SummerComponent implements OnInit, OnDestroy {
     @Input()
     selectedIso: string = defaultIso;
 
-    activeDetail$ = this.store.selectedDetailPage$.pipe(filter((e) => !!e));
-
-    header$ = this.store.header$;
     unsubscribe$ = new Subject<void>();
     local: boolean = true;
     apartment: string = "";
     editor: Editor = new Editor();
 
-
-    ngOnInit() {
-
-        // this.editor = new Editor();
+    constructor() {
+        console.log("SUMMER load");
     }
 
+    ngOnInit() {
+        console.log("SUMMER ngOnInit");
+    }
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.unsubscribe();
         this.editor.destroy();
     }
-
-    /* deleteDetail(detail: ApartmentDetail | null) {
-       console.log("(click) delete Detail", detail);
-       if(detail){
-          this.store.deleteDetailEffect(detail);
-        //  this.router.navigate(['/']);
-       }
-     }*/
 
     deleteDetail(detail: ApartmentDetail | null) {
         this.conformationDialog().pipe(
@@ -128,7 +229,6 @@ export class SummerComponent implements OnInit, OnDestroy {
         });
         return dialogRef.afterClosed();
     }
-
 
     createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined) {
         console.log("(click) createItem detail", detail);
@@ -172,15 +272,10 @@ export class SummerComponent implements OnInit, OnDestroy {
 
 
     updateDetail(header: Header | null, detail: ApartmentDetail | null) {
-
         const selectedLanguages: string[] | undefined = header?.languages;
-        console.log("updateDetail", detail);
-
         const partial: Partial<ApartmentDetail> = {...detail}
-
         const data: ApartmentDetailDialogData = {
             languages: selectedLanguages,
-            host: header?.host,
             detail: partial,
             colors: header?.colors
         }
@@ -190,9 +285,7 @@ export class SummerComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
                 if (detailProps.id) {
-                    this.store.updateApartmentDetailEffect(detailProps)
-                } else {
-                    this.store.createDetailEffect(detailProps)
+                    this.store.updateDetailEffect(detailProps)
                 }
             }
         );
@@ -200,7 +293,6 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
     openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
-
         const dialogRef = this.dialog.open(DetailDialogComponent, {
             width: '400px',
             data: {
@@ -210,12 +302,14 @@ export class SummerComponent implements OnInit, OnDestroy {
         return dialogRef.afterClosed();
     }
 
-
-    onChange($event: any, detail: ApartmentDetail | null) {
-        const detailUpdate: Partial<ApartmentDetail> = {...detail, columns: $event.value}
-        console.log("detailUpdate ", detailUpdate);
-        this.store.updateApartmentDetailEffect(detailUpdate);
-        //  this.gridCol=$event.value;
+    onChangeColumns($event: any, detail: ApartmentDetail | null) {
+        const detailUpdate: Partial<ApartmentDetail> = {
+            ...detail,
+            items: undefined,
+            iso: undefined,
+            columns: $event.value
+        }
+        this.store.updateDetailEffect(detailUpdate);
     }
 
     drop(event: CdkDragDrop<ApartmentItem[]>): void {
@@ -230,6 +324,7 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
     transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined): Widget {
+
         return {
             item: item,
             languages: detail.iso.map(iso => iso.iso),
@@ -242,14 +337,50 @@ export class SummerComponent implements OnInit, OnDestroy {
         return iso?.find(iso => iso.iso === country)?.title;
     }
 
-    onlyOne(detailLength: number | undefined) {
-        if(detailLength){
-            if (detailLength < 2) {
-                return true;
-            } else {
-                return false;
+    onlyOne(menus: Menu[] | undefined) {
+        if (menus) {
+            if (menus.length) {
+                if (menus.length < 2) {
+                    return menus[0].panels.length < 2;
+                } else {
+                    return false;
+                }
             }
         }
-      return true;
+        return true;
     }
+
+    addToRightMenuPanel(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, side: Side.RIGHT}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+    addToLeftMenuPanel(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, side: Side.LEFT}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+    panelOn(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, panelOn: true}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+    panelOff(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, panelOn: false}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+    center(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, layout: Layout.CENTER}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+    fullScreen(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, layout: Layout.FULL}
+        this.store.updateMenuEffect(menuUpdate);
+    }
+
+
+    protected readonly Side = Side;
+    protected readonly Layout = Layout;
 }

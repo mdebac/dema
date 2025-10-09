@@ -1,19 +1,24 @@
 package com.infodema.webcreator.persistance.entities.main;
 
+import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.persistance.entities.BaseAuditEntity;
 import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
+import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import com.infodema.webcreator.persistance.entities.security.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.type.TrueFalseConverter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -77,7 +82,7 @@ public class MainEntity extends BaseAuditEntity {
 
     @OneToMany(mappedBy = "main")
    // @Fetch(FetchMode.SUBSELECT)
-    private List<DetailEntity>  details;
+    private List<MenuEntity>  menus;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
@@ -86,7 +91,6 @@ public class MainEntity extends BaseAuditEntity {
     )
     @Builder.Default
     private Set<MainIsoEntity> iso = new HashSet<>();
-
 
     @Transient
     public double getRate() {

@@ -2,6 +2,9 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
+@import 'material-icons/iconfont/filled.css';
+@import 'material-icons/iconfont/outlined.css';
+
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
 $danger-color: var(--danger-color);
@@ -15,7 +18,6 @@ html{
   scrollbar-color: $secondary-color $primary-color;
   --mat-form-field-error-text-color: $secondary-color;
   --mdc-filled-text-field-error-label-text-color: $secondary-color;
-
   --mat-menu-container-color: $primary-color;
 
   /*
@@ -78,6 +80,8 @@ footer {
 .text-light{
   color: $primary-color;
 }
+
+
 /*
 https://www.fusonic.net/en/blog/angular-material-customization
 

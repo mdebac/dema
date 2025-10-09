@@ -16,16 +16,13 @@ import {MatDialog} from "@angular/material/dialog";
 import {Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {Colors} from "../../domain/colors";
-import { NgClass, NgIf, NgComponentOutlet } from "@angular/common";
+import { NgIf, NgComponentOutlet } from "@angular/common";
 import { MatMiniFabButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import {TokenService} from "../../services/token.service";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
 import {ItemSettingsDialogComponent} from "../dialogs/item-settings-dialog/item-settings-dialog.component";
 import {Chip} from "../../domain/chip.enum";
-import {ApartmentDetail} from "../../domain/apartment-detail";
-import {ChipMap} from "../../domain/chip-map";
 import {TextComponent} from "./type/text/text.component";
 import {ApartmentItemIso} from "../../domain/apartment-item-iso";
 
@@ -35,7 +32,6 @@ import {ApartmentItemIso} from "../../domain/apartment-item-iso";
     templateUrl: './widget.component.html',
     styleUrls: ['./widget.component.scss'],
     imports: [
-        NgClass,
         NgIf,
         MatMiniFabButton,
         MatIcon,
@@ -48,7 +44,7 @@ export class WidgetComponent implements OnDestroy, OnInit {
   private translateService = inject(TranslateService);
 
   private _data: Widget | undefined;
-  elevation: string | undefined;
+
   @HostBinding("style.--rowSpan")
   rowSpan: number | undefined;
   @HostBinding("style.--colSpan")
@@ -59,6 +55,9 @@ export class WidgetComponent implements OnDestroy, OnInit {
   minHeight: string | undefined;
   @HostBinding("style.--backgroundColor")
   backgroundColor: string | undefined;
+  @HostBinding("style.--shadow-color")
+  shadowColor: string | null | undefined;
+
 
   @Input() columns: number | undefined;
   @Input() loggedIn: boolean = false;
@@ -68,7 +67,7 @@ export class WidgetComponent implements OnDestroy, OnInit {
     this.rowSpan = this._data?.item?.rowSpan ? this._data.item.rowSpan : 1;
     this.colSpan = this._data?.item?.colSpan ? this._data.item.colSpan : 1;
     this.cornerRadius = (this._data?.item?.cornerRadius ? this._data.item.cornerRadius : 10) + 'px';
-    this.elevation = 'mat-elevation-z' + (this._data?.item?.elevation ? this._data.item.elevation : 0);
+    this.shadowColor =this._data?.item?.shadowColor ? this._data.item?.shadowColor : this._data.colors?.primaryColor;
     this.minHeight = (this._data?.item?.minHeight ? this._data.item.minHeight : 100) + 'px';
     this.backgroundColor = this._data?.item?.backgroundColor ? this._data.item.backgroundColor : "";
   }

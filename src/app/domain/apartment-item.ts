@@ -11,12 +11,12 @@ export interface ApartmentItem extends Audit{
   cornerRadius: number;
   minHeight: number;
   backgroundColor: string;
-  elevation: number;
   url: string;
   chip: Chip;
   detailId: number;
   iso: ApartmentItemIso[];
   editorContent:string;
+  shadowColor: string;
 
   //file data
   fileName: string;

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Observable, of, Subject} from "rxjs";
 import {filter, map, takeUntil} from "rxjs/operators";
 import {defaultIso} from "../../domain/countries-iso";
@@ -6,33 +6,46 @@ import {ApartmentIso} from "../../domain/apartment-iso";
 import {ActivatedRoute, Data, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {LetDirective} from '@ngrx/component';
 import {NgIf} from '@angular/common';
-import {MatFabButton} from '@angular/material/button';
+import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {MatGridList, MatGridTile} from '@angular/material/grid-list';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {IsoButtonsComponent} from "../iso-buttons/iso-buttons.component";
-import {CalendarComponent} from "../calendar/calendar.component";
-import {ReklameComponent} from "../reklame/reklame.component";
 import {ShareableService} from "../../services/shareable.service";
 import {Roles} from "../../domain/roles";
 import {Hosts} from "../../domain/hosts";
 import {AuthStore} from "../../services/authentication/auth-store";
-import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {UserButtonsComponent} from "../user-buttons/user-buttons.component";
+import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
+import {Colors} from "../../domain/colors";
+import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {Header} from "../../domain/header";
+import {Title} from "@angular/platform-browser";
+import {Menu} from "../../domain/menu";
+import {Panel} from "../../domain/panel";
+//import {routeTransition} from "../../animations/route-transition";
+import {Link} from "../../domain/link";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'start',
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss'],
-    imports: [UserButtonsComponent,TranslatePipe, LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, MatGridList, MatGridTile, RouterOutlet, CalendarComponent, ReklameComponent]
+    imports: [UserButtonsComponent, LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, RouterOutlet, MatIconButton],
+    // animations: [
+    //     routeTransition
+    // ]
 })
 export class StartComponent implements OnInit, OnDestroy {
 
-    store = inject(ApartmentStore);
-    shareableService = inject(ShareableService);
-    activatedRoute = inject(ActivatedRoute);
-    authStore = inject(AuthStore);
+    readonly store = inject(ApartmentStore);
+    readonly shareableService = inject(ShareableService);
+    readonly activatedRoute = inject(ActivatedRoute);
+    readonly authStore = inject(AuthStore);
+    readonly dialog = inject(MatDialog);
     readonly router = inject(Router);
+    readonly titleService = inject(Title);
+    readonly translateService = inject(TranslateService);
     // notificationService = inject(NotificationService);
     // errorService = inject(ErrorService);
 
@@ -40,8 +53,8 @@ export class StartComponent implements OnInit, OnDestroy {
     //error$ = this.store.error$.pipe(filter((e) => !!e));
 
     // header$ = this.shareableService.getHeader();
-    selectedIso$ = this.shareableService.getSelectedIso();
-    //selectedIso$ = this.store.selectedIso$;
+    //selectedIso$ = this.shareableService.getSelectedIso();
+    selectedIso$ = this.store.selectedIso$;
     role$ = this.authStore.roles$;
     //segment$ = this.store.segment$;
    // segment$ = this.shareableService.getSegment();
@@ -51,32 +64,50 @@ export class StartComponent implements OnInit, OnDestroy {
     user$ = this.authStore.user$;
 
     isHostAdriaticSun: boolean = false;
-    isManager = this.authStore.authorize(Roles.MANAGER);
-    isAdmin = this.authStore.authorize(Roles.ADMIN);
 
     header$ = this.store.header$;
+
+    menuSide$ = this.store.side$;
+
+    browserLang: string | undefined = '';
+    //TODO
+    protected breadcrumbs: Link[] = [
+        {
+            label: 'About Us',
+            path: '/about'
+        }
+    ]
 
     ngOnInit() {
         console.log("StartComponent ngOnInit")
         this.user$ = this.authStore.user$;
         this.isLoggedIn$ = this.authStore.isLoggedIn$;
 
-        this.store.selectIso(defaultIso);
+        this.browserLang = this.translateService.getBrowserLang();
+
+        console.log("this.browserLang", this.browserLang);
+        if(this.browserLang){
+            if(this.browserLang === 'en'){
+                this.store.selectIso(defaultIso);
+            }
+            else {
+                this.store.selectIso(this.browserLang.toUpperCase());
+                this.shareableService.setSelectedIso(this.browserLang);
+            }
+        }else {
+            this.store.selectIso(defaultIso);
+        }
 
         this.activatedRoute.data.pipe(map((data: Data) => data['myData'])).subscribe(
             data => {
-
+                const title= data.iso.find((s: { iso: string; })=>s.iso===defaultIso).title;
+                this.titleService.setTitle(title);
                 this.store.setHeader(data);
-                this.store.loadDetailByRouteLabelsEffect(this.store.activeDetailUrl$);
+                this.store.loadDetailByRouteLabelsEffect(this.store.activeMenu$);
                 console.log("StartComponent data set Header into store", data);
-               // this.store.setPage(data.activeDetailUrl);
 
-                /*
-                if (response.detail.length > 0) {
-                                this.loadDetailByRouteLabelsEffect(response);
-                            }
-                 */
-               // this.header = data;
+               //TODO this.setFavIcon("");
+
                 this.isHostAdriaticSun = data?.host === Hosts.ADRIATICSUN_EU
 
                 const variables = [
@@ -138,7 +169,7 @@ export class StartComponent implements OnInit, OnDestroy {
     }
 
     activeIso(active: string) {
-        this.shareableService.setSelectedIso(active);
+      this.store.selectIso(active);
     }
 
 
@@ -161,9 +192,66 @@ export class StartComponent implements OnInit, OnDestroy {
         } else return "";
     }
 
+    createMenuDetail(header: Header | null) {
+        if(header){
+
+            const max= header.menus.reduce((acc, val) => {
+                return acc.orderNum > val.orderNum ? acc : val;
+            });
+
+            const panel: Partial<Panel> = {};
+            const menu: Partial<Menu> = {mainId: header.id, orderNum: max.orderNum + 1};
+
+            const detail: Partial<ApartmentDetail> = {menu: menu, panel: panel};
+            const color: Partial<Colors> = {
+                primaryColor: header.colors.primaryColor,
+                secondaryColor: header.colors.secondaryColor,
+            };
+
+            const data: ApartmentDetailDialogData = {
+                languages: header.iso.map(iso => iso.iso),
+                detail: detail,
+                colors: color,
+            };
+
+            this.openApartmentDetailDialog(data).pipe(
+                filter(val => !!val),
+                takeUntil(this.unsubscribe$)
+            ).subscribe(detailProps =>
+
+                this.store.createDetailEffect(detailProps)
+
+            );
+        }
+    }
+
+
+    openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
+        const dialogRef = this.dialog.open(DetailDialogComponent, {
+            width: '400px',
+            data: {
+                ...data
+            },
+        });
+        return dialogRef.afterClosed();
+    }
+
+
+    setFavIcon(branding: string) {
+        const faviconElement = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
+
+        console.log("faviconElement", faviconElement);
+
+    /*    if (!this.faviconElement) {
+            this.faviconElement = document.createElement('link');
+            this.faviconElement.rel = 'icon';
+            document.head.appendChild(this.faviconElement);
+        }*/
+        // @ts-ignore
+        faviconElement.href = "/assets/dubrovnik1.png";
+    }
 
     protected readonly Roles = Roles;
-    protected readonly Hosts = Hosts;
 }
 
 
@@ -191,3 +279,4 @@ isTokenNotValid() {
 
 get userRoles(): string[] {
  */
+

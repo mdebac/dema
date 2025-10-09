@@ -1,7 +1,12 @@
 package com.infodema.webcreator.domain.core;
 
 import com.infodema.webcreator.domain.mappers.AbstractAuditModel;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter

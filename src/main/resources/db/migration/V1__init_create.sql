@@ -6,6 +6,7 @@ create table _user (
                        email varchar(255),
                        enabled bit not null,
                        firstname varchar(255),
+                       host varchar(255),
                        last_modified_date datetime(6),
                        lastname varchar(255),
                        password varchar(255),
@@ -70,17 +71,18 @@ create table detail (
                         created_on datetime(6) not null,
                         modified_by varchar(255),
                         modified_on datetime(6),
+                        background_color_on char(1) not null check (background_color_on in ('F','T')),
                         columns integer,
-                        icon varchar(255),
+                        corner_radius integer,
                         show_program char(1) check (show_program in ('F','T')),
-                        title_url varchar(255) not null,
-                        main_id bigint not null,
+                        menu_id bigint not null,
+                        panel_id bigint not null,
                         primary key (id)
 ) engine=InnoDB;
     
 create table detail_iso (
                             detail_id bigint not null,
-                            iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','CZ') not null,
+                            iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','UA','RU','NO','CZ') not null,
                             label varchar(255),
                             title varchar(255)
 ) engine=InnoDB;
@@ -98,15 +100,16 @@ create table item (
                       modified_by varchar(255),
                       modified_on datetime(6),
                       background_color varchar(255),
-                      chip enum ('TEXT','JOB','PICTURE','VIDEO','FORM','TABLE','SETTINGS') not null,
+                      chip enum ('TEXT','JOB','PICTURE','VIDEO','FORM','TABLE','SETTINGS','SHOP') not null,
                       col_span integer,
                       content MEDIUMBLOB,
                       corner_radius integer,
-                      elevation integer,
                       file_name varchar(255),
                       mime_type varchar(255),
                       min_height integer,
+                      order_num integer,
                       row_span integer,
+                      shadow_color varchar(255),
                       size bigint not null,
                       url varchar(255),
                       detail_id bigint not null,
@@ -116,7 +119,7 @@ create table item (
 create table item_iso (
                           item_id bigint not null,
                           description varchar(2500),
-                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI', 'NO', 'UA', 'RU', 'IT','HU','PL','CZ') not null,
+                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','UA','RU','NO','CZ') not null,
                           title varchar(255)
 ) engine=InnoDB;
     
@@ -145,6 +148,7 @@ create table main (
                       price decimal(38,2),
                       primary_color varchar(255),
                       primary_color_light varchar(255),
+                      remove_picture char(1) check (remove_picture in ('F','T')),
                       secondary_color varchar(255),
                       secondary_color_light varchar(255),
                       size bigint not null,
@@ -156,11 +160,10 @@ create table main (
     
 create table main_iso (
                           main_id bigint not null,
-                          icon_text varchar(100),
-                          icon_title varchar(15),
-                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','CZ') not null,
-                          text varchar(2000),
-                          title varchar(255)
+                          description varchar(2000),
+                          icon_text varchar(30),
+                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','UA','RU','NO','CZ') not null,
+                          title varchar(15)
 ) engine=InnoDB;
     
 create table main_seq (
@@ -168,6 +171,59 @@ create table main_seq (
 ) engine=InnoDB;
     
 insert into main_seq values ( 1 );
+    
+create table menu (
+                      id bigint not null,
+                      created_by varchar(255) not null,
+                      created_on datetime(6) not null,
+                      modified_by varchar(255),
+                      modified_on datetime(6),
+                      hide_menu_panel_if_one char(1) check (hide_menu_panel_if_one in ('F','T')),
+                      icon varchar(255),
+                      layout enum ('CENTER','FULL') not null,
+                      order_num integer,
+                      panel_on char(1) check (panel_on in ('F','T')),
+                      side enum ('LEFT','RIGHT') not null,
+                      main_id bigint not null,
+                      primary key (id)
+) engine=InnoDB;
+    
+create table menu_iso (
+                          menu_id bigint not null,
+                          iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','UA','RU','NO','CZ') not null,
+                          title varchar(255)
+) engine=InnoDB;
+    
+create table menu_seq (
+                          next_val bigint
+) engine=InnoDB;
+    
+insert into menu_seq values ( 1 );
+    
+create table panel (
+                       id bigint not null,
+                       created_by varchar(255) not null,
+                       created_on datetime(6) not null,
+                       modified_by varchar(255),
+                       modified_on datetime(6),
+                       icon varchar(255),
+                       order_num integer,
+                       menu_id bigint not null,
+                       primary key (id)
+) engine=InnoDB;
+    
+create table panel_iso (
+                           panel_id bigint not null,
+                           description varchar(255),
+                           iso enum ('HR','FR','NL','DE','EN','ES','DK','SE','FI','IT','HU','PL','UA','RU','NO','CZ') not null,
+                           title varchar(255)
+) engine=InnoDB;
+    
+create table panel_seq (
+                           next_val bigint
+) engine=InnoDB;
+    
+insert into panel_seq values ( 1 );
     
 create table payment (
                          id bigint not null,
@@ -216,39 +272,22 @@ create table token_seq (
 ) engine=InnoDB;
     
 insert into token_seq values ( 1 );
-    
-alter table _user drop index UK_k11y3pdtsrjgy8w9b6q4bjwrx;
-    
+
 alter table _user
-    add constraint UK_k11y3pdtsrjgy8w9b6q4bjwrx unique (email);
-    
-alter table cv_data
-    drop index UKdl106ihkr36xbdomfc1kg5wps;
-    
+    add constraint UK3ll7h6igsem2hjvgui28dkq3u unique (email, host);
+
 alter table cv_data
     add constraint UKdl106ihkr36xbdomfc1kg5wps unique (email, item_id);
-    
+
 alter table detail
-    drop index UKqe6siigwrlfh0b9g0jtj24k74;
-    
-alter table detail
-    add constraint UKqe6siigwrlfh0b9g0jtj24k74 unique (title_url, main_id);
-    
-alter table main
-    drop index UK_l393581052chrl7dwb0la635g;
-    
+    add constraint UK9uqjwshsvjmhff83w289uymoy unique (panel_id, menu_id);
+
 alter table main
     add constraint UK_l393581052chrl7dwb0la635g unique (host);
     
 alter table role
-    drop index UK_8sewwnpamngi6b1dwaa88askk;
-    
-alter table role
     add constraint UK_8sewwnpamngi6b1dwaa88askk unique (name);
-    
-alter table token
-    drop index UK_pddrhgwxnms2aceeku9s2ewy5;
-    
+
 alter table token
     add constraint UK_pddrhgwxnms2aceeku9s2ewy5 unique (token);
     
@@ -268,9 +307,14 @@ alter table comment
             references main (id);
     
 alter table detail
-    add constraint FKswt36ti0dl6v5198n8i5ccs31
-        foreign key (main_id)
-            references main (id);
+    add constraint FK650w35a0djvheea9ecxcwiyf0
+        foreign key (menu_id)
+            references menu (id);
+    
+alter table detail
+    add constraint FKql3v9fehgnc3qg7ec1c7h1jm2
+        foreign key (panel_id)
+            references panel (id);
     
 alter table detail_iso
     add constraint FK6vmpi8icf0iltmq6a80hx3d6q
@@ -296,6 +340,26 @@ alter table main_iso
     add constraint FKqdnp4c35916ntccvrpiwq0fpd
         foreign key (main_id)
             references main (id);
+    
+alter table menu
+    add constraint FK3gv7x91t5jo3r057bf3a2f0gt
+        foreign key (main_id)
+            references main (id);
+    
+alter table menu_iso
+    add constraint FKquw80mpoy0ohpadawg03b7tcc
+        foreign key (menu_id)
+            references menu (id);
+    
+alter table panel
+    add constraint FKdc49pdfmshyd0e88a7q7cttkc
+        foreign key (menu_id)
+            references menu (id);
+    
+alter table panel_iso
+    add constraint FK9fiyc6jc8rkhoj8fd9fx89wir
+        foreign key (panel_id)
+            references panel (id);
     
 alter table token
     add constraint FKiblu4cjwvyntq3ugo31klp1c6

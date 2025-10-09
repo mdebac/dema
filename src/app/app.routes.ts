@@ -31,7 +31,7 @@ export const routes: Routes = [
             {
                 path: 'login',
                 component: LoginComponent
-            },
+            } ,
             {
                 path: 'activate-account',
                 component: ActivateAccountComponent,
@@ -41,7 +41,14 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
-                path: ':detail',
+                path: ':menu',
+                loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
+                resolve: {
+                    headerWithDetailResolver
+                }
+            },
+            {
+                path: ':menu/:panel',
                 loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
                 resolve: {
                     headerWithDetailResolver

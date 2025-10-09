@@ -3,19 +3,20 @@ package com.infodema.webcreator.controllers;
 import com.infodema.webcreator.domain.core.Header;
 import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.domain.core.MainCriteria;
-import com.infodema.webcreator.domain.core.Message;
 import com.infodema.webcreator.domain.projections.MainProjection;
+import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.MainService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,54 +35,38 @@ public class MainController {
     public ResponseEntity<Page<MainProjection>> findAllApartments(MainCriteria criteria, Pageable pageable) {
         log.debug("findAllApartments by criteria={}, pageable={}", criteria, pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body( mainService.findMains(criteria,pageable));
+                .body(mainService.findMains(criteria, pageable));
     }
 
-    @GetMapping(value = "/find/{host}/header")
+    @GetMapping(value = "/find/header")
     public ResponseEntity<Header> fetchHeader(
-            @PathVariable("host") String host
+            @RequestHeader("Host") String host
     ) {
         log.debug("fetchHeader by host={}", host);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body( mainService.findHeaderByHost(host));
+                .body(mainService.findHeaderByHost(UtilityHelper.resolveHostForDevelopment(host)));
     }
 
-
-    @GetMapping("/customers/{host}")
-    public ResponseEntity<Page<Main>> findCustomers(
-            @PathVariable("host") String host,
-            Pageable pageable) {
-
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
+    @GetMapping("/customers")
+    public ResponseEntity<Page<Main>> findCustomers(@RequestHeader("Host") String host,
+                                                    Pageable pageable) {
         log.info("findCustomers by Main pageable={}", pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(mainService.findCustomers(host, pageable));
+                .body(mainService.findCustomers(UtilityHelper.resolveHostForDevelopment(host), pageable));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteApartment(@PathVariable Long id) {
+    ResponseEntity<Void> deleteApartment(@PathVariable Long id,
+                                         @RequestHeader("Host") String host) {
         System.out.println("delete Main - " + id);
-        mainService.deleteMain(id);
+        mainService.deleteMain(id, host);
         return ResponseEntity.noContent().build();
     }
 
-   /* @PutMapping()
-    public ResponseEntity<Main> updateApartment(
-            @RequestPart Main Main, @RequestPart(value = "file") MultipartFile file) {
-        return ResponseEntity.ok(apartmentService.saveApartment(Main, file));
-    }*/
-
-  /* @GetMapping(path = "/api/v1/ping", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Message> generateUrl() {
-        //log.debug("generateUrl by title={}", title);
-        System.out.println("ping");
-        return new ResponseEntity<>(
-                Message.builder().text("pong").build(),
-                HttpStatus.OK);
-    }*/
-
-
-    @GetMapping(path = "/report",produces = "application/vnd.ms-excel")
+    @GetMapping(path = "/report", produces = "application/vnd.ms-excel")
     public ResponseEntity<ByteArrayResource> listExport(MainCriteria criteria) {
         ByteArrayResource resource = null;// = apartmentService.exportXls(criteria);
 
@@ -103,8 +88,16 @@ public class MainController {
                 .path("/{id}")
                 .buildAndExpand(main.getId())
                 .toUri();
-
         return ResponseEntity.created(location).body(main);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/users/{userId}/roles/{role}")
+    ResponseEntity<Void> updateUserRole(@PathVariable Long userId,
+                                        @PathVariable String role) {
+        System.out.println("updateUserRole - " + role);
+        mainService.updateUserRole(userId, role);
+        return ResponseEntity.noContent().build();
     }
 
 }

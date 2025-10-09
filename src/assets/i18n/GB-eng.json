@@ -14,6 +14,7 @@
   "delete.page": "Delete page",
   "create.page": "Create new page",
   "new.page": "New page",
+  "title.and.icons": "Titles and Icons",
   "create.item": "Create new item",
   "update.item": "Update item",
   "item.dialog.description": "Description",
@@ -25,6 +26,8 @@
   "detail.dialog.title.error": "Min 2, Max 150",
   "my.dashboard": "Dashboard",
   "save.languages": "Save",
+  "save.dialog": "Save",
+  "video.url": "Video Url",
   "dialog.main.colors": "Colors",
   "dialog.main.title": "Main title of the page",
   "dialog.main.description.hint": "Description text below Main title",
@@ -33,5 +36,14 @@
   "update.domain.page": "Update domain page",
   "name.customer.table": "Customer",
   "email.customer.table": "E-mail",
-  "role.customer.table": "Role"
+  "role.customer.table": "Role",
+  "summer.layout": "Layout",
+  "summer.add.menu.to.right": "Add Menu to Right",
+  "summer.add.menu.to.left": "Add Menu to Left",
+  "summer.full.screen": "Full screen",
+  "summer.center": "Center",
+  "summer.panel.off": "Panel Off",
+  "summer.panel.on": "Panel On",
+  "summer.columns": "Columns",
+  "summer.new.item": "New Item"
 }

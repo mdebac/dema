@@ -4,7 +4,6 @@ import {environment} from "../../../environments/environment";
 import {ApartmentsHttpService} from "../apartments-http.service";
 import {Observable} from "rxjs";
 import {Header} from "../../domain/header";
-import {Hosts} from "../../domain/hosts";
 
 Injectable({
   providedIn: 'root',
@@ -13,18 +12,7 @@ export class headerResolver implements Resolve<Header> {
   service = inject(ApartmentsHttpService);
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-
-    const local = !environment.production;
-
-    let host = window.location.host.toLowerCase();
-    console.log("window location host", host);
-    if (local) {
-    //  host = Hosts.ADRIATICSUN_EU;
-      host = Hosts.INFO_DEMA_EU;
-    }
-    console.log("actual host", host);
-
-    return this.service.fetchHeaderByHost(host);
+    return this.service.fetchHeader();
   }
 
 }

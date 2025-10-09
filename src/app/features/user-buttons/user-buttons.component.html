@@ -7,6 +7,14 @@
 <mat-menu #iso="matMenu">
     <div class="actionButtons">
             <ng-container  >
+                <ng-container>
+                    <button routerLink="/my"
+                            routerLinkActive="activebutton"
+                            mat-fab extended>
+                        <mat-icon>dashboard</mat-icon>
+                        {{ "my.dashboard" | translate }}
+                    </button>
+                </ng-container>
                 <button (click)="logout()"
                         routerLinkActive="activebutton"
                         mat-fab extended>

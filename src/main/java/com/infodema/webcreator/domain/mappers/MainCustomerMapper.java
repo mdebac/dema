@@ -1,9 +1,6 @@
 package com.infodema.webcreator.domain.mappers;
 
 import com.infodema.webcreator.domain.core.Main;
-import com.infodema.webcreator.domain.cv.CvData;
-import com.infodema.webcreator.domain.cv.CvDataProjection;
-import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

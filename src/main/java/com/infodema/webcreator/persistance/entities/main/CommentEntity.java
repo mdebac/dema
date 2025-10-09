@@ -1,7 +1,11 @@
 package com.infodema.webcreator.persistance.entities.main;
 
 import com.infodema.webcreator.persistance.entities.BaseAuditEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

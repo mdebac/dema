@@ -1,11 +1,100 @@
-<div class="text">NOTHING TO SEE</div>
 <ng-container *ngrxLet="{
-  columns: columns$,
-  isLoggedIn: loggedIn$,
-  selectedIso: selectedIso$
-} as vm">
-    <summer [loggedIn]="vm.isLoggedIn"
-            [col]="vm.columns"
-            [selectedIso]="vm.selectedIso"
-    ></summer>
+    columns: columns$,
+    cornerRadius: cornerRadius$,
+    isLoggedIn: loggedIn$,
+    selectedIso: selectedIso$,
+    activeDetail: activeDetail$,
+    header: header$,
+    roles: roles$,
+    shrinkMenu: shrinkMenu$,
+    stateLayout: stateLayout$,
+    backgroundColorSummer: backgroundColorSummer$,
+    backgroundColorPanel: backgroundColorPanel$,
+    actionsBorderColorSummer: actionsBorderColorSummer$,
+    actionsBorderColorPanel: actionsBorderColorPanel$,
+    disableAddingNewPanels: disableAddingNewPanels$,
+ } as vm">
+
+    <mat-grid-list cols="20" rowHeight="18:13" gutterSize="0px">
+        <mat-grid-tile class="gap-tile"
+                       [colspan]="vm.stateLayout?.gapL"
+                       [rowspan]="vm.stateLayout?.gapL === 0 ? 0 : 13">
+        </mat-grid-tile>
+
+        <mat-grid-tile class="content-panel-tile-left"
+                       [colspan]="vm.stateLayout?.panelL"
+                       [rowspan]="vm.stateLayout?.panelL === 0 ? 0 : 13">
+
+            <panel [loggedIn]="vm.isLoggedIn"
+                   [cornerRadius]="vm.cornerRadius"
+                   [selectedIso]="vm.selectedIso"
+                   [header]="vm.header"
+                   [stateLayout]="vm.stateLayout"
+                   [backgroundColor]="vm.backgroundColorPanel"
+                   [actionsBorderColor]="vm.actionsBorderColorPanel"
+            ></panel>
+
+        </mat-grid-tile>
+
+        <mat-grid-tile class="menu-tile"
+                       [colspan]="vm.stateLayout?.menuL"
+                       [rowspan]="vm.stateLayout?.menuL === 0 ? 0 : 13">
+            <menu [loggedIn]="vm.isLoggedIn"
+                  [cornerRadius]="vm.cornerRadius"
+                  [selectedIso]="vm.selectedIso"
+                  [activeDetailInput]="vm.activeDetail"
+                  [header]="vm.header"
+                  [roles]="vm.roles"
+                  [closedMenu]="vm.shrinkMenu"
+                  [disableAddingNewPanels]="vm.disableAddingNewPanels"
+            ></menu>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="main-tile"
+                       [colspan]="vm.stateLayout?.center"
+                       [rowspan]="vm.stateLayout?.center === 0 ? 0 : 13">
+            <summer [loggedIn]="vm.isLoggedIn"
+                    [col]="vm.columns"
+                    [cornerRadius]="vm.cornerRadius"
+                    [selectedIso]="vm.selectedIso"
+                    [activeDetail]="vm.activeDetail"
+                    [header]="vm.header"
+                    [stateLayout]="vm.stateLayout"
+                    [backgroundColor]="vm.backgroundColorSummer"
+                    [actionsBorderColor]="vm.actionsBorderColorSummer"
+            ></summer>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="menu-tile"
+                       [colspan]="vm.stateLayout?.menuR"
+                       [rowspan]="vm.stateLayout?.menuR === 0 ? 0 : 13">
+            <menu [loggedIn]="vm.isLoggedIn"
+                  [cornerRadius]="vm.cornerRadius"
+                  [selectedIso]="vm.selectedIso"
+                  [activeDetailInput]="vm.activeDetail"
+                  [header]="vm.header"
+                  [roles]="vm.roles"
+                  [closedMenu]="vm.shrinkMenu"
+                  [disableAddingNewPanels]="vm.disableAddingNewPanels"
+            ></menu>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="content-panel-tile-right"
+                       [colspan]="vm.stateLayout?.panelR"
+                       [rowspan]="vm.stateLayout?.panelR === 0 ? 0 : 13">
+            <panel [loggedIn]="vm.isLoggedIn"
+                   [cornerRadius]="vm.cornerRadius"
+                   [selectedIso]="vm.selectedIso"
+                   [header]="vm.header"
+                   [stateLayout]="vm.stateLayout"
+                   [backgroundColor]="vm.backgroundColorPanel"
+                   [actionsBorderColor]="vm.actionsBorderColorPanel"
+            ></panel>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="gap-tile"
+                       [colspan]="vm.stateLayout?.gapR"
+                       [rowspan]="vm.stateLayout?.gapR === 0 ? 0 : 13">
+        </mat-grid-tile>
+    </mat-grid-list>
 </ng-container>

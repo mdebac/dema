@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  inset-block-start: 1.25em;
+  position: absolute;
+}
+
+ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+span {
+  margin-inline: 0.5em;
+}
+
+a {
+  color: #6244b0;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &.active {
+    color: #999;
+    font-style: italic;
+  }
+
+}

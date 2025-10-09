@@ -1,0 +1,247 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--secondary-color);
+$secondary-color: var(--primary-color);
+$corner-radius: var(--corner-radius);
+$justify-menu: var(--justify-menu);
+$justify-icon-close: var(--justify-icon-close);
+$sidenav-margin-left: var(--sidenav-margin-left);
+$sidenav-margin-right: var(--sidenav-margin-right);
+$mim-padding-right: var(--mim-padding-right);
+$mim-padding-left: var(--mim-padding-left);
+$activeMenuLinkBorderRadius: var(--active-menu-link-border-radius);
+
+.dashboard-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+  @include mat.card-overrides((
+          elevated-container-shape: $corner-radius,
+  ));
+}
+
+.dashboard-card-header {
+  //padding: 10px;
+}
+
+.dashboard-card-content {
+  //text-align: center;
+  overflow: hidden;
+  height: 100%;
+  padding: 0;
+  margin-bottom: 5px;
+  overflow-y: auto;
+}
+
+:host {
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+  overflow-y: auto;
+}
+
+.icon-display {
+  transform: scale(2);
+}
+
+.icon-display:hover {
+  transform: scale(2.3);
+  transition: all 300ms;
+}
+
+.icon-active {
+  color: $primary-color,
+}
+
+.menu-icon {
+  flex-grow: 0.2;
+  //justify-self: center;
+  //justify-items: center;
+  //justify-content: center;
+  padding: 1.5rem;
+  //padding-left: 1.5rem;
+  //margin-right: 20px;
+}
+
+.menu-icon-menu{
+  justify-self: center;
+  justify-items: center;
+  justify-content: center;
+  align-content: center;
+ // padding: 1.5rem;
+//  padding-right: 1.5rem
+  //padding-right: $mim-padding-right;
+  //padding-left: $mim-padding-left;
+}
+
+
+.menu-icon-close-left{
+  padding: 0;
+  margin: 0;
+  justify-self: end;
+}
+
+.menu-icon-close-right{
+  padding: 0;
+  margin: 0;
+  justify-self: start;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: row;
+  //justify-self: $justify-menu;
+  align-items: center;
+  justify-content: stretch;
+}
+
+.menu-text {
+  flex-grow: 0.8;
+  font-weight: bolder;
+  transition: all 300ms;
+  justify-content: stretch;
+  font-family: "Lato";
+}
+
+.linkic-first.mat-mdc-button-base:hover {
+  font-size:2.1rem;
+}
+.linkic.mat-mdc-button-base:hover {
+  font-size:2.1rem;
+}
+.linkic-active-first.mat-mdc-button-base:hover {
+  font-size:2.1rem;
+}
+.linkic-active.mat-mdc-button-base:hover {
+  font-size:2.1rem;
+}
+
+/*
+--corner-radius: 16px; --justify-menu: LEFT; --justify-icon-close: RIGHT; --sidenav-margin-left: 0; --sidenav-margin-right: 5px; --mim-padding-right: 0; --mim-padding-left: 1rem;
+--corner-radius: 16px; --justify-menu: LEFT; --justify-icon-close: RIGHT; --sidenav-margin-left: 0; --sidenav-margin-right: 5px; --mim-padding-right: 0; --mim-padding-left: 1rem;
+ */
+.linkic-first.mat-mdc-button-base {
+  //justify-content: space-between;
+  width: 100%;
+  display: block;
+  background-color: $primary-color;
+  color: $secondary-color;
+  height: 100px;
+  padding: 5px;
+  border-radius: 15px 15px 15px 15px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border-top: 3px solid $secondary-color;
+  border-bottom: 3px solid $secondary-color;
+  // font-weight: bold;
+  font-size: 2rem;
+}
+
+.linkic-active-first.mat-mdc-button-base {
+  width: 100%;
+  display: block;
+  background-color: $secondary-color;
+  color: $primary-color;
+
+  border-radius: $activeMenuLinkBorderRadius;
+
+  height: 100px;
+  padding: 5px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border-top: 3px solid $secondary-color;
+  border-bottom: 3px solid $secondary-color;
+
+  font-size: 2rem;
+}
+
+.linkic-active.mat-mdc-button-base {
+  width: 100%;
+  display: block;
+  background-color: $secondary-color;
+  color: $primary-color;
+  height: 100px;
+
+  padding: 5px;
+
+  border-radius: $activeMenuLinkBorderRadius;
+
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  //  border-top: 2px solid $secondary-color;
+  border-bottom: 3px solid $secondary-color;
+
+  font-size: 2rem;
+}
+
+.linkic.mat-mdc-button-base {
+  width: 100%;
+  display: block;
+  background-color: $primary-color;
+  color: $secondary-color;
+  height: 100px;
+
+  padding: 5px;
+  border-radius: 15px 15px 15px 15px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  //border-top: 3px solid $secondary-color;
+  border-bottom: 3px solid $secondary-color;
+
+  font-size: 2rem;
+}
+
+/*
+ 'container-color': map.get($deps, 'md-sys-color', 'surface'),
+     'container-color': map.get($deps, 'md-sys-color', 'surface-container-low'),
+     'container-elevation': map.get($deps, 'md-sys-elevation', 'level1'),
+     'container-shadow-color': map.get($deps, 'md-sys-color', 'shadow'),
+     'container-shape': map.get($deps, 'md-sys-shape', 'corner-medium'),
+ */
+
+:host {
+  width: 100%;
+  height: inherit;
+  background-color: $primary-color;
+  padding: 0;
+}
+
+.sidenav {
+
+//   box-shadow: 0.06rem 0 1.2rem 0 $secondary-color;
+  //margin-left: $sidenav-margin-left;
+  //margin-right: $sidenav-margin-right;
+
+  background-color: $primary-color;
+}
+
+
+.sidenav-collapsed {
+  width: 5rem;
+}
+
+
+.sidenav-nav {
+  width: 100%;
+  margin-bottom: 0.625rem;
+  display: flex;
+  //align-items: center;
+  height: 3rem;
+  //color: red;
+  text-decoration: none;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease;
+  font-size: 22px;
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.active {
+//  background-color: $secondary-color;
+}

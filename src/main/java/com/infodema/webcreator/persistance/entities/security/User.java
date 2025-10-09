@@ -1,10 +1,19 @@
 package com.infodema.webcreator.persistance.entities.security;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.ManyToMany;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,7 +21,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +28,6 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static jakarta.persistence.FetchType.EAGER;
 
 
@@ -30,7 +37,9 @@ import static jakarta.persistence.FetchType.EAGER;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "_user",
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"email", "host"}))
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 
@@ -40,22 +49,13 @@ public class User implements UserDetails, Principal {
     private String firstname;
     private String lastname;
     private LocalDate dateOfBirth;
-    @Column(unique = true)
     private String email;
     private String password;
     private boolean accountLocked;
     private boolean enabled;
     @ManyToMany(fetch = EAGER)
     private List<Role> roles;
-   // @OneToMany(mappedBy = "owner")
-   // private List<Book> books;
-  //  @OneToMany(mappedBy = "user")
-//private List<BookTransactionHistory> histories;
-
-    //jedan user jedan host
-   private String host;
-   //ako su apartmani, više pageva/main, jedan user, jedan host
-    //ako nisu,        jedan page/main,  jedan user MANAGER, jedan host
+    private String host;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -101,10 +101,6 @@ public class User implements UserDetails, Principal {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public String fullName() {
-        return getFirstname() + " " + getLastname();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.infodema.webcreator.services;
 
+import com.infodema.webcreator.config.security.CustomAuthentication;
 import com.infodema.webcreator.config.security.JwtService;
 import com.infodema.webcreator.domain.auth.AuthenticationRequest;
 import com.infodema.webcreator.domain.auth.AuthenticationResponse;
@@ -14,7 +15,6 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,9 +71,12 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
+                new CustomAuthentication(
+                        false,
                         request.getEmail(),
-                        request.getPassword()
+                        request.getHost(),
+                        request.getPassword(),
+                        null
                 )
         );
 

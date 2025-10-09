@@ -8,6 +8,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -15,11 +16,15 @@ import lombok.experimental.SuperBuilder;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Embeddable
+@EqualsAndHashCode
 @Data
 public class ItemIsoEntity {
 
+    @EqualsAndHashCode.Exclude
     @Column(length = 2500)
     private String description;
+
+    @EqualsAndHashCode.Exclude
     private String title;
 
     @Column(nullable = false)

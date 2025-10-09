@@ -7,6 +7,8 @@ import com.infodema.webcreator.persistance.repositories.ItemRepository;
 import com.infodema.webcreator.domain.core.Item;
 import com.infodema.webcreator.domain.mappers.ItemMapper;
 import com.infodema.webcreator.domain.enums.Chip;
+import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
+import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ public class ItemService {
     private final DetailRepository detailRepository;
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Item newItem(Long detailId, Item payload, MultipartFile file) {
@@ -65,18 +69,7 @@ public class ItemService {
         return itemMapper.toDomain(item);
     }
 
-
-    @Transactional
     public void deleteItemById(Long itemId) {
-
-        ItemEntity old = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("delete Item: old Item was not found with id [" + itemId + "]"));
-
-      //  if(fileStorageService.deleteFile(oldApartmentEntity.getLogoUrl())){
-       //     //uspjesno obrisan file
-       // }else {
-      //      throw new RuntimeException("Could not delete file");
-      //7  }
-
         log.info("Deleting item from {}", itemId);
         itemRepository.deleteById(itemId);
     }

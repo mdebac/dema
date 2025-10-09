@@ -52,6 +52,7 @@ $accept-color: var(--accept-color);
   margin: 15px;
   background-color: $primary-color;
   overflow-y: auto;
+  color: $secondary-color;
   //scrollbar-color: $secondary-color $primary-color;
 }
 
@@ -79,8 +80,14 @@ $accept-color: var(--accept-color);
       width: 100%;
     }
   }
+}
 
-
-
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border: 2px solid $secondary-color;
 }
 

@@ -2,14 +2,14 @@ import {Component, Inject, inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatLabel } from '@angular/material/form-field';
-import {MatButton, MatFabButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'conformation-dialog',
     templateUrl: './conformation-dialog.component.html',
     styleUrl: './conformation-dialog.component.scss',
-    imports: [MatCard, MatCardContent, MatLabel, MatButton, TranslatePipe, MatFabButton]
+    imports: [MatCard, MatCardContent, MatLabel, MatButton, TranslatePipe]
 })
 export class ConformationDialogComponent {
 

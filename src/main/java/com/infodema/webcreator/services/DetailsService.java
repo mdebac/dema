@@ -1,23 +1,21 @@
 package com.infodema.webcreator.services;
 
-import com.infodema.webcreator.domain.core.Detail;
+import com.infodema.webcreator.domain.core.*;
+import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.domain.mappers.DetailMapper;
-import com.infodema.webcreator.domain.mappers.MainMapper;
+import com.infodema.webcreator.domain.mappers.MenuMapper;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
-import com.infodema.webcreator.persistance.repositories.DetailRepository;
-import com.infodema.webcreator.persistance.repositories.ItemRepository;
-import com.infodema.webcreator.persistance.repositories.MainRepository;
+import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
+import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
+import com.infodema.webcreator.persistance.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,90 +24,161 @@ public class DetailsService {
     private static final String NOT_FOUND = "Details was not found";
 
     private final MainRepository mainRepository;
+    private final MenuRepository menuRepository;
+    private final PanelRepository panelRepository;
     private final ItemRepository itemRepository;
     private final DetailRepository detailRepository;
-    private final MainMapper mainMapper;
     private final DetailMapper detailMapper;
-
+    private final MenuMapper menuMapper;
+    private final MenuService menuService;
+    private final PanelService panelService;
 
     @Transactional
-    public Detail addToMain(Long mainId, Detail payload) {
-        log.info("Adding Detail to Main {}", mainId);
+    public Detail create(Detail payload) {
 
-        MainEntity mainEntity = mainRepository.findById(mainId)
-                .orElseThrow(() -> new EntityNotFoundException("No Main found with ID:: " + mainId));
+        Menu menu;
+        if (payload.getMenu().getId() == null) {
+
+            MenuIso eng = payload.getMenu().getIso().stream().filter(i -> i.getIso().equals(Country.EN.getCountryCode())).findFirst().orElseThrow();
+            Set<PanelIso> panelIso = new HashSet<>();
+            panelIso.add(PanelIso.builder()
+                    .title(eng.getTitle())
+                    .iso(Country.EN.getCountryCode())
+                    .build()
+            );
+            payload.getPanel().setIso(panelIso);
+            payload.getPanel().setOrderNum(1);
+            menu = menuService.addMenu(payload.getMenu());
+        } else {
+            menu = menuService.updateMenu(payload.getMenu().getId(), payload.getMenu());
+        }
+
+        Panel panel;
+        if (payload.getPanel().getId() == null) {
+            panel = panelService.addPanel(menu.getId(), payload.getPanel());
+        } else {
+            panel = panelService.updatePanel(menu.getId(), payload.getPanel());
+        }
+
+        if (payload.getId() == null) {
+            return addDetail(menu.getId(), panel.getId(), payload);
+        } else {
+            return updateDetail(payload.getId(), payload);
+        }
+
+    }
+
+    @Transactional
+    public Detail addDetail(Long menuId, Long panelId, Detail payload) {
+
+        if (menuId == null || panelId == null) {
+            throw new RuntimeException(NOT_FOUND);
+        }
+
+        log.info("Adding Detail to menuId {}, panelId {}", menuId, panelId);
+
+        MenuEntity menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new EntityNotFoundException("No Menu found with ID:: " + menuId));
+
+        PanelEntity panel = panelRepository.findById(panelId)
+                .orElseThrow(() -> new EntityNotFoundException("No Panel found with ID:: " + panelId));
+
 
         DetailEntity detailEntity = detailMapper.toEntity(payload);
-        detailEntity.setMain(mainEntity);
+        detailEntity.setMenu(menu);
+        detailEntity.setPanel(panel);
 
         detailRepository.save(detailEntity);
         return detailMapper.toDomain(detailEntity);
+
     }
 
     @Transactional
-    public void removeFromMain(Long mainId, Long id) {
-        log.info("Removing detail {} from Main {}", id, mainId);
+    public void removeDetail(Long mainId, Long menuId, Long panelId, Long detailId) {
+        log.info("Removing detail {}", detailId);
+        if (menuRepository.countByMain_Id(mainId) == 1) {
+            if (panelRepository.countByMenu_Id(menuId) == 1) {
+                throw new RuntimeException("Minimum one");
+            }else{
+                itemRepository.deleteByDetail_Id(detailId);
+                detailRepository.deleteById(detailId);
+                panelService.removePanel(menuId, panelId, detailId);
+            }
+        }else{
 
-        if(detailRepository.countByMain_Id(mainId) == 1){
-                throw new RuntimeException("Cant delete, Min one");
+            itemRepository.deleteByDetail_Id(detailId);
+            detailRepository.deleteById(detailId);
+
+            if (panelRepository.countByMenu_Id(menuId) == 1) {
+                menuService.removeMenu(mainId, menuId);
+            }else{
+                panelService.removePanel(menuId, panelId, detailId);
+            }
+
         }
-
-        itemRepository.deleteByDetail_Id(id);
-        detailRepository.deleteById(id);
     }
 
     @Transactional
-    public Detail updateInMain(Long mainId, Long id, Detail payload) {
-        log.info("Updating Detail {} from Main {}", id, mainId);
+    public Detail updateDetail(Long id, Detail payload) {
+        log.info("Updating Detail {}", id);
 
-        DetailEntity entity = detailRepository.findById(id).orElseThrow(() -> {
-            log.warn("Detail {} was not found for updating in Main {}", id, mainId);
-            return new RuntimeException(NOT_FOUND);
-        });
-        if (!entity.getMain().getId().equals(mainId)) {
-            log.warn("Detail {} does not belong to Main {}", id, mainId);
-            throw new RuntimeException("Detail does not belong to Main");
-        }
+        menuService.updateMenu(payload.getMenu().getId(), payload.getMenu());
+        panelService.updatePanel(payload.getPanel().getId(), payload.getPanel());
+
+        DetailEntity entity = detailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND));
 
         detailMapper.updateEntityByModel(entity, payload);
+
         return detailMapper.toDomain(detailRepository.save(entity));
     }
 
 
-    public void deleteAll(Long mainId) {
-        log.info("Deleting all details from Main id {}", mainId);
-        detailRepository.deleteByMain_Id(mainId);
-    }
+    @Transactional
+    public Menu updateMenuInMain(Long mainId, Long id, Menu payload) {
+        log.info("Updating Menu {} from Main {}", id, mainId);
 
-    public Detail findDetailByUrlLabels(String host, String detailLabel) {
+        MenuEntity entity = menuRepository.findById(id).orElseThrow(() -> {
+            log.warn("Menu {} was not found for updating in Main {}", id, mainId);
+            return new RuntimeException(NOT_FOUND);
+        });
 
-        MainEntity entity = mainRepository.findByHost(host)
-                .orElseThrow(() -> new RuntimeException("Main was not found with label [" + host + "]"));
-
-        if (detailLabel == null || detailLabel.isEmpty()) {
-            return detailMapper.toDomain(
-                    detailRepository.findByMainIdOrderByMainAsc(entity.getId()).stream().findFirst().orElseThrow(() -> new RuntimeException("first Detail was not found with host [" + host + "] an detailLabel [" + detailLabel + "]")));
-
-
-        } else if (entity.getDetails().stream().anyMatch(e -> e.getTitleUrl().equals(detailLabel))) {
-            return detailMapper.toDomain(
-                    detailRepository.findByTitleUrlAndMainId(detailLabel, entity.getId()).orElseThrow(() -> new RuntimeException("Detail was not found with host [" + host + "] an detailLabel [" + detailLabel + "]")));
-
-        }else{
-           throw new RuntimeException("Cant find detail by label [" + detailLabel + "]");
+        entity.setSide(payload.getSide());
+        entity.setLayout(payload.getLayout());
+        if (!entity.getMain().getId().equals(mainId)) {
+            log.warn("Menu {} does not belong to Main {}", id, mainId);
+            throw new RuntimeException("Menu does not belong to Main");
         }
 
+        menuMapper.updateEntityByModel(entity, payload);
+        return menuMapper.toDomain(menuRepository.save(entity));
     }
 
+    public void deleteAll(Long menuId) {
+        log.info("Deleting all details from Menu id {}", menuId);
+        detailRepository.deleteByMenu_Id(menuId);
+    }
 
+    @Transactional(readOnly = true)
+    public Detail findDetailByUrlLabels(String host, String menuUrl, String menuPanelUrl) {
+
+        MainEntity mainHostEntity = mainRepository.findByHost(host)
+                .orElseThrow(() -> new RuntimeException("Main was not found with label [" + host + "]"));
+
+        mainHostEntity.getMenus().forEach(mainMenuEntity -> {
+            System.out.println("menuUrl--" + mainMenuEntity.getMenuUrl());
+        });
+
+        MenuEntity menu = mainHostEntity.getMenus().stream().filter(a -> a.getMenuUrl().equals(menuUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Menu was not found with menuUrl [" + menuUrl + "]"));
+
+        PanelEntity panel = menu.getPanels().stream().filter(a -> a.getPanelUrl().equals(menuPanelUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Panel was not found with panelUrl [" + menuPanelUrl + "]"));
+
+        return detailMapper.toDomain(
+                detailRepository.findByMenu_IdAndPanel_Id(menu.getId(), panel.getId()).orElseThrow(() -> new RuntimeException("Detail was not found by menu [" + menu.getId() + "] and panel [" + panel.getId() + "]")));
+    }
+
+    @Transactional(readOnly = true)
     public Detail findDetailByDetailId(Long detailId) {
         return detailMapper.toDomain(detailRepository.findById(detailId).orElseThrow(() -> new RuntimeException("Detail was not found with detailId [" + detailId + "]")));
-    }
-
-    public List<Detail> findDetailByMainId(Long mainId) {
-        return detailMapper.toDomain(
-                detailRepository.findByMainIdOrderByMainAsc(mainId).stream().toList());
-
     }
 
 }

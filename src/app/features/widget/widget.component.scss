@@ -1,28 +1,33 @@
 @use '@angular/material' as mat;
 
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$shadow-color: var(--shadow-color);
+
 :host{
   display: block;
   border-radius: var(--cornerRadius);
   grid-row: span var(--rowSpan);
   grid-column: span var(--colSpan);
   min-height: var(--minHeight);
+  @include mat.icon-overrides((
+          color: $primary-color,
+  ));
 }
 
-.container{
-  position: relative;
-  height: 100%;
-  width: 100%;
-  padding: 0;
- // padding: 30px;
- // margin: 10px;
+.mat-mdc-mini-fab{
+  background-color: $secondary-color;
+}
+
+.containery{
   box-sizing: border-box;
   border-radius: inherit;
-  overflow: hidden;
   background-color: var(--backgroundColor);
+  box-shadow: 0 0 15px 3px $shadow-color;
 }
 
 .settings-button{
-  position: absolute;
   top:20px;
   right: 20px;
+  justify-self: end;
 }

@@ -1,15 +1,15 @@
-<div class="container title" [ngClass]="[elevation]">
+<div class="containery">
 
     <div class="settings-button">
-        <button *ngIf="loggedIn" mat-mini-fab color="primary" (click)="updateItemSettings(data?.colors,data?.item)"
+        <button *ngIf="loggedIn" mat-mini-fab  (click)="updateItemSettings(data?.colors,data?.item)"
                 aria-label="Settings">
             <mat-icon>settings</mat-icon>
         </button>
-        <button *ngIf="loggedIn" mat-mini-fab color="primary"
+        <button *ngIf="loggedIn" mat-mini-fab
                 (click)="updateItem(data?.languages,data?.colors,data?.item)">
             <mat-icon>edit</mat-icon>
         </button>
-        <button *ngIf="loggedIn" mat-mini-fab color="danger" (click)="deleteItem(data?.item)">
+        <button *ngIf="loggedIn" mat-mini-fab (click)="deleteItem(data?.item)">
             <mat-icon>delete</mat-icon>
         </button>
     </div>
@@ -25,7 +25,7 @@
     @if (data?.item?.chip === Chip.JOB) {
         @if (data?.component) {
             <ng-container
-                    *ngComponentOutlet="data.component; inputs: {  itemId: dataId, item: dataIso, selectedIso: selectedIso}">
+                    *ngComponentOutlet="data.component; inputs: {  itemId: dataId, item: dataIso, selectedIso: selectedIso, loggedIn: loggedIn}">
             </ng-container>
         }
     }

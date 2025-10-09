@@ -1,6 +1,10 @@
 package com.infodema.webcreator.domain.core;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Data;
+import lombok.Builder;
 
 @Data
 @AllArgsConstructor

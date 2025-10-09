@@ -9,14 +9,14 @@ import java.util.Optional;
 
 @Repository
 public interface DetailRepository extends JpaRepository<DetailEntity, Long> {
-    void deleteByMain_Id(Long mainId);
+    void deleteByMenu_Id(Long mainId);
 
-    Optional<DetailEntity> findByTitleUrlAndMainId(String title, Long mainId);
+    Optional<DetailEntity> findByMenu_IdAndPanel_Id(Long menuId, Long panelId);
 
     //@EntityGraph(attributePaths = "details")
-    List<DetailEntity> findByMainIdOrderByMainAsc(Long mainId);
+    //List<DetailEntity> findByMenuIdOrderByMainAsc(Long mainId);
 
     Optional<DetailEntity> findById(Long id);
 
-    long countByMain_Id(Long id);
+    long countByMenu_Id(Long id);
 }

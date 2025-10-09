@@ -20,7 +20,7 @@ import {
     MatHeaderRowDef,
     MatHeaderRow,
     MatRowDef,
-    MatRow, MatTableDataSource
+    MatRow,
 } from '@angular/material/table';
 import {MainTableDatasource} from "./main-table-datasource";
 import {merge, Subject, tap} from "rxjs";
@@ -32,17 +32,15 @@ import {MatIcon} from '@angular/material/icon';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {Chip} from "../../domain/chip.enum";
 import {Apartment} from "../../domain/apartment";
-import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
-import {Colors} from "../../domain/colors";
 import {ApartmentDialogComponent} from "../dialogs/apartment-dialog/apartment-dialog.component";
-import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Customer} from "../../domain/customer";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {NgFor} from "@angular/common";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {getAllRoles, Roles} from "../../domain/roles";
+import {AuthStore} from "../../services/authentication/auth-store";
 
 @Component({
     selector: 'my-apartments-table',
@@ -67,11 +65,10 @@ import {NgFor} from "@angular/common";
         MatHeaderRow,
         MatRowDef,
         MatRow,
-        MatPaginator,
         MatFabButton,
         TranslatePipe,
-        MatFormField,
-        MatInput,
+        MatSelect,
+        MatOption,
     ],
     animations: [
         trigger('detailExpand', [
@@ -85,6 +82,7 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
     store = inject(ApartmentStore);
     dialog = inject(MatDialog);
     router = inject(Router);
+    authStore = inject(AuthStore);
     translateService = inject(TranslateService);
 
     @Input() chip: Chip | null = null;
@@ -103,19 +101,28 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
     /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
     displayedColumns = ['customers','actions', 'domain'];
     innerDisplayedColumns = ['name', 'email', 'role'];
-
+    isAdmin: boolean = false;
     expandedElement: Apartment | null = null;
-
+    rolesToChoose: string[] =  ["MANAGER", "USER"];
+   // selectedValue2: string = '';
     constructor() {
+        this.isAdmin = this.authStore.authorize(Roles.ADMIN);
         this.dataSource = new MainTableDatasource(this.store);
         this.dataSource.loadApartments();
+    }
+
+    changeRole(userId: number, role:string){
+
+        console.log("userId",userId);
+        console.log("role",role);
+
+       // this.store.updateUserRoleEffect({userId: userId, role: role});
     }
 
     ngAfterViewInit(): void {
         // this.dataSource.sort = this.sort;
         //this.dataSource.paginator = this.paginator;
         // this.table.dataSource = this.dataSource;
-
 
         // reset the paginator after sorting
      /*   this.sort.sortChange.pipe(
@@ -131,16 +138,16 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
 */
     }
 
-    loadApartmentsPage() {
-
-        this.dataSource.loadApartments(
-            this.chip,
-            this.title,
-            this.sort.direction,
-            this.paginator.pageIndex,
-            this.paginator.pageSize,
-        );
-    }
+    // loadApartmentsPage() {
+    //
+    //     this.dataSource.loadApartments(
+    //         this.chip,
+    //         this.title,
+    //         this.sort.direction,
+    //         this.paginator.pageIndex,
+    //         this.paginator.pageSize,
+    //     );
+    // }
 
     ngOnInit() {
     }
@@ -171,30 +178,6 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
         );
     }
 
-
-    createApartmentDetail(apartment: Apartment) {
-        console.log("(click) createApartmentDetail apartment", apartment);
-
-        const detail: Partial<ApartmentDetail> = {mainId: apartment.id}
-        const color: Partial<Colors> = {
-            primaryColor: apartment.primaryColor,
-            secondaryColor: apartment.secondaryColor,
-        }
-
-        const data: ApartmentDetailDialogData = {
-            languages: apartment.iso.map(iso => iso.iso),
-            detail: detail,
-            colors: color,
-            host: apartment.host,
-        }
-
-        this.openApartmentDetailDialog(data).pipe(
-            filter(val => !!val),
-            takeUntil(this.unsubscribe$)
-        ).subscribe(detailProps => this.store.createDetailEffect(detailProps));
-
-    }
-
     updateApartment(apartment: Apartment) {
         console.log("updateApartment", apartment);
         this.openApartmentDialog(apartment).pipe(
@@ -217,29 +200,20 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
         return dialogRef.afterClosed();
     }
 
-    openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
-        const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '400px',
-            data: {
-                ...data
-            },
-        });
-        return dialogRef.afterClosed();
-    }
 
-    toggleRow(element: Apartment) {
-        element.customersDS && (element.customersDS as MatTableDataSource<Customer>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+    // toggleRow(element: Apartment) {
+    //     element.customersDS && (element.customersDS as MatTableDataSource<Customer>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+    //
+    //     console.log("--");
+    //     // this.cd.detectChanges();
+    //     // @ts-ignore
+    //   //  this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).sort = this.innerSort?.toArray()[index]);
+    // }
 
-        console.log("--");
-        // this.cd.detectChanges();
-        // @ts-ignore
-      //  this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).sort = this.innerSort?.toArray()[index]);
-    }
-
-    applyFilter(event: any) {
-        console.log("applyFilter", event.value);
-        this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).filter = event.value.trim().toLowerCase());
-    }
+    // applyFilter(event: any) {
+    //     console.log("applyFilter", event.value);
+    //     this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).filter = event.value.trim().toLowerCase());
+    // }
 
     onToggleCustomers(element: Apartment){
         console.log("onToggleCustomers", element);
@@ -254,6 +228,8 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
         return this.translateService.instant(colName + '.customer.table')
     }
 
+    protected readonly getAllRoles = getAllRoles;
+    protected readonly Roles = Roles;
 }
 
 

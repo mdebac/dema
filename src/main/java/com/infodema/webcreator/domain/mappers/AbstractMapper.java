@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMapper {
 
+
+
     public static <A, B> List<A> convertCollection(List<B> list, Function<B, A> convertFunction) {
         return Optional.ofNullable(list).orElseGet(Collections::emptyList).stream()
                 .map(convertFunction)

@@ -1,5 +1,5 @@
 export interface ApartmentDetailIso {
-  label :string;
+  //label :string;
   title: string;
   iso: string;
 }
