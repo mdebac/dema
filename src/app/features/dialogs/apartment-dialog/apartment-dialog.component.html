@@ -201,5 +201,42 @@
 
         </div>
 
+
+        <div class="dialog-right text">
+            <div class="row-input-container-left">
+
+                <mat-label>Background Image</mat-label>
+                <br>
+                <input
+                        (change)="selectBackgroundImage($event)"
+                        class="form-control"
+                        type="file"
+                        id="backgroundImage"
+                        accept="image/*"
+                >
+                <mat-error></mat-error>
+            </div>
+
+            <div class="row-input-container-left">
+                @if (showBackgroundImage) {
+                    <img width="100" src="{{showBackgroundImage}}" alt=""/>
+                    <mat-checkbox (change)="removePictureBackground($event)">
+                        {{ "remove.image" | translate }}
+                    </mat-checkbox>
+                }
+                <br>
+                {{ toBigBackgroundImage }}
+                <br>
+
+                @if (showBackgroundImage) {
+                    {{rate}}
+                    <mat-slider min="0" max="100000" step="1000" showTickMarks discrete [displayWith]="formatLabel" >
+                        <input matSliderThumb value="rate" (valueChange)="changeSlider($event)">
+                    </mat-slider>
+                }
+            </div>
+
+        </div>
+
     </mat-card-content>
 </mat-card>

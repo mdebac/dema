@@ -2,10 +2,8 @@
 
     <mat-card class="dashboard-card">
         <mat-card-header>
-
             <!--            <breadcrumbs [breadcrumbs]="breadcrumbs"></breadcrumbs>-->
-
-            @if (isAdmin || isManager) {
+            @if (isAdmin() || isManager()) {
                 <!-- if admin/manager -->
                 <div class="header-actions">
 
@@ -45,7 +43,6 @@
                                 <button mat-flat-button (click)="fullScreen(activeDetail)">
                                     <mat-icon style="transform: rotate(90deg)">expand</mat-icon>
                                     {{ "summer.full.screen" | translate }}
-
                                 </button>
                             } @else {
                                 <button mat-flat-button (click)="center(activeDetail)">
@@ -58,7 +55,6 @@
                                 <button mat-flat-button (click)="panelOff(activeDetail)">
                                     <i class="fa fa-columns" aria-hidden="true"></i>
                                     {{ "summer.panel.off" | translate }}
-
                                 </button>
                             } @else {
                                 <button mat-flat-button (click)="panelOn(activeDetail)">
@@ -68,7 +64,6 @@
                             }
                         </div>
                     </mat-menu>
-
 
                     <button mat-flat-button [matMenuTriggerFor]="menuColumns">
                         <i class="fa-solid fa-table-cells"></i>
@@ -86,15 +81,14 @@
                         </mat-button-toggle-group>
                     </mat-menu>
 
-
                     <div class="button-container">
-                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors)">
+                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors, header?.host)">
                             <mat-icon>add_circle</mat-icon>
                             {{ "summer.new.item" | translate }}
                         </button>
                     </div>
                     <div class="button-container">
-                        <button mat-flat-button (click)="updateDetail(header, activeDetail)">
+                        <button mat-flat-button (click)="updateTitlesAndIcons(header, activeDetail)">
                             <mat-icon>update</mat-icon>
                             {{ "title.and.icons" | translate }}
                         </button>
@@ -106,7 +100,6 @@
                             {{ "delete.page" | translate }}
                         </button>
                     </div>
-
                 </div>
             }
             <div class="header-title">
@@ -123,23 +116,21 @@
                     </div>
                 </div>
             </div>
-
         </mat-card-header>
-
 
         @if (activeDetail?.items) {
             <mat-card-content
                     cdkDropList
-                    [cdkDropListDisabled]="false"
+                    [cdkDropListDisabled]="!(isAdmin || isManager)"
                     [cdkDropListData]="activeDetail!.items"
                     (cdkDropListDropped)="drop($event)"
             >
                 @for (data of activeDetail?.items; track data.id) {
 
                     @if (activeDetail && activeDetail?.iso) {
-                        <widget [loggedIn]="loggedIn" [selectedIso]="selectedIso" [columns]="activeDetail.columns"
+                        <widget [loggedIn]="loggedIn"  [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso" [columns]="activeDetail.columns"
                                 cdkDrag
-                                [data]="transformItemToWidget(activeDetail, data, header?.colors)"></widget>
+                                [data]="transformItemToWidget(activeDetail, data, header?.colors, header?.host)"></widget>
                     }
                 }
             </mat-card-content>

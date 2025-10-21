@@ -13,8 +13,11 @@ public interface DetailRepository extends JpaRepository<DetailEntity, Long> {
 
     Optional<DetailEntity> findByMenu_IdAndPanel_Id(Long menuId, Long panelId);
 
+
     //@EntityGraph(attributePaths = "details")
     //List<DetailEntity> findByMenuIdOrderByMainAsc(Long mainId);
+
+    List<DetailEntity> findByMenu_Id(Long menuId);
 
     Optional<DetailEntity> findById(Long id);
 

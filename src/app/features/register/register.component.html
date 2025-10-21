@@ -1,34 +1,86 @@
-<div class="container-fluid card login-container">
-  <h3 class="text-center">Create an account</h3>
-  <hr>
-  <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
-    <p *ngFor="let msg of errorMsg">{{msg}}</p>
-  </div>
-  <div class="mb-3">
-    <label for="firstname" class="form-label">Firstname</label>
-    <input [(ngModel)]="registerRequest.firstname" type="text" class="form-control" id="firstname" placeholder="Firstname">
-  </div>
-  <div class="mb-3">
-    <label for="lastname" class="form-label">Lastname</label>
-    <input [(ngModel)]="registerRequest.lastname" type="text" class="form-control" id="lastname" placeholder="Lastname">
-  </div>
-  <div class="mb-3">
-    <label for="login" class="form-label">Email address</label>
-    <input [(ngModel)]="registerRequest.email" type="email" class="form-control" id="login" placeholder="name@example.com">
-  </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input [(ngModel)]="registerRequest.password" type="password" class="form-control" id="password" placeholder="Password">
-  </div>
-  <div class="d-flex justify-content-between mb-3">
-    <button (click)="register()" type="button" class="btn btn-primary">
-      <em class="fas fa-sign-in-alt">&nbsp;Create an account</em>
-    </button>
-    <div>
-      Already have an account?&nbsp;
-      <button (click)="login()" type="button" class="btn btn-link">
-        Login
-      </button>
-    </div>
-  </div>
-</div>
+<ng-container>
+    <mat-card class="dashboard-card">
+        <mat-card-header>
+
+            <div class="loginSpace">
+
+                <div class="gap1Space">
+                </div>
+
+                <div class="contentSpace">
+                    <h3 class="text-center"><b>Create an account</b>></h3>
+                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
+                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>
+                    </div>
+                </div>
+
+                <div class="gap2Space">
+                </div>
+            </div>
+
+        </mat-card-header>
+
+        <mat-card-content>
+            <div class="loginSpace">
+
+                <div class="gap1Space">
+                </div>
+
+                <div class="contentSpace">
+                    <div>
+                        <label for="firstname" class="form-label">Firstname</label>
+                        <input [(ngModel)]="registerRequest.firstname" type="text" class="form-control" id="firstname"
+                               placeholder="Firstname">
+                    </div>
+                    <br>
+                    <div>
+                        <label for="lastname" class="form-label">Lastname</label>
+                        <input [(ngModel)]="registerRequest.lastname" type="text" class="form-control" id="lastname"
+                               placeholder="Lastname">
+                    </div>
+                    <br>
+                    <div>
+                        <label for="login" class="form-label">Email address</label>
+                        <input [(ngModel)]="registerRequest.email" type="email" class="form-control" id="login"
+                               placeholder="name@example.com">
+                    </div>
+                    <br>
+                    <div>
+                        <label for="password" class="form-label">Password</label>
+                        <input [(ngModel)]="registerRequest.password" type="password" class="form-control" id="password"
+                               placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="gap2Space">
+                </div>
+            </div>
+        </mat-card-content>
+
+        <mat-card-footer>
+
+            <div class="loginSpace">
+
+                <div class="gap1Space">
+                </div>
+
+                <div class="contentSpaceActions">
+                    <div>
+                        <button mat-fab extended (click)="register()">
+                            Create an account
+                        </button>
+                    </div>
+                    <div>
+                        Already have an account?&nbsp;
+                        <button mat-fab extended (click)="login()">
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gap2Space">
+            </div>
+        </mat-card-footer>
+    </mat-card>
+</ng-container>

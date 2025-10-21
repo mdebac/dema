@@ -35,16 +35,20 @@ $secondary-color: var(--secondary-color);
   border-radius: 10px;
   padding: .5rem 2rem;
   margin-bottom: 1rem;
-
 }
 
 .mylabel{
   grid-column: span 2;
   padding-top: 10px;
+ padding-right: 10px;
 }
 .myicon{
   margin-top: 10px;
   margin-left: 2px;
+}
+
+.mat-mdc-form-field.full{
+  width: 100%;
 }
 
 .flexLayout{

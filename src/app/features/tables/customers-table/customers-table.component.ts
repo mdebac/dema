@@ -22,30 +22,30 @@ import {
     MatRowDef,
     MatRow,
 } from '@angular/material/table';
-import {MainTableDatasource} from "./main-table-datasource";
+import {MainTableDatasource} from "../main-table-datasource";
 import {merge, Subject, tap} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {filter, takeUntil} from "rxjs/operators";
 import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
 import {Router, RouterLinkActive} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
-import {ApartmentStore} from "../../services/apartments-store.service";
-import {Chip} from "../../domain/chip.enum";
-import {Apartment} from "../../domain/apartment";
-import {ApartmentDialogComponent} from "../dialogs/apartment-dialog/apartment-dialog.component";
-import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
+import {ApartmentStore} from "../../../services/apartments-store.service";
+import {Chip} from "../../../domain/chip.enum";
+import {Apartment} from "../../../domain/apartment";
+import {ApartmentDialogComponent} from "../../dialogs/apartment-dialog/apartment-dialog.component";
+import {ConformationDialogComponent} from "../../dialogs/conformation-dialog/conformation-dialog.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {Customer} from "../../domain/customer";
+import {Customer} from "../../../domain/customer";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {NgFor} from "@angular/common";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {getAllRoles, Roles} from "../../domain/roles";
-import {AuthStore} from "../../services/authentication/auth-store";
+import {getAllRoles, Roles} from "../../../domain/roles";
+import {AuthStore} from "../../../services/authentication/auth-store";
 
 @Component({
-    selector: 'my-apartments-table',
-    templateUrl: './main-table.component.html',
-    styleUrls: ['./main-table.component.scss'],
+    selector: 'customers-table',
+    templateUrl: './customers-table.component.html',
+    styleUrls: ['./customers-table.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [MainTableDatasource],
     imports: [
@@ -78,7 +78,7 @@ import {AuthStore} from "../../services/authentication/auth-store";
         ]),
     ],
 })
-export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
+export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy {
     store = inject(ApartmentStore);
     dialog = inject(MatDialog);
     router = inject(Router);
@@ -104,19 +104,15 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
     isAdmin: boolean = false;
     expandedElement: Apartment | null = null;
     rolesToChoose: string[] =  ["MANAGER", "USER"];
-   // selectedValue2: string = '';
+
     constructor() {
         this.isAdmin = this.authStore.authorize(Roles.ADMIN);
         this.dataSource = new MainTableDatasource(this.store);
-        this.dataSource.loadApartments();
+        this.dataSource.loadDomains();
     }
 
     changeRole(userId: number, role:string){
-
-        console.log("userId",userId);
-        console.log("role",role);
-
-       // this.store.updateUserRoleEffect({userId: userId, role: role});
+       this.store.updateUserRoleEffect({userId: userId, role: role});
     }
 
     ngAfterViewInit(): void {
@@ -171,7 +167,6 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe(confirm => {
                 if (confirm) {
-                    console.log("delete Page")
                     this.store.deleteApartmentByIdEffect(id)
                 }
             }
@@ -179,13 +174,14 @@ export class MainTableComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     updateApartment(apartment: Apartment) {
-        console.log("updateApartment", apartment);
+        console.log("updateApartment dialog enter", apartment);
         this.openApartmentDialog(apartment).pipe(
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
-                this.store.createApartmentEffect(detailProps);
-                window.location.reload();
+            console.log("updateApartment dialog finish", detailProps);
+             this.store.createMainEffect(detailProps);
+             window.location.reload();
             }
         );
     }

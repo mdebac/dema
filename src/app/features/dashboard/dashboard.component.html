@@ -27,11 +27,14 @@
                 </mat-card-header>
                 <mat-card-content>
                     @if (isAdmin || isManager){
-                        <my-apartments-table
+                        <customers-table
                                 [chip]="vm.chip"
                                 [title]="vm.title"
                                 [apartmentsCount]="vm.apartmentsCount"
-                        ></my-apartments-table>
+                        ></customers-table>
+                    }
+                    @if (isUser && vm.header?.host === Hosts.ADRIATICSUN_EU){
+                        //user status table
                     }
                 </mat-card-content>
             </mat-card>
@@ -46,6 +49,4 @@
 <!--            ></panel>-->
         </mat-grid-tile>
     </mat-grid-list>
-
-
 </ng-container>

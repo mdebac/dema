@@ -1,0 +1,7 @@
+<ng-container *ngrxLet="{
+        pageCount: pageCount$,
+        } as vm">
+<domains-table
+        [pageCount]="vm.pageCount"
+></domains-table>
+</ng-container>

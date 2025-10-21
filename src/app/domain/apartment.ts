@@ -13,7 +13,7 @@ export interface Apartment extends Audit {
   owner: User | null;
   detailId: number | null;
 
-  rate: number | null;
+  //rate: number | null;
 
   primaryColor: string | null;
   secondaryColor: string | null;
@@ -28,11 +28,14 @@ export interface Apartment extends Audit {
   acceptColor: string | null;
   acceptColorLight: string | null;
   removePicture: boolean;
+  removePictureBackground: boolean;
+  linearPercentage: number;
 
   file: Blob | null;
   comments: ApartmentComment[];
   details: ApartmentDetail[];
-  image: any;
+  image: File | null;
+  imageBackground: File | null;
   iso: ApartmentIso[];
 
   customers: Customer[];

@@ -24,6 +24,7 @@ $shadow-color: var(--shadow-color);
   border-radius: inherit;
   background-color: var(--backgroundColor);
   box-shadow: 0 0 15px 3px $shadow-color;
+ height: 100%;
 }
 
 .settings-button{

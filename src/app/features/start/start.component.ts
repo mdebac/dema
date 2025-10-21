@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {Observable, of, Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {filter, map, takeUntil} from "rxjs/operators";
 import {defaultIso} from "../../domain/countries-iso";
 import {ApartmentIso} from "../../domain/apartment-iso";
@@ -20,10 +20,9 @@ import {Colors} from "../../domain/colors";
 import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {Header} from "../../domain/header";
-import {Title} from "@angular/platform-browser";
+import {DomSanitizer, Title} from "@angular/platform-browser";
 import {Menu} from "../../domain/menu";
 import {Panel} from "../../domain/panel";
-//import {routeTransition} from "../../animations/route-transition";
 import {Link} from "../../domain/link";
 import {TranslateService} from "@ngx-translate/core";
 
@@ -32,9 +31,6 @@ import {TranslateService} from "@ngx-translate/core";
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss'],
     imports: [UserButtonsComponent, LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, RouterOutlet, MatIconButton],
-    // animations: [
-    //     routeTransition
-    // ]
 })
 export class StartComponent implements OnInit, OnDestroy {
 
@@ -46,29 +42,20 @@ export class StartComponent implements OnInit, OnDestroy {
     readonly router = inject(Router);
     readonly titleService = inject(Title);
     readonly translateService = inject(TranslateService);
+    readonly sanitizer = inject(DomSanitizer);
     // notificationService = inject(NotificationService);
     // errorService = inject(ErrorService);
-
-    unsubscribe$ = new Subject<void>();
     //error$ = this.store.error$.pipe(filter((e) => !!e));
 
-    // header$ = this.shareableService.getHeader();
-    //selectedIso$ = this.shareableService.getSelectedIso();
+    unsubscribe$ = new Subject<void>();
     selectedIso$ = this.store.selectedIso$;
     role$ = this.authStore.roles$;
-    //segment$ = this.store.segment$;
-   // segment$ = this.shareableService.getSegment();
     loggedIn: boolean = true;
-
     isLoggedIn$: Observable<boolean> | undefined;
     user$ = this.authStore.user$;
-
     isHostAdriaticSun: boolean = false;
-
     header$ = this.store.header$;
-
     menuSide$ = this.store.side$;
-
     browserLang: string | undefined = '';
     //TODO
     protected breadcrumbs: Link[] = [
@@ -86,27 +73,41 @@ export class StartComponent implements OnInit, OnDestroy {
         this.browserLang = this.translateService.getBrowserLang();
 
         console.log("this.browserLang", this.browserLang);
-        if(this.browserLang){
-            if(this.browserLang === 'en'){
+        if (this.browserLang) {
+            if (this.browserLang === 'en') {
                 this.store.selectIso(defaultIso);
-            }
-            else {
+            } else {
                 this.store.selectIso(this.browserLang.toUpperCase());
                 this.shareableService.setSelectedIso(this.browserLang);
             }
-        }else {
+        } else {
             this.store.selectIso(defaultIso);
         }
 
         this.activatedRoute.data.pipe(map((data: Data) => data['myData'])).subscribe(
             data => {
-                const title= data.iso.find((s: { iso: string; })=>s.iso===defaultIso).title;
+                const title = data.iso.find((s: { iso: string; }) => s.iso === defaultIso).title;
                 this.titleService.setTitle(title);
                 this.store.setHeader(data);
                 this.store.loadDetailByRouteLabelsEffect(this.store.activeMenu$);
-                console.log("StartComponent data set Header into store", data);
+              //  console.log("StartComponent data set Header into store", data);
 
-               //TODO this.setFavIcon("");
+                // this.setFavIcon(data.iconImage);
+
+
+                // setFavIcon(iconImage: any) {
+                //     const faviconElement = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
+                //
+                //     console.log("faviconElement", faviconElement);
+                //     if (!faviconElement) {
+                //         let faviconElement = document.createElement('link');
+                //         faviconElement.rel = 'icon';
+                //         faviconElement.href = 'data:image/jpg;base64,'+iconImage;
+                //         document.head.appendChild(faviconElement);
+                //     }
+                //     // @ts-ignore
+                //     // faviconElement.href = "/assets/dubrovnik1.png";
+                // }
 
                 this.isHostAdriaticSun = data?.host === Hosts.ADRIATICSUN_EU
 
@@ -117,8 +118,19 @@ export class StartComponent implements OnInit, OnDestroy {
                     '--warn-color: ' + data.colors.warnColor + ';',
                     '--info-color: ' + data.colors.infoColor + ';',
                     '--accept-color: ' + data.colors.acceptColor + ';',
-                    '--myImageUrl: linear-gradient(to left, transparent, '+ data.colors.secondaryColor +' ' + data.linearPercentage +'%),url(data:image/jpg;base64,' + data.backgroundImage +')' + ';',
+                    '--linear-percentage: ' + `${data.linearPercentage}%` + ';',
+                    '--bg-image: url(data:image/jpg;base64,' + data.backgroundImage + ');',
+                    '--myImageUrl: linear-gradient(to left, transparent, ' + data.colors.secondaryColor + ' ' + data.linearPercentage + '%),url(data:image/jpg;base64,' + data.backgroundImage + ');',
                 ];
+
+                if (data.iconImage) {
+                    const fav = document.createElement('link');
+                    fav.setAttribute('rel', 'icon');
+                    fav.setAttribute('sizes', '24x24');
+                    fav.setAttribute('href', 'data:image/jpg;base64,' + data.iconImage);
+                    document.head.appendChild(fav);
+                }
+
                 const cssVariables = `:root{ ${variables.join('')}}`;
                 const blob = new Blob([cssVariables]);
                 const url = URL.createObjectURL(blob);
@@ -128,10 +140,9 @@ export class StartComponent implements OnInit, OnDestroy {
                 cssElement.setAttribute('href', url);
                 document.head.appendChild(cssElement);
 
-               // console.log("navigate", data.activeDetailUrl);
-              //  this.router.navigate([data.activeDetailUrl]);
+                // console.log("navigate", data.activeDetailUrl);
+                //  this.router.navigate([data.activeDetailUrl]);
             }
-
         )
         // this.segment$.subscribe(
         //   s => {
@@ -140,23 +151,18 @@ export class StartComponent implements OnInit, OnDestroy {
         // );
         //this.shareableService.setHeader(he);
         // this.headerData = this.activatedRoute.data.pipe(map((data: Data) =>  data['myData']));
-
         // this.loggedIn = this.tokenService.isTokenValid();
         // console.log("loggedIn", this.loggedIn);
         // console.log("roles", this.tokenService.userRoles);
 
-        //   this.store.selectIso(defaultIso);
-        //TODO set default iso from browser
         this.shareableService.setSelectedIso(defaultIso);
-        //  this.store.loadMyApartmentEffect();
+
         // this.error$.pipe(takeUntil(this.unsubscribe$)).subscribe((error) => {
         //   console.log("ERROR StartComponent");
         //  this.notificationService.error("error");
         //  this.errorService.constructGrowlFromApiError(error);
         //  });
-
     }
-
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();
@@ -169,10 +175,8 @@ export class StartComponent implements OnInit, OnDestroy {
     }
 
     activeIso(active: string) {
-      this.store.selectIso(active);
+        this.store.selectIso(active);
     }
-
-
 
     getIconText(country: string | null, iso: ApartmentIso[] | undefined) {
         if (country && iso) {
@@ -193,9 +197,9 @@ export class StartComponent implements OnInit, OnDestroy {
     }
 
     createMenuDetail(header: Header | null) {
-        if(header){
+        if (header) {
 
-            const max= header.menus.reduce((acc, val) => {
+            const max = header.menus.reduce((acc, val) => {
                 return acc.orderNum > val.orderNum ? acc : val;
             });
 
@@ -212,15 +216,14 @@ export class StartComponent implements OnInit, OnDestroy {
                 languages: header.iso.map(iso => iso.iso),
                 detail: detail,
                 colors: color,
+                newMenuOrderNum: header.menus[header.menus.length - 1].orderNum + 1
             };
 
             this.openApartmentDetailDialog(data).pipe(
                 filter(val => !!val),
                 takeUntil(this.unsubscribe$)
             ).subscribe(detailProps =>
-
                 this.store.createDetailEffect(detailProps)
-
             );
         }
     }
@@ -228,27 +231,12 @@ export class StartComponent implements OnInit, OnDestroy {
 
     openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
         const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '400px',
+            width: '420px',
             data: {
                 ...data
             },
         });
         return dialogRef.afterClosed();
-    }
-
-
-    setFavIcon(branding: string) {
-        const faviconElement = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
-
-        console.log("faviconElement", faviconElement);
-
-    /*    if (!this.faviconElement) {
-            this.faviconElement = document.createElement('link');
-            this.faviconElement.rel = 'icon';
-            document.head.appendChild(this.faviconElement);
-        }*/
-        // @ts-ignore
-        faviconElement.href = "/assets/dubrovnik1.png";
     }
 
     protected readonly Roles = Roles;

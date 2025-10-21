@@ -6,4 +6,5 @@ export enum Chip {
   FORM='FORM',
   SHOPPING='SHOPPING',
   SETTINGS='SETTINGS',
+  DOMAINS='DOMAINS',
 }

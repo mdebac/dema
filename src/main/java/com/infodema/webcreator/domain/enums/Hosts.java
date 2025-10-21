@@ -4,7 +4,8 @@ public enum Hosts {
 
     ADRIATICSUN_EU("adriaticsun.eu"),
     DEMA_APARTMENTS("dema-apartments.eu"),
-    INFO_DEMA_EU("info-dema.eu");
+    INFO_DEMA_EU("info-dema.eu"),
+    DEV_NEWS_EU("dev-news.eu");
 
     private final String code;
 

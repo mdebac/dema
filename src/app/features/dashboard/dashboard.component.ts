@@ -6,7 +6,7 @@ import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {LetDirective} from '@ngrx/component';
-import {MainTableComponent} from '../main-table/main-table.component';
+import {CustomersTableComponent} from '../tables/customers-table/customers-table.component';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {NotificationService} from "../../services/notification.service";
 import {Apartment} from "../../domain/apartment";
@@ -16,8 +16,6 @@ import {Roles} from "../../domain/roles";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {Hosts} from "../../domain/hosts";
 import {MatGridList, MatGridTile} from "@angular/material/grid-list";
-import {SummerComponent} from "../main/summer.component";
-import {MenuComponent} from "../main/menu.component";
 
 @Component({
     selector: 'dashboard',
@@ -30,12 +28,10 @@ import {MenuComponent} from "../main/menu.component";
         MatIcon,
         MatCardContent,
         LetDirective,
-        MainTableComponent,
+        CustomersTableComponent,
         MatFabButton,
         MatGridList,
         MatGridTile,
-        SummerComponent,
-        MenuComponent,
     ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -48,18 +44,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     error$ = this.store.error$.pipe(filter((e) => !!e));
     chip$ = this.store.filterChip$;
     title$ = this.store.filterTitle$;
-    apartmentsCount$ = this.store.apartmentCount$;
+    apartmentsCount$ = this.store.pageCount$;
     header$ = this.store.header$;
 
    // loading$ = this.store.loading$;
 
     isManager = this.authStore.authorize(Roles.MANAGER);
     isAdmin = this.authStore.authorize(Roles.ADMIN);
+    isUser = this.authStore.authorize(Roles.USER);
 
     ngOnInit() {
-
-        console.log("MyApartmentsComponent ngOnInit");
-        this.store.loadMyApartmentEffect();
+        console.log("Dashboard ngOnInit");
+        if(this.isAdmin || this.isManager){
+            this.store.loadCustomersEffect();
+        }
         this.error$.pipe(takeUntil(this.unsubscribe$)).subscribe((error) => {
             this.notificationService.error("error");
             //  this.errorService.constructGrowlFromApiError(error);
@@ -77,8 +75,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
         ).subscribe((detailProps) => {
-                this.store.createApartmentEffect(detailProps);
-               // window.location.reload();
+              this.store.createMainEffect(detailProps);
+               window.location.reload();
             }
         );
     }

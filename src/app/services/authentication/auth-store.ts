@@ -103,7 +103,7 @@ export class AuthStore {
             const token2 = JSON.parse(token);
             const jwtHelper = new JwtHelperService();
             const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
-            console.log("get userRoles", decodedToken.authorities);
+          //  console.log("get userRoles", decodedToken.authorities);
             return decodedToken.authorities;
         }
         return [];

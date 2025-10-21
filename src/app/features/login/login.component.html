@@ -1,53 +1,77 @@
-
-
 <ng-container>
-
     <mat-card class="dashboard-card">
         <mat-card-header>
 
-            <h3 class="text-center">Login</h3>
+            <div class="loginSpace">
 
-            <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
-                <p *ngFor="let msg of errorMsg">{{msg}}</p>
+                <div class="gap1Space">
+                </div>
+
+                <div class="contentSpace">
+                    <h3 class="text-center"><b>Login</b></h3>
+
+                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
+                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>
+                    </div>
+
+                </div>
+
+                <div class="gap2Space">
+                </div>
             </div>
-            <hr>
 
         </mat-card-header>
 
-            <mat-card-content>
+        <mat-card-content>
+            <div class="loginSpace">
 
-                <div class="mb-3">
-                    <label for="login" class="form-label">Email address</label>
-                    <input [(ngModel)]="authRequest.email"  type="email" class="form-control" id="login" placeholder="name@example.com">
+                <div class="gap1Space">
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input [(ngModel)]="authRequest.password" type="password" class="form-control" id="password" placeholder="Password">
+                <div class="contentSpace">
+                    <div>
+                        <label for="login" class="form-label">Email address</label>
+                        <input [(ngModel)]="authRequest.email" type="email" class="form-control" id="login"
+                               placeholder="name@example.com">
+                        <br>
+                    </div>
+                    <div>
+                        <label for="password" class="form-label">Password</label>
+                        <input [(ngModel)]="authRequest.password" type="password" class="form-control" id="password"
+                               placeholder="Password">
+                    </div>
                 </div>
 
-            </mat-card-content>
+                <div class="gap2Space">
+                </div>
+            </div>
+        </mat-card-content>
 
         <mat-card-footer>
-            df
-        </mat-card-footer>
 
+            <div class="loginSpace">
+
+                <div class="gap1Space">
+                </div>
+
+                <div class="contentSpaceActions">
+                    <div>
+                        <button mat-fab extended (click)="login()">
+                            Sign in
+                        </button>
+                    </div>
+                    <div>
+                        Don't have an account?
+                        <button mat-fab extended (click)="register()">
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gap2Space">
+            </div>
+        </mat-card-footer>
     </mat-card>
 </ng-container>
 
-
-<div class="container-fluid card login-cojuntainer">
-
-
-  <div class="d-flex justify-content-between mb-3">
-    <button (click)="login()" type="button" class="btn btn-primary">
-      <em class="fas fa-sign-in-alt">&nbsp;Sign in</em>
-    </button>
-    <div>
-      Don't have an account?&nbsp;
-      <button (click)="register()" type="button" class="btn btn-link">
-        Register
-      </button>
-    </div>
-  </div>
-</div>

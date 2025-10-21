@@ -51,7 +51,6 @@ export class CvDataDialogComponent {
     if (this.form.valid) {
      let cvDataProps = this.form.getRawValue() as CvData;
 
-     console.log("captchaResponse", this.captchaResponse);
      if(this.captchaResponse){
        cvDataProps = {...cvDataProps, captchaResponse:this.captchaResponse}
        this.store.createCvDataEffect(cvDataProps);

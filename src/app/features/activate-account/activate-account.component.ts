@@ -4,12 +4,13 @@ import {skipUntil} from 'rxjs';
 import { NgIf } from '@angular/common';
 import { CodeInputModule } from 'angular-code-input';
 import {AuthenticationService} from "../../services/authentication.service";
+import {MatFabButton} from "@angular/material/button";
 
 @Component({
     selector: 'app-activate-account',
     templateUrl: './activate-account.component.html',
     styleUrls: ['./activate-account.component.scss'],
-    imports: [NgIf, CodeInputModule],
+  imports: [NgIf, CodeInputModule, MatFabButton],
 })
 export class ActivateAccountComponent {
 

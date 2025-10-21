@@ -2,6 +2,7 @@ import {Audit} from "./audit";
 import {ApartmentItemIso} from "./apartment-item-iso";
 import {Colors} from "./colors";
 import {Chip} from "./chip.enum";
+import {Hosts} from "./hosts";
 
 export interface ApartmentItem extends Audit{
   description: string;
@@ -30,4 +31,6 @@ export interface ApartmentItemDialogData {
   languages: string[] | undefined | null;
   item: Partial<ApartmentItem>;
   colors: Colors | null | undefined;
+  roles: string[];
+  host: Hosts | undefined;
 }

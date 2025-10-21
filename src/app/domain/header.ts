@@ -5,8 +5,8 @@ import {Hosts} from "./hosts";
 
 export interface Header{
   id:number;
-  iconImage: any;
-  backgroundImage: any;
+  iconImage: File;
+  backgroundImage: File;
   linearPercentage: number;
   languages: string[];
   menus: Menu[];

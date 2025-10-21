@@ -1,9 +1,7 @@
 package com.infodema.webcreator.domain.mappers;
 
-import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.domain.enums.Country;
-import com.infodema.webcreator.persistance.entities.detail.DetailIsoEntity;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.domain.core.MainIso;
 import com.infodema.webcreator.persistance.entities.main.MainIsoEntity;
@@ -16,7 +14,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MainMapper extends AbstractMapper {
 
-    private final DetailMapper detailMapper;
     private final MenuMapper menuMapper;
 
     public Set<MainIso> toDomainMainIso(Set<MainIsoEntity> entities) {
@@ -26,18 +23,6 @@ public class MainMapper extends AbstractMapper {
     public Set<MainIsoEntity> toEntityMainIso(Set<MainIso> entities) {
         return convertCollection(entities, this::toEntityMainIso);
     }
-
- /*
-   public Map<Country,MainIsoEntity> toEntityMainIso(Set<MainIso> entities) {
-        return entities.stream()
-                .collect(
-                        Collectors
-                                .toMap( country -> Country.fromCode(country.getIso()), this::toEntityMainIso));
-    }
-    public Set<MainIso> toDomainMainIso(Map<Country,MainIsoEntity> mainIsoEntityMap) {
-        return mainIsoEntityMap.values().stream().map(this::toDomainMainIso).collect(Collectors.toSet());
-    }
-  */
 
     public Main toDomain(MainEntity entity) {
         return Main.builder()
@@ -59,10 +44,11 @@ public class MainMapper extends AbstractMapper {
                 .dangerColorLight(entity.getDangerColorLight())
                 .secondaryColor(entity.getSecondaryColor())
                 .image(entity.getContent())
+                .imageBackground(entity.getContentBackground())
                 .host(entity.getHost())
                 .price(entity.getPrice())
-              //  .usedCountries(Arrays.stream(entity.getLanguages().split(",")).toList())
-          //        .comments(ApartmentCommentMapper.toDomain(entity.getComments()))
+                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
+          //     .comments(ApartmentCommentMapper.toDomain(entity.getComments()))
                 .menus(menuMapper.toDomain(entity.getMenus()))
                 .iso(toDomainMainIso(entity.getIso()))
                 .build();
@@ -86,12 +72,12 @@ public class MainMapper extends AbstractMapper {
                 .dangerColor(main.getDangerColor())
                 .dangerColorLight(main.getDangerColorLight())
                 .owner(main.getOwner())
+                .linearPercentage(main.getLinearPercentage())
                 .iso(toEntityMainIso(main.getIso()))
                 .createdOn(main.getCreatedOn())
                 .createdBy(main.getCreatedBy())
                 .modifiedOn(main.getModifiedOn())
                 .modifiedBy(main.getModifiedBy())
-               // .details(detailMapper.toEntity(main.getDetails()))
                 .build();
     }
 

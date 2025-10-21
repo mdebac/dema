@@ -242,8 +242,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
             if (page && page.cornerRadiusPanel) {
                 return page?.cornerRadiusPanel;
             } else {
-
-                console.log("cornerRadiusPanel$");
                 return 32;
             }
         }
@@ -276,7 +274,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         }
     );
 
-    apartmentCount$: Observable<number> = this.select(
+    pageCount$: Observable<number> = this.select(
         this.apartmentsPage$,
         (page) => {
             return page.content.length;
@@ -312,11 +310,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.header$,
         (color, header) => {
             if (header?.colors?.primaryColor && header?.colors?.secondaryColor) {
-                console.log("actionsBorderColorSummer$ color", color);
-               console.log("actionsBorderColorSummer$", color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor)
                 return color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor;
             } else {
-                console.log("actionsBorderColorSummer no");
                 return "";
             }
         }
@@ -414,7 +409,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 .pipe(
                     tapResponse({
                         next: (response: Header) => {
-                            //console.log("load Header By Host", response);
                             this.patchState({header: response});
                             //    this.loadDetailByRouteLabelsEffect(response);
                         },
@@ -426,13 +420,13 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
             ),
         ));
 
-    loadMyApartmentEffect = this.effect(
+    loadCustomersEffect = this.effect(
         _ => _.pipe(
             withLatestFrom(
                 this.header$,
             ),
             switchMap(
-                ([_, header]) => this.service.myApartments()
+                ([_, header]) => this.service.myCustomers()
                     .pipe(
                         tapResponse({
                             next: (response: Page<Apartment>) => {
@@ -452,29 +446,42 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         ),
     );
 
-    readonly createApartmentEffect = this.effect(
-        (apartment$: Observable<Partial<Apartment>>) => apartment$.pipe(
+    loadMyDomainsEffect = this.effect(
+        _ => _.pipe(
             withLatestFrom(
                 this.header$,
             ),
-            tap(([apartment, header]) => {
-                console.log("(effect) createApartmentEffect", apartment);
+            switchMap(
+                ([_, header]) => this.service.myDomains()
+                    .pipe(
+                        tapResponse({
+                            next: (response: Page<Apartment>) => {
+
+                                response.content.forEach(
+                                    a => {
+                                        a.customersDS = new MatTableDataSource(a.customers);
+                                    }
+                                );
+                                this.patchState({page: response})
+                            },
+                            error: (error: HttpErrorResponse) => this.patchState({error: error.error}),
+                        }),
+                        catchError(() => EMPTY),
+                        finalize(() => this.patchState({loading: false}))
+                    )),
+        ),
+    );
+
+
+    readonly createMainEffect = this.effect(
+        (main$: Observable<Partial<Apartment>>) => main$.pipe(
+            tap((main) => {
+                console.log("(effect) create Main Effect", main);
             }),
             switchMap(
-                ([apartment, header]) => this.service.createApartment(apartment)
+                (main) => this.service.createMain(main)
                     .pipe(
                         tap({
-                            next: (response) => {
-                                // if(header?.host){
-                                //     this.patchState({activeDetailUrl: null});
-                                //     this.loadHeaderByHost(header.host);
-                                //
-                                //     this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-                                //         this.router.navigate(['']);
-                                //     });
-                                //
-                                // }
-                            },
                             error: (error) => this.patchState({error: error.error}),
                         }),
                         catchError(() => EMPTY),
@@ -690,13 +697,12 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         ),
     ));
 
-
     readonly deleteApartmentByIdEffect = this.effect(
         (id$: Observable<number>) =>
             id$.pipe(
                 switchMap((id) => this.service.deleteApartment(id).pipe(
                     tap({
-                        next: (response) => this.loadMyApartmentEffect(),
+                        next: (response) => this.loadCustomersEffect(),
                         error: (error) => this.patchState({error: error.error}),
                     }),
                     catchError(() => EMPTY),
@@ -707,7 +713,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     );
 
     setHeader(header: Header) {
-        console.log("Header je setan", header);
+       // console.log("Header je setan", header);
         this.patchState({header: header});
     }
 
@@ -718,13 +724,12 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.shareableService.setSelectedIso(country);
     }
 
-    loadApartments(chip: Chip | null = null,
+    loadDomains(chip: Chip | null = null,
                    title: string | null = null,
                    sortDirection: string = 'asc',
                    pageIndex: number = 0,
                    pageSize: number = 20) {
 
-        // console.log("-------------loadApartments");
         // console.log("chip", chip);
         // console.log("title", title);
         // console.log("sortDirection", sortDirection);

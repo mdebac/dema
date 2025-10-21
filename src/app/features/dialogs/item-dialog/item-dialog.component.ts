@@ -1,28 +1,29 @@
-import {Component, ElementRef, Inject, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ApartmentStore} from "../../../services/apartments-store.service";
-import { FormArray, FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {Component, ElementRef, Inject, inject, OnDestroy, ViewChild} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ApartmentItem, ApartmentItemDialogData} from "../../../domain/apartment-item";
 import {defaultIso} from "../../../domain/countries-iso";
 import {ApartmentItemIso} from "../../../domain/apartment-item-iso";
 import {ValidateImageSize} from "../../../validators/image-size.validator";
-import { MatSelectChange, MatSelect } from "@angular/material/select";
-import { Editor, Toolbar, NgxEditorMenuComponent, NgxEditorComponent } from "ngx-editor";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { MatCard, MatCardHeader, MatCardContent } from '@angular/material/card';
-import { IsoButtonsComponent } from '../../iso-buttons/iso-buttons.component';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatOption } from '@angular/material/core';
-import { NgIf, NgFor } from '@angular/common';
-import { MatInput } from '@angular/material/input';
-import {MatButton, MatFabButton} from '@angular/material/button';
-import { Chip } from "../../../domain/chip.enum";
+import {MatSelect, MatSelectChange} from "@angular/material/select";
+import {Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar} from "ngx-editor";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
+import {IsoButtonsComponent} from '../../iso-buttons/iso-buttons.component';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatOption} from '@angular/material/core';
+import {NgFor, NgIf} from '@angular/common';
+import {MatInput} from '@angular/material/input';
+import {MatFabButton} from '@angular/material/button';
+import {Chip} from "../../../domain/chip.enum";
+import {Hosts} from "../../../domain/hosts";
+import {Roles} from "../../../domain/roles";
 
 @Component({
     selector: 'item-dialog',
     templateUrl: './item-dialog.component.html',
     styleUrl: './item-dialog.component.scss',
-    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, MatButton, TranslatePipe, MatFabButton]
+  imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, TranslatePipe, MatFabButton]
 })
 export class ItemDialogComponent implements OnDestroy {
   //store = inject(ApartmentStore);
@@ -49,10 +50,9 @@ export class ItemDialogComponent implements OnDestroy {
   ];
   colorPresets = [""];
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: ApartmentItemDialogData) {
-    console.log("item dialog incoming data", data);
 
-    this.colorPresets = [
+  constructor(@Inject(MAT_DIALOG_DATA) private data: ApartmentItemDialogData) {
+     this.colorPresets = [
       data?.colors?.primaryColor ? data.colors.primaryColor : "",
       data?.colors?.secondaryColor ? data.colors.secondaryColor : "",
       data?.colors?.acceptColor ? data.colors.acceptColor : "",
@@ -107,6 +107,14 @@ export class ItemDialogComponent implements OnDestroy {
 
   }
 
+  isJobsEnabled(){
+    return this.data.roles.includes(Roles.ADMIN.toUpperCase()) || (this.data.roles.includes(Roles.MANAGER.toUpperCase()) && this.data.host === Hosts.ADRIATICSUN_EU)
+  }
+
+  isDomainsEnabled(){
+    return this.data.roles.includes(Roles.ADMIN.toUpperCase());
+  }
+
   ngOnDestroy(): void {
     this.editorMap.forEach((editor: Editor, key: string) => {
       editor.destroy();
@@ -119,7 +127,6 @@ export class ItemDialogComponent implements OnDestroy {
   }
 
   activeIso(active: any) {
-    console.log("promjena iso", active);
     this.selectedIsoTitle = active;
   }
 
@@ -245,6 +252,8 @@ export class ItemDialogComponent implements OnDestroy {
   }
 
   protected readonly Chip = Chip;
+  protected readonly Hosts = Hosts;
+  protected readonly Roles = Roles;
 }
 
 //https://stackoverflow.com/questions/58238935/set-a-value-of-file-input-in-angular-8-when-editing-an-item

@@ -17,6 +17,8 @@ public class Header {
     private List<Menu> menus;
     private List<String> languages;
     private byte[] iconImage;
+    private byte[] backgroundImage;
+    private Integer linearPercentage;
     private String name;
     private String activeDetailUrl;
     private String activePanelUrl;

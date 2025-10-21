@@ -17,8 +17,6 @@ export class IsoButtonsComponent {
 
   @Input() set selectedIn(country: string | null) {
     if(country){
-
-        console.log("IsoButtonsComponent", country);
       this.selectedIso = country;
     }
   }

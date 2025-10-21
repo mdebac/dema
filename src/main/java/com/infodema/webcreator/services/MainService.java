@@ -8,17 +8,15 @@ import com.infodema.webcreator.domain.enums.Side;
 import com.infodema.webcreator.domain.mappers.*;
 import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.domain.utility.SecurityUtils;
+import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuIsoEntity;
 import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
 import com.infodema.webcreator.persistance.entities.panel.PanelIsoEntity;
-import com.infodema.webcreator.persistance.repositories.DetailRepository;
-import com.infodema.webcreator.persistance.repositories.MainRepository;
+import com.infodema.webcreator.persistance.repositories.*;
 import com.infodema.webcreator.domain.projections.MainProjection;
 import com.infodema.webcreator.persistance.entities.security.User;
-import com.infodema.webcreator.persistance.repositories.MenuRepository;
-import com.infodema.webcreator.persistance.repositories.PanelRepository;
 import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
 import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -44,6 +42,7 @@ public class MainService {
     private final MainRepository mainRepository;
     private final MenuRepository menuRepository;
     private final DetailRepository detailRepository;
+    private final ItemRepository itemRepository;
     private final PanelRepository panelRepository;
     private final MainMapper mainMapper;
     private final AuditorAware<User> auditorAware;
@@ -81,10 +80,26 @@ public class MainService {
         return null;
     }
 
+    @Transactional(readOnly = true)
+    public Page<Main> findDomains(Pageable mainPageable) {
+        return mainCustomerMapper.toDomain(mainRepository.findAll(mainPageable));
+    }
+
     @Transactional
     public void deleteMain(Long id, String host) {
         userRepository.deleteByHost(host);
-        detailRepository.deleteByMenu_Id(id);
+
+        MainEntity mainEntity = mainRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        mainEntity.getMenus().forEach(menuEntity -> {
+            List<DetailEntity> detailList = detailRepository.findByMenu_Id(menuEntity.getId());
+            detailList.forEach(detailEntity -> {
+                itemRepository.deleteByDetail_Id(detailEntity.getId());
+            });
+            detailRepository.deleteByMenu_Id(menuEntity.getId());
+            panelRepository.deleteByMenu_Id(menuEntity.getId());
+        });
+        menuRepository.deleteByMain_Id(id);
         mainRepository.deleteById(id);
     }
 
@@ -94,7 +109,7 @@ public class MainService {
     }
 
     @Transactional
-    public Main saveMain(Main main, MultipartFile file) {
+    public void saveMain(Main main, MultipartFile file, MultipartFile fileBg) {
         main.setOwner(auditorAware.getCurrentAuditor().orElseThrow());
 
         MainEntity entity = mainMapper.toEntity(main);
@@ -118,11 +133,28 @@ public class MainService {
             }
         }
 
+        if (fileBg != null) {
+
+            if (main.getRemovePictureBackground() != null && main.getRemovePictureBackground()) {
+                entity.setImageBackground(null);
+                entity.setRemoveBackground(false);
+            } else {
+                entity.setImageBackground(fileBg);
+            }
+
+        } else {
+            if (main.getId() != null) {
+                mainRepository.findById(main.getId()).ifPresent(current -> {
+                    entity.setFileNameBackground(current.getFileNameBackground());
+                    entity.setMimeTypeBackground(current.getMimeTypeBackground());
+                    entity.setSizeBackground(current.getSizeBackground());
+                    entity.setContentBackground(current.getContentBackground());
+                });
+            }
+        }
+
         MainEntity mainEntity = mainRepository.save(entity);
-        Main savedMain = mainMapper.toDomain(mainEntity);
-
         if (main.getId() == null) {
-
            Set<MenuIsoEntity> menuIso = new HashSet<>();
             menuIso.add(
                     MenuIsoEntity.builder()
@@ -143,6 +175,7 @@ public class MainService {
                     MenuEntity.builder()
                             .iso(menuIso)
                             .icon("favorite")
+                            .orderNum(1)
                             .side(Side.RIGHT)
                             .layout(Layout.FULL)
                             .hideMenuPanelIfOne(false)
@@ -155,6 +188,7 @@ public class MainService {
                     PanelEntity.builder()
                             .iso(menuPanelIso)
                             .menu(menuEntity)
+                            .orderNum(1)
                             .build()
             );
 
@@ -162,11 +196,8 @@ public class MainService {
                     menuEntity.getId(),
                     panelEntity.getId(),
                     Detail.builder()
-                           // .host(savedMain.getHost())
-                          //  .mainId(savedMain.getId())
                             .columns(1)
                             .backgroundColorOn(true)
-                       //     .menuSide(menu.getMenuSide())
                             .show(false)
                             .iso(
                                     Collections.singleton(DetailIso.builder()
@@ -179,7 +210,6 @@ public class MainService {
             );
         }
 
-        return savedMain;
     }
 
     @Transactional(readOnly = true)
@@ -211,15 +241,15 @@ public class MainService {
                                         .hideMenuPanelIfOne(menu.getHideMenuPanelIfOne())
                                         .mainId(menu.getMain().getId())
                                         .orderNum(menu.getOrderNum())
-                                        .panels(panelMapper.toDomain(menu.getPanels()))
+                                        .panels(panelMapper.toDomain(menu.getPanels()).stream().sorted(Comparator.comparing(Panel::getOrderNum)).toList())
                                         .icon(menu.getIcon())
                                         .build()
                                 )
                                 .collect(Collectors.toList())
                 )
-                .activeDetailUrl(menus.get(0).getMenuUrl())
-                .activePanelUrl(menus.get(0).getPanels().get(0).getPanelUrl())
-              //  .activePanelUrl(details.stream().min(Comparator.comparing(Detail::getId)).orElseThrow().getPanelUrl())
+                .activeDetailUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getMenuUrl())
+                .activePanelUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getPanels().stream().min(Comparator.comparing(PanelEntity::getOrderNum)).orElseThrow().getPanelUrl())
+                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
                 .host(entity.getHost())
                 .colors(Colors.builder()
                         .primaryColor(entity.getPrimaryColor())
@@ -235,6 +265,7 @@ public class MainService {
                         .dangerColor(entity.getDangerColor())
                         .dangerColorLight(entity.getDangerColorLight())
                         .build())
+                .backgroundImage(entity.getContentBackground())
                 .iconImage(entity.getContent()).build();
     }
 

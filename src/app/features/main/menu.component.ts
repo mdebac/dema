@@ -124,7 +124,7 @@ export class MenuComponent implements OnDestroy {
 
                 this.justifyMenu = this.activeDetail?.menu?.side;
 
-                console.log("this.activeDetail2?.menu?.side", this.activeDetail?.menu?.side);
+             //   console.log("this.activeDetail2?.menu?.side", this.activeDetail?.menu?.side);
                 //TODO
                 this.justifyIconClose = this.activeDetail?.menu?.side === Side.RIGHT ? Side.LEFT.toLowerCase() : Side.RIGHT.toLowerCase();
 
@@ -151,7 +151,7 @@ export class MenuComponent implements OnDestroy {
     selectedIso: string = defaultIso;
 
     constructor() {
-        console.log("Panel load");
+        console.log("Menu load");
     }
 
     slides: SlideInterface[] = [
@@ -183,7 +183,7 @@ export class MenuComponent implements OnDestroy {
                     secondaryColor: header.colors.secondaryColor,
                 };
 
-                const data: ApartmentDetailDialogData = {
+                const data: Partial<ApartmentDetailDialogData> = {
                     languages: header.iso.map(iso => iso.iso),
                     detail: newDetail,
                     colors: color,
@@ -200,9 +200,9 @@ export class MenuComponent implements OnDestroy {
         }
     }
 
-    openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
+    openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
         const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '400px',
+            width: '420px',
             data: {
                 ...data
             },

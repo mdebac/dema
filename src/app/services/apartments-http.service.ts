@@ -14,7 +14,6 @@ import {Apartment} from "../domain/apartment";
 import {Util} from "../util/skip-nulls";
 import {ApartmentDetail} from "../domain/apartment-detail";
 import {ApartmentItem} from "../domain/apartment-item";
-import {Customer} from "../domain/customer";
 import {Menu} from "../domain/menu";
 import {map} from "rxjs/operators";
 import {DetailWithHeader} from "../domain/detail-with-header";
@@ -35,8 +34,6 @@ export class ApartmentsHttpService extends BaseService {
                              panelUrl: string | null | undefined): Observable<ApartmentDetail | null> {
         let detail = "";
         let panel = "";
-        console.log("--header", header);
-        console.log("--detailUrl", detailUrl);
 
         if (header) {
             if (header.id) {
@@ -45,36 +42,27 @@ export class ApartmentsHttpService extends BaseService {
 
                     const menu = header?.menus.find(a => a.menuUrl === detailUrl);
                     if (menu) {
-                        console.log("--1");
                         if (detailUrl) {
                             detail = detailUrl;
                             if (panelUrl && menu.panels.find(a => a.panelUrl === panelUrl)) {
-                                console.log("--2");
                                 panel = panelUrl;
                             } else {
-                                console.log("--3 kad ne ulazi panelUrl, uzmi prvi iz menu panels");
                                 panel = menu.panels[0].panelUrl;
                             }
                         } else {
-                            console.log("--4");
                             detail = header.activeDetailUrl;
                             panel = header.activePanelUrl;
                         }
                     } else {
-                        console.log("--5");
-
                         detail = header.activeDetailUrl;
                         panel = header.activePanelUrl;
                     }
 
                 }else{
-
                     const menu = header?.menus.find(a => a.menuUrl === detailUrl);
-
                 }
 
             } else {
-                console.log("--6");
                 detail = header.activeDetailUrl;
                 panel = header.activePanelUrl;
             }
@@ -100,23 +88,24 @@ export class ApartmentsHttpService extends BaseService {
         }
     }
 
-    myCustomers(): Observable<Page<Customer>> {
-        const url = this.url + '/customers';
-        console.log('(http request) Customers URL ---' + url);
+    myDomains(): Observable<Page<Apartment>> {
+        const url = this.url + '/find/domains';
+        console.log('(http request) Domains URL ---' + url);
         // @ts-ignore
         return this.http
-            .get<Page<Customer>>(url)
+            .get<Page<Apartment>>(url)
             .pipe(
-                tap((res) => console.log('(http response) Customers', res)),
+                tap((res) => console.log('(http response) Domains', res)),
 
                 catchError((err) => {
-                    console.log("(http error) Customers", err);
+                    console.log("(http error) Domains", err);
                     return this.errorService.handleError(err);
                 }),
             );
     }
 
-    myApartments(): Observable<Page<Apartment>> {
+
+    myCustomers(): Observable<Page<Apartment>> {
         const url = this.url + '/customers';
         console.log('(http request) Customers URL ---' + url);
         // @ts-ignore
@@ -247,20 +236,23 @@ export class ApartmentsHttpService extends BaseService {
 
     }
 
-    createApartment(apartment: Partial<Apartment>): Observable<Apartment> {
+    createMain(apartment: Partial<Apartment>): Observable<void> {
         const url = this.url;
-        console.log('(http request) create-update Apartment', apartment);
+        console.log('(http request) create-update Web page', apartment);
         let formData = new FormData();
         if (apartment.image) {
-            // console.log('(http request) create-update Apartment logo Image appended');
             formData.append('file', apartment.image);
             apartment.image = null;
+        }
+        if (apartment.imageBackground) {
+            formData.append('fileBg', apartment.imageBackground);
+            apartment.imageBackground = null;
         }
         formData.append('payload', new Blob([JSON.stringify(apartment)], {
             type: 'application/json'
         }));
-        return this.http.post<Apartment>(url, formData).pipe(
-            tap((response) => console.log('(http response) create-update Apartment:', response)),
+        return this.http.post<void>(url, formData).pipe(
+            tap((response) => console.log('(http response) create-update Web page:', response)),
             catchError((err) => this.errorService.handleError(err)),
         );
     }

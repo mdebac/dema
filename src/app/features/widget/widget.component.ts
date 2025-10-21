@@ -3,10 +3,8 @@ import {
   HostBinding,
   inject,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges
 } from "@angular/core";
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {Widget} from "./widget";
@@ -17,7 +15,7 @@ import {Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {Colors} from "../../domain/colors";
 import { NgIf, NgComponentOutlet } from "@angular/common";
-import { MatMiniFabButton } from "@angular/material/button";
+import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
@@ -25,23 +23,26 @@ import {ItemSettingsDialogComponent} from "../dialogs/item-settings-dialog/item-
 import {Chip} from "../../domain/chip.enum";
 import {TextComponent} from "./type/text/text.component";
 import {ApartmentItemIso} from "../../domain/apartment-item-iso";
+import {AuthStore} from "../../services/authentication/auth-store";
+import {Hosts} from "../../domain/hosts";
+import {Roles} from "../../domain/roles";
 
 // @ts-ignore
 @Component({
     selector: 'widget',
     templateUrl: './widget.component.html',
     styleUrls: ['./widget.component.scss'],
-    imports: [
-        NgIf,
-        MatMiniFabButton,
-        MatIcon,
-        NgComponentOutlet,
-    ],
+  imports: [
+    MatMiniFabButton,
+    MatIcon,
+    NgComponentOutlet,
+  ],
 })
-export class WidgetComponent implements OnDestroy, OnInit {
+export class WidgetComponent implements OnDestroy {
   private dialog = inject(MatDialog);
   private store = inject(ApartmentStore);
   private translateService = inject(TranslateService);
+  private authStore = inject(AuthStore);
 
   private _data: Widget | undefined;
 
@@ -58,8 +59,8 @@ export class WidgetComponent implements OnDestroy, OnInit {
   @HostBinding("style.--shadow-color")
   shadowColor: string | null | undefined;
 
-
   @Input() columns: number | undefined;
+  @Input() canEdit: boolean = false;
   @Input() loggedIn: boolean = false;
 
   @Input() set data(value: Widget) {
@@ -103,24 +104,25 @@ export class WidgetComponent implements OnDestroy, OnInit {
       languages: null,
       component: TextComponent,
       colors: undefined,
+      host: this._data?.host
     };
   }
 
-
   unsubscribe$ = new Subject<void>();
 
-  updateItem(languages: string[] | undefined | null, colors: Colors | undefined, item: ApartmentItem  | undefined | null) {
+  updateItem(languages: string[] | undefined | null, colors: Colors | undefined, item: ApartmentItem  | undefined | null, host: Hosts | undefined) {
     const partial: Partial<ApartmentItem> = {...item}
     const data: ApartmentItemDialogData = {
       languages: languages,
       item: partial,
-      colors: colors
+      colors: colors,
+      roles: this.authStore.userRoles,
+      host: host
     }
     this.openDialogItem(data).pipe(
       filter(val => !!val),
       takeUntil(this.unsubscribe$)
     ).subscribe(detailProps =>    {
-        console.log("props", detailProps);
         if(detailProps.id){
           this.store.updateItemEffect(detailProps)
         }else{
@@ -130,12 +132,14 @@ export class WidgetComponent implements OnDestroy, OnInit {
 );
   }
 
-    updateItemSettings(colors: Colors | undefined, item: ApartmentItem | undefined | null) {
+    updateItemSettings(colors: Colors | undefined, item: ApartmentItem | undefined | null, host: Hosts | undefined) {
       const partial: Partial<ApartmentItem> = {...item}
       const data: ApartmentItemDialogData = {
         languages: [],
         item: partial,
-        colors: colors
+        colors: colors,
+        roles: this.authStore.userRoles,
+        host: host
       }
 
     this.openDialogItemSettings(data).pipe(
@@ -154,7 +158,6 @@ export class WidgetComponent implements OnDestroy, OnInit {
       takeUntil(this.unsubscribe$)
     ).subscribe(confirm => {
         if (confirm) {
-          console.log("delete Item")
           if(item){
             this.store.deleteItemEffect(item)
           }
@@ -169,10 +172,6 @@ export class WidgetComponent implements OnDestroy, OnInit {
       data: this.translateService.instant('delete.item')
     });
     return dialogRef.afterClosed();
-  }
-
-
-  ngOnInit() {
   }
 
   openDialogItem(data: ApartmentItemDialogData) {
@@ -206,4 +205,5 @@ export class WidgetComponent implements OnDestroy, OnInit {
 
 
   protected readonly Chip = Chip;
+  protected readonly Roles = Roles;
 }

@@ -10,4 +10,5 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
     Optional<MenuEntity> findById(Long id);
     Long countByMain_Id(Long mainId);
     void deleteByMain_Id(Long mainId);
+    Integer findOrderNumTop1OrderNumByMain_Id(Long mainId);
 }

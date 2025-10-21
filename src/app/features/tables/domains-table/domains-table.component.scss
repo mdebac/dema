@@ -1,0 +1,87 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$row-color: #f6f6f1;
+
+.arrows{
+  font-weight: bold;
+  color: $secondary-color;
+  text-decoration: none;
+}
+
+.download:hover {
+  color: $secondary-color;
+  cursor: pointer;
+}
+
+.mat-mdc-row:nth-child(odd){
+  background-color: $secondary-color;
+  padding-bottom: 3px;
+}
+.mat-mdc-row:nth-child(even){
+  background-color: $secondary-color;
+  padding-bottom: 3px;
+}
+.mdc-data-table__cell{
+  padding: 0;
+}
+.mat-mdc-header-row{
+  background-color: $secondary-color;
+  color: $primary-color;
+  font-size: large;
+  // border-bottom: 1px solid $primary-color;
+}
+/*
+.mat-mdc-cell{
+  border-right: 1px solid $primary-color;
+}*/
+
+
+.mat-column-domain {
+  flex: 0 0 100%;
+  font-weight: bold;
+  font-family: "Lucida Bright";
+  font-size: 3rem;
+  flex-direction: row;
+
+}
+
+.txt{
+  transform: scale(1);
+  padding-left: 2rem;
+}
+.txt:hover {
+  transform: scale(1.1);
+  transition: all 300ms;
+}
+
+.domain{
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 16px;
+  align-items: center;
+  height: 12.5rem;
+}
+
+
+.mat-mdc-paginator{
+  background-color: $secondary-color;
+  color: $primary-color;
+  font-size: large;
+}
+
+.mat-select{
+  color: $primary-color;
+}
+
+.customers-element-row{
+  display: none;
+}
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}

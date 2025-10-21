@@ -13,7 +13,7 @@ import {NgFor} from '@angular/common';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
-import {MatButton, MatFabButton} from '@angular/material/button';
+import {MatFabButton} from '@angular/material/button';
 import {filter, takeUntil} from "rxjs/operators";
 import {ChooseIconDialogComponent} from "../choose-icon-dialog/choose-icon-dialog.component";
 import {MenuIso} from "../../../domain/menu-iso";
@@ -25,7 +25,7 @@ import {Side} from "../../../domain/side";
     selector: 'detail-dialog',
     templateUrl: './detail-dialog.component.html',
     styleUrl: './detail-dialog.component.scss',
-    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, NgFor, MatLabel, NgxEditorMenuComponent, NgxEditorComponent, MatFormField, MatInput, MatError, MatIcon, MatButton, TranslatePipe, MatFabButton]
+    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, NgFor, MatLabel, NgxEditorMenuComponent, NgxEditorComponent, MatFormField, MatInput, MatError, MatIcon, TranslatePipe, MatFabButton]
 })
 export class DetailDialogComponent implements OnDestroy {
 
@@ -46,7 +46,6 @@ export class DetailDialogComponent implements OnDestroy {
     unsubscribe$ = new Subject<void>();
 
     constructor(@Inject(MAT_DIALOG_DATA) private data: ApartmentDetailDialogData) {
-        console.log("detail dialog incoming data", data);
 
         this.colorPresets = [
             data?.colors?.primaryColor ? data.colors.primaryColor : "",
@@ -63,6 +62,7 @@ export class DetailDialogComponent implements OnDestroy {
         this.form = this.fb.group({
             id: [this.data.detail.id],
             columns: [this.data.detail.columns ? this.data.detail.columns : 1],
+            backgroundColorOn: [this.data.detail.backgroundColorOn ? this.data.detail.backgroundColorOn : false],
             cornerRadius: [this.data.detail.cornerRadius ? this.data.detail.cornerRadius : 16],
             show: [this.data.detail.show],
             iso: this.fb.array([]),
@@ -71,7 +71,7 @@ export class DetailDialogComponent implements OnDestroy {
                 id: [this.data.detail.menu?.id],
                 mainId: [this.data.detail.menu?.mainId],
                 menuUrl: [this.data.detail.menu?.menuUrl],
-                orderNum: [this.data.detail.menu?.orderNum],
+                orderNum: [this.data.detail.menu?.id ? this.data.detail.menu?.orderNum : this.data.newMenuOrderNum],
                 icon: [this.data.detail.menu?.icon],
                 side: [this.data.detail.menu?.side ? this.data.detail.menu?.side : Side.LEFT],
                 layout: [this.data.detail.menu?.layout ? this.data.detail.menu?.layout : Layout.FULL],
@@ -82,11 +82,12 @@ export class DetailDialogComponent implements OnDestroy {
                 id: [this.data.detail.panel?.id],
                 menuId: [this.data.detail.panel?.menuId],
                 panelUrl: [this.data.detail.panel?.panelUrl],
+                orderNum: [this.data.detail.panel?.id ? this.data.detail.panel?.orderNum : this.newPanelOrderNum(this.data.detail)],
                 icon: [this.data.detail.panel?.icon],
                 iso: this.fb.array([]),
             }),
 
-
+//newMenuOrderNum: header.menus[header.menus.length-1].orderNum + 1
         });
 
 
@@ -96,8 +97,6 @@ export class DetailDialogComponent implements OnDestroy {
             const dodaniPanel: string[] = [];
             this.data?.languages.forEach(
                 l => {
-
-
                     this.data?.detail.iso?.forEach(
                         iso => {
                             if (l === iso.iso) {
@@ -138,20 +137,23 @@ export class DetailDialogComponent implements OnDestroy {
                     if (!dodaniMenu.includes(l)) {
                         this.addMenuItem(l);
                     }
-
                     if (!dodaniPanel.includes(l)) {
-                        if(this.data?.detail.menu?.side === Side.LEFT || this.data?.detail.menu?.side === Side.RIGHT){
-                            this.addMenuPanelItem(l);
-                        }
+                        this.addMenuPanelItem(l);
                     }
                 }
             )
-
         } else {
             this.data?.languages?.map(iso => this.addItem(iso));
         }
-
         this.languages = this.data?.languages;
+    }
+
+    newPanelOrderNum(detail: Partial<ApartmentDetail>) {
+        if (detail && this.data.detail?.menu && detail.menu?.panels?.length) {
+            return detail.menu.panels[detail.menu?.panels?.length - 1].orderNum + 1;
+        } else {
+            return 1;
+        }
     }
 
     editor = (iso: string): Editor => {
@@ -241,7 +243,6 @@ export class DetailDialogComponent implements OnDestroy {
     isOn = true;
 
     get isoArray(): FormArray {
-        // console.log('getting the test array', this.form.get('iso'));
         return this.form.get('iso') as FormArray;
     }
 
@@ -252,14 +253,9 @@ export class DetailDialogComponent implements OnDestroy {
         return false
     }
 
-    // closeDialog() {
-    //     this.dialogRef.close();
-    // }
-
     onCreateDetail() {
         if (this.form.valid) {
             const detailProps = this.form.getRawValue() as Partial<ApartmentDetail>;
-            console.log("onCreateDetail valid form", detailProps);
             this.dialogRef.close(detailProps);
         }
     }
@@ -302,6 +298,7 @@ export class DetailDialogComponent implements OnDestroy {
     get menuSide() {
         return this.form.value.menu.side;
     }
+
     openMenuIconDialog() {
 
         this.openChooseIconDialog().pipe(

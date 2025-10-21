@@ -1,15 +1,53 @@
 services:
 
-  dema-app:
-    container_name: dema-app
-    image: dema-app:1.0.12
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-container
     environment:
-      EMAIL_HOST_NAME: ${EMAIL_HOST_NAME}
-      EMAIL_USERNAME: ${EMAIL_USERNAME}
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD}  
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/dema_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT}"
+      MYSQL_DATABASE: dema_db
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - dema-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      retries: 10
+      interval: 3s
+      timeout: 30s
+
+  dema:
+    container_name: dema
+    image: dema:1.0.13
+    environment:
+      EMAIL_HOST_NAME: "${EMAIL_HOST_NAME}"
+      EMAIL_USERNAME: "${EMAIL_USERNAME}"
+      EMAIL_PASSWORD: "${EMAIL_PASSWORD}"
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/dema_db
+      SPRING_DATASOURCE_USERNAME: "${DB_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD}"
+      RECAPTCHA_SECRET: "${RECAPTCHA_SECRET}"
+      SECRET_KEY: "${SECRET_KEY}"
+      DB_URL: "${DB_URL}"
       API_PORT: 8081
     ports:
       - 8081:8081
+    networks:
+      - dema-network
+    depends_on:
+          mysql-db:
+            condition: service_healthy
+
+networks:
+  dema-network:
+    driver: bridge
+    name: dema-network
+
+volumes:
+  mysql-data:
+    driver: local

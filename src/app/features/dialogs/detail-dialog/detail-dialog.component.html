@@ -3,7 +3,7 @@
         <h2 class="button-container-left text">@if (isNew) {
             {{ "create.page" | translate }}
         } @else {
-            {{ "update.page" | translate }}
+            {{ "title.and.icons" | translate }}
         }</h2>
         <ng-container>
             <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle" (selectedOut)="activeIso($event)">
@@ -85,6 +85,7 @@
                                         <mat-error>Min 2, Max 10</mat-error>
                                     </mat-form-field>
 
+
                                     @if (panelIcon){
                                         <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
                                             <mat-icon>{{ panelIcon }}</mat-icon>
@@ -96,7 +97,7 @@
                                         </button>
                                     }
 
-                                    <mat-form-field>
+                                    <mat-form-field class="full">
                                         <mat-label>Description</mat-label>
                                         <input matInput formControlName="description" placeholder="Description">
                                         <mat-error>Max 50</mat-error>

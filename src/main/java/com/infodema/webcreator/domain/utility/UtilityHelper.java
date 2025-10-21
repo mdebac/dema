@@ -9,8 +9,8 @@ import java.time.*;
 public class UtilityHelper {
 
     public static OffsetDateTime toOffsetDateTime(Instant instant) {
-        ZoneId z = ZoneId.of( "Europe/Berlin" ) ;
-        ZonedDateTime zdt = instant.atZone( z ) ;
+        ZoneId z = ZoneId.of("Europe/Berlin");
+        ZonedDateTime zdt = instant.atZone(z);
         return zdt.toOffsetDateTime();
     }
 
@@ -23,9 +23,10 @@ public class UtilityHelper {
     public static String resolveHostForDevelopment(String host) {
         if (host.equals("localhost:8081")) {
                return Hosts.INFO_DEMA_EU.getHostsCode();
+           // return Hosts.DEMA_APARTMENTS.getHostsCode();
             // return Hosts.ADRIATICSUN_EU.getHostsCode();
         }
-     return host;
+        return host;
     }
 
 }

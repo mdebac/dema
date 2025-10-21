@@ -11,21 +11,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import java.util.Arrays;
 import java.util.List;
-/*
-import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.ORIGIN;
-*/
+
 @Configuration
 @RequiredArgsConstructor
 public class BeansConfig {
 
     @Value("${application.cors.origins:*}")
     private List<String> allowedOrigin;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

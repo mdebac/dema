@@ -22,7 +22,6 @@ export class ChooseIsoDialogComponent{
   toChoose: string[];
 
   constructor(@Inject(MAT_DIALOG_DATA) private chosenLanguages: string[]) {
-  //  console.log("chosenLanguages", chosenLanguages);
     this.chosen = chosenLanguages.filter(a=> true);
     const isoList:string[] = Object.keys(CountryIso);
     this.toChoose = isoList.filter(item => !this.chosen.includes(item))

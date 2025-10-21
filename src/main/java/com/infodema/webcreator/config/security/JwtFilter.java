@@ -52,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authToken = customAuthenticationManager.authenticate(customAuthentication);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }else{
-                System.out.println("NIJE VALID------------------------");
+                //System.out.println("Token not valid------------------------");
             }
         }
 

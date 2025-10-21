@@ -7,6 +7,7 @@ import {AuthenticationService} from "../../services/authentication.service";
 import {TokenService} from "../../services/token.service";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatFabButton} from "@angular/material/button";
 
 @Component({
     selector: 'app-login',
@@ -20,6 +21,7 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/ma
         MatCardContent,
         MatCardHeader,
         MatCardFooter,
+        MatFabButton,
     ],
 })
 export class LoginComponent {

@@ -1,19 +1,20 @@
 <div class="containery">
 
-    <div class="settings-button">
-        <button *ngIf="loggedIn" mat-mini-fab  (click)="updateItemSettings(data?.colors,data?.item)"
-                aria-label="Settings">
-            <mat-icon>settings</mat-icon>
-        </button>
-        <button *ngIf="loggedIn" mat-mini-fab
-                (click)="updateItem(data?.languages,data?.colors,data?.item)">
-            <mat-icon>edit</mat-icon>
-        </button>
-        <button *ngIf="loggedIn" mat-mini-fab (click)="deleteItem(data?.item)">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </div>
-
+    @if (canEdit){
+        <div class="settings-button">
+            <button mat-mini-fab  (click)="updateItemSettings(data?.colors,data?.item, data?.host)"
+                    aria-label="Settings">
+                <mat-icon>settings</mat-icon>
+            </button>
+            <button mat-mini-fab
+                    (click)="updateItem(data?.languages,data?.colors,data?.item, data?.host )">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab (click)="deleteItem(data?.item)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    }
 
     @if (data?.item?.chip === Chip.TEXT) {
         @if (data?.component) {
@@ -32,6 +33,13 @@
     @if (data?.item?.chip === Chip.VIDEO || data?.item?.chip === Chip.PICTURE) {
         @if (data?.component) {
             <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, columns: columns}">
+            </ng-container>
+        }
+    }
+    @if (data?.item?.chip === Chip.DOMAINS) {
+        @if (data?.component) {
+            <ng-container
+                    *ngComponentOutlet="data.component;">
             </ng-container>
         }
     }

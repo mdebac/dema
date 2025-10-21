@@ -1,0 +1,30 @@
+<mat-table class="mat-elevation-z8 full-width-table text" #outerSort="matSort" [dataSource]="dataSource"
+           multiTemplateDataRows matSort>
+
+    <ng-container matColumnDef="domain">
+        <mat-cell *matCellDef="let row">
+
+            <div class="domain" [ngStyle]="{'color': row.primaryColor, 'background-color': row.secondaryColor}">
+
+                @if(row.image){
+                    <img width="200"
+                         src="{{'data:image/jpg;base64,' +row?.image}}" alt=""/>
+                } @else {
+                    <img width="200"
+                         src="/assets/images/no-image.png" alt=""/>
+                }
+
+                <div class="txt" (click)="goTo(row?.host)">
+                    {{row?.host}}
+                </div>
+            </div>
+
+
+        </mat-cell>
+    </ng-container>
+
+    <mat-row *matRowDef="let element; columns: displayedColumns;">
+    </mat-row>
+
+</mat-table>
+

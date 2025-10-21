@@ -2,6 +2,10 @@
 
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
+$bg-image: var(--bg-image);
+$linearPercentage: var(--linear-percentage);
+$myImageUrl: var(--myImageUrl);
+
 
 .grid-container {
   margin-left: 20px;
@@ -35,8 +39,7 @@ section > div {
   background-repeat: no-repeat;
   background-position: right;
   object-fit: cover;
-  background-image: var(--myImageUrl);
-//  height: 50px;
+  background-image: $myImageUrl;
 }
 
 .sticky{

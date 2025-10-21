@@ -43,6 +43,8 @@ public class MainCustomerMapper extends AbstractMapper {
                 .dangerColorLight(entity.getDangerColorLight())
                 .secondaryColor(entity.getSecondaryColor())
                 .image(entity.getContent())
+                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
+                .imageBackground(entity.getContentBackground())
                 .host(entity.getHost())
                 .price(entity.getPrice())
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))

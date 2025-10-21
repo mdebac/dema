@@ -1,13 +1,12 @@
-import {Component, HostBinding, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostBinding, inject, Input, OnDestroy} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {filter, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {TranslatePipe, TranslateService} from "@ngx-translate/core";
-import {Editor, NgxEditorComponent} from "ngx-editor";
+import {TranslateService} from "@ngx-translate/core";
+import {Editor} from "ngx-editor";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {FormsModule} from '@angular/forms';
-import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {WidgetComponent} from "../widget/widget.component";
@@ -23,41 +22,35 @@ import {Widget} from "../widget/widget";
 import {ChipMap} from "../../domain/chip-map";
 import {ApartmentDetailIso} from "../../domain/apartment-detail-iso";
 import {defaultIso} from "../../domain/countries-iso";
-import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {Menu} from "../../domain/menu";
 import {Side} from "../../domain/side";
 import {Layout} from "../../domain/layout";
 import {LayoutState} from "../../domain/layout-state";
 import {MatChipListbox, MatChipOption} from "@angular/material/chips";
-import {MatDivider} from "@angular/material/divider";
+import {Hosts} from "../../domain/hosts";
+import {AuthStore} from "../../services/authentication/auth-store";
 
 @Component({
   selector: 'panel',
   imports: [
     MatCard,
     MatCardHeader,
-    NgxEditorComponent,
     FormsModule,
-    MatButtonToggleGroup,
-    MatButtonToggle,
     MatButton,
     MatIcon,
     MatCardContent,
     CdkDropList,
     WidgetComponent,
     CdkDrag,
-    TranslatePipe,
-    MatMenu,
-    MatMenuTrigger,
     MatChipListbox,
     MatChipOption,
-    MatDivider,
   ],
   templateUrl: './panel.component.html',
   styleUrl: './panel.component.scss'
 })
-export class PanelComponent implements OnInit, OnDestroy {
+export class PanelComponent implements OnDestroy {
   private store = inject(ApartmentStore);
+  private authStore = inject(AuthStore);
   private dialog = inject(MatDialog);
   private translateService = inject(TranslateService);
 
@@ -84,19 +77,6 @@ export class PanelComponent implements OnInit, OnDestroy {
   @HostBinding("style.--actions-border-color")
   actionsBorderColor: string = "";
 
-  // bgColorOn() {
-  //
-  //     console.log("bgColorOn", !this.bgColor);
-  //     this.bgColor = !(this.bgColor);
-  // }
-//backgroundColorOn $background-color
-
-  // @Input() set backgroundColorOn(backgroundColorOn: boolean | null) {
-  //     if (backgroundColorOn) {
-  //         this.backgroundColor = cornerRadius + "px";
-  //     }
-  // }
-
   @Input() set cornerRadius(cornerRadius: number | null) {
     if (cornerRadius) {
       this.cssCornerRadius = cornerRadius + "px";
@@ -105,42 +85,25 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   @Input() set stateLayout(stateLayout: LayoutState | undefined) {
     if (stateLayout) {
-      console.log("layoutState", stateLayout);
-
-
       if (stateLayout?.gapL === 0 && stateLayout?.menuL === 0) {
-        console.log("left", 10);
         this.cssLeftPadding = "10px";
       } else {
-        console.log("left", 0);
-
         this.cssLeftPadding = "0";
-
         if (stateLayout.panelL !== 0) {
           this.cssLeftPadding = "10px";
         }
-
       }
 
-
       if (stateLayout?.gapR === 0 && stateLayout?.menuR === 0) {
-        console.log("right", 10);
         this.cssRightPadding = "10px";
       } else {
-        console.log("right", 0);
-
         this.cssRightPadding = "0";
-
         if (stateLayout.panelR !== 0) {
           this.cssRightPadding = "10px";
         }
-
       }
-
-
     }
   }
-
 
   backgroundColorSwitch(onOff: boolean, detail: ApartmentDetail | null) {
     const detailUpdate: Partial<ApartmentDetail> = {
@@ -152,7 +115,6 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.store.updateDetailEffect(detailUpdate);
   }
 
-
   fillBackground($event: any, detail: ApartmentDetail | null) {
     if ($event.value) {
       this.backgroundColorSwitch(true, detail);
@@ -160,42 +122,6 @@ export class PanelComponent implements OnInit, OnDestroy {
       this.backgroundColorSwitch(false, detail);
     }
   }
-
-
-  // @Input() set rightPadding(rightPadding: number | null) {
-  //     if (rightPadding) {
-  //         this.cssRightPadding = rightPadding === 0 ? "0" : rightPadding + "px";
-  //         console.log("this.cssRightPadding",this.cssRightPadding);
-  //     }
-  // }
-
-  // @Input() set layout(layout: Layout | null | undefined) {
-  //     if (layout) {
-  //         if(layout === Layout.CENTER){
-  //             this.cssRight = 0;
-  //             this.cssLeft = 0;
-  //         }
-  //         if(layout === Layout.FULL){
-  //             // this.cssRight = '10px'
-  //             // this.cssLeft = '10px'
-  //             this.cssRight = 0;
-  //             this.cssLeft = 0;
-  //         }
-  //     }
-  // }
-  //
-  // @Input() set side(side: Side | null | undefined) {
-  //     if (side) {
-  //         if(side === Side.LEFT){
-  //             this.cssLeft = 0;
-  //             this.cssRight = '10px'
-  //         }
-  //         if(side === Side.RIGHT){
-  //             this.cssRight = 0;
-  //             this.cssLeft = '10px'
-  //         }
-  //     }
-  // }
 
   @Input() set col(col: number | null) {
     if (col) {
@@ -215,11 +141,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   editor: Editor = new Editor();
 
   constructor() {
-    console.log("SUMMER load");
-  }
-
-  ngOnInit() {
-    console.log("SUMMER ngOnInit");
+    console.log("PANEL load");
   }
 
   ngOnDestroy(): void {
@@ -251,7 +173,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     return dialogRef.afterClosed();
   }
 
-  createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined) {
+  createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined, host: Hosts | undefined) {
     console.log("(click) createItem detail", detail);
 
     if (detail) {
@@ -259,7 +181,9 @@ export class PanelComponent implements OnInit, OnDestroy {
       const data: ApartmentItemDialogData = {
         languages: detail.iso.map(iso => iso.iso),
         item: item,
-        colors: colors
+        colors: colors,
+        roles: this.authStore.userRoles,
+        host: host
       };
 
       this.openDialogItem(data).pipe(
@@ -295,7 +219,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   updateDetail(header: Header | null, detail: ApartmentDetail | null) {
     const selectedLanguages: string[] | undefined = header?.languages;
     const partial: Partial<ApartmentDetail> = {...detail}
-    const data: ApartmentDetailDialogData = {
+    const data: Partial<ApartmentDetailDialogData> = {
       languages: selectedLanguages,
       detail: partial,
       colors: header?.colors
@@ -313,9 +237,9 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   }
 
-  openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
+  openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
     const dialogRef = this.dialog.open(DetailDialogComponent, {
-      width: '400px',
+      width: '420px',
       data: {
         ...data
       },
@@ -344,13 +268,14 @@ export class PanelComponent implements OnInit, OnDestroy {
      }*/
   }
 
-  transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined): Widget {
+  transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined, host: Hosts | undefined): Widget {
 
     return {
       item: item,
       languages: detail.iso.map(iso => iso.iso),
       component: ChipMap.get(item.chip),
-      colors: colors
+      colors: colors,
+      host: host
     };
   }
 

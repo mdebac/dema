@@ -18,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Panel extends AbstractAuditModel {
+    private Long menuId;
     private String panelUrl;
     private String icon;
     private Integer orderNum;

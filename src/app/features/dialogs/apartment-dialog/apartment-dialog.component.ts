@@ -31,6 +31,9 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {AuthStore} from "../../../services/authentication/auth-store";
 import {Roles} from "../../../domain/roles";
 import {Hosts} from "../../../domain/hosts";
+import {MatSlider, MatSliderThumb} from "@angular/material/slider";
+import clone from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 
 @Component({
     selector: 'apartment-dialog',
@@ -55,7 +58,7 @@ import {Hosts} from "../../../domain/hosts";
         ColorPickerDirective,
         MatFabButton,
         TranslatePipe,
-        MatDivider]
+        MatDivider, MatSlider, MatSliderThumb]
 })
 
 export class ApartmentDialogComponent implements OnInit, OnDestroy {
@@ -66,8 +69,12 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
     authStore = inject(AuthStore);
     unsubscribe$ = new Subject<void>();
 
-    selectedLogo: any = null;
+    selectedLogo: File | null = null;
+    selectedBackgroundImage: File | null = null;
+
     selectedPicture: string | undefined;
+    selectedPictureBackground: string | undefined;
+
     isOpened: boolean = true;
     primaryColor: string = '#e920e9';
     secondaryColor: string = '#e920e9';
@@ -79,6 +86,7 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
     form: FormGroup;
     languages: string[] = [];
     toBigImage: string = "";
+    toBigBackgroundImage: string = "";
 
     arrayItems: {
         text: string;
@@ -109,10 +117,13 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
             infoColorLight: [this.apartment?.infoColorLight],
             acceptColor: [this.apartment?.acceptColor],
             acceptColorLight: [this.apartment?.acceptColorLight],
+            linearPercentage: [this.apartment?.linearPercentage ? this.apartment?.linearPercentage : 0],
             price: [this.apartment?.price],
             image: [this.apartment?.image],
+            imageBackground: [this.apartment?.imageBackground],
             iso: this.fb.array([]),
-            removePicture: this.apartment?.removePicture,
+            removePicture: this.apartment?.removePicture ? this.apartment?.removePicture : false,
+            removePictureBackground: this.apartment?.removePictureBackground ? this.apartment?.removePictureBackground : false,
         });
 
         if (this.apartment?.iso?.length > 0) {
@@ -128,6 +139,9 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         }
         if (apartment?.image) {
             this.selectedLogo = apartment.image;
+        }
+        if (apartment?.imageBackground) {
+            this.selectedBackgroundImage = apartment.imageBackground;
         }
         this.primaryColor = apartment?.primaryColor ? apartment.primaryColor : "";
         this.secondaryColor = apartment?.secondaryColor ? apartment.secondaryColor : "";
@@ -196,11 +210,11 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
 
     createApartment() {
         if (this.form.valid) {
-            let apartmentProps = this.form.getRawValue() as Partial<Apartment>;
-            if (this.selectedLogo) {
-                apartmentProps = {...apartmentProps, image: this.selectedLogo};
-            }
-            this.dialogRef.close(apartmentProps);
+            const apartmentProps = this.form.getRawValue() as Partial<Apartment>;
+            const images = {image: this.selectedLogo, imageBackground: this.selectedBackgroundImage} as Partial<Apartment>;
+            const mergedClone = merge(apartmentProps, images);
+            console.log("mergedClone", mergedClone);
+           this.dialogRef.close(mergedClone);
         }
     }
 
@@ -230,6 +244,23 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         }
     }
 
+    selectBackgroundImage(event: any) {
+
+        if (event.target.files[0].size < 589000) {
+            this.selectedBackgroundImage = event.target.files[0];
+            if (this.selectedBackgroundImage) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.selectedPictureBackground = reader.result as string;
+                };
+                reader.readAsDataURL(this.selectedBackgroundImage);
+            }
+            this.toBigBackgroundImage = "";
+        } else {
+            this.toBigBackgroundImage = "< 0.5 Mb";
+        }
+    }
+
     get showPicture(): string | undefined {
         if (this.selectedPicture) {
             return this.selectedPicture;
@@ -239,13 +270,21 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         return;
     }
 
+    get showBackgroundImage(): string | undefined {
+        if (this.selectedPictureBackground) {
+            return this.selectedPictureBackground;
+        } else if (this.apartment?.imageBackground) {
+            return 'data:image/jpg;base64,' + this.apartment.imageBackground
+        }
+        return;
+    }
+
+
     get isNew(): boolean {
         return !this.form.value.id
     }
 
     chooseLanguages() {
-        console.log("already chosen languages - open choose dialog", this.languages);
-
         this.openChooseLanguageDialog(this.languages).pipe(
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
@@ -270,7 +309,7 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
                     }
 
                 } else {
-                    console.log("engleski je obavezan");
+                   // console.log("engleski je obavezan");
                 }
             }
         );
@@ -353,6 +392,30 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
 
     removePicture(event: any) {
         this.form.patchValue({removePicture: event.checked})
+    }
+
+    removePictureBackground(event: any) {
+        this.form.patchValue({removePictureBackground: event.checked})
+    }
+
+    formatLabel(value: number): string {
+        if (value >= 1000) {
+            const bilo  = Math.round(value / 1000);
+            return bilo + '';
+        }
+        return `${value}`;
+    }
+
+    onKeyUp(event:any){
+        console.log("onKeyUp event", event);
+    }
+
+    changeSlider(event: any){
+        this.form.patchValue({linearPercentage: event/1000})
+    }
+
+    get rate(){
+          return this.form.value.linearPercentage;
     }
 
     protected readonly defaultIso = defaultIso;

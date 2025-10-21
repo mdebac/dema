@@ -10,4 +10,5 @@ public interface PanelRepository extends JpaRepository<PanelEntity, Long> {
     Optional<PanelEntity> findById(Long id);
     void deleteByMenu_Id(Long menuId);
     long countByMenu_Id(Long menuId);
+    Integer findOrderNumTop1OrderNumByMenu_Id(Long menuId);
 }

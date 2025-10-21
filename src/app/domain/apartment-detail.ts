@@ -28,4 +28,5 @@ export interface ApartmentDetailDialogData {
   languages: string[] | undefined;
   detail: Partial<ApartmentDetail>;
   colors: Partial<Colors> | undefined;
+  newMenuOrderNum: number;
 }

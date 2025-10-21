@@ -43,9 +43,13 @@ public class MainEntity extends BaseAuditEntity {
     private String infoColorLight;
     private String acceptColor;
     private String acceptColorLight;
+    private Integer linearPercentage;
 
     @Convert(converter = TrueFalseConverter.class)
     private Boolean removePicture;
+
+    @Convert(converter = TrueFalseConverter.class)
+    private Boolean removeBackground;
 
     @Column(unique=true)
     private String host;
@@ -64,6 +68,28 @@ public class MainEntity extends BaseAuditEntity {
             setFileName(null);
         }
     }
+
+    @SneakyThrows
+    public void setImageBackground(MultipartFile multipartFile){
+        if(multipartFile != null){
+            setFileNameBackground(multipartFile.getOriginalFilename());
+            setMimeTypeBackground(multipartFile.getContentType());
+            setSizeBackground(multipartFile.getSize());
+            setContentBackground(IOUtils.toByteArray(multipartFile.getInputStream()) );
+        }else{
+            setContentBackground(null);
+            setSizeBackground(0);
+            setMimeTypeBackground(null);
+            setFileNameBackground(null);
+        }
+    }
+
+
+    private String fileNameBackground;
+    private String mimeTypeBackground;
+    private long sizeBackground;
+    @Column(name = "content_background", columnDefinition="MEDIUMBLOB")
+    private byte[] contentBackground;
 
     private String fileName;
     private String mimeType;

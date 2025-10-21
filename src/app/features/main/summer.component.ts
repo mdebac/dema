@@ -29,8 +29,9 @@ import {Side} from "../../domain/side";
 import {Layout} from "../../domain/layout";
 import {LayoutState} from "../../domain/layout-state";
 import {MatChipListbox, MatChipOption} from "@angular/material/chips";
-import {Roles} from "../../domain/roles";
 import {AuthStore} from "../../services/authentication/auth-store";
+import {Hosts} from "../../domain/hosts";
+import {Roles} from "../../domain/roles";
 
 @Component({
     selector: 'summer',
@@ -94,10 +95,8 @@ export class SummerComponent implements OnInit, OnDestroy {
     @Input() set stateLayout(stateLayout: LayoutState | undefined) {
         if (stateLayout) {
             if (stateLayout?.gapL === 0 && stateLayout?.menuL === 0) {
-                console.log("left", 10);
                 this.cssLeftPadding = "10px";
             } else {
-                console.log("left", 0);
                 this.cssLeftPadding = "0";
                 if (stateLayout.panelL !== 0) {
                     this.cssLeftPadding = "10px";
@@ -105,13 +104,9 @@ export class SummerComponent implements OnInit, OnDestroy {
             }
 
             if (stateLayout?.gapR === 0 && stateLayout?.menuR === 0) {
-                console.log("right", 10);
                 this.cssRightPadding = "10px";
             } else {
-                console.log("right", 0);
-
                 this.cssRightPadding = "0";
-
                 if (stateLayout.panelR !== 0) {
                     this.cssRightPadding = "10px";
                 }
@@ -119,8 +114,12 @@ export class SummerComponent implements OnInit, OnDestroy {
         }
     }
 
-    isManager = this.authStore.authorize(Roles.MANAGER);
-    isAdmin = this.authStore.authorize(Roles.ADMIN);
+    isAdmin(){
+        return this.authStore.authorize(Roles.ADMIN);
+    }
+    isManager(){
+        return this.authStore.authorize(Roles.MANAGER);
+    }
 
     backgroundColorSwitch(onOff: boolean, detail: ApartmentDetail | null) {
         const detailUpdate: Partial<ApartmentDetail> = {
@@ -185,6 +184,8 @@ export class SummerComponent implements OnInit, OnDestroy {
     @Input()
     loggedIn: boolean = false;
 
+    //canEditItems
+
     @Input()
     selectedIso: string = defaultIso;
 
@@ -198,7 +199,6 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log("SUMMER ngOnInit");
     }
 
     ngOnDestroy(): void {
@@ -214,7 +214,6 @@ export class SummerComponent implements OnInit, OnDestroy {
         ).subscribe(confirm => {
                 if (confirm) {
                     if (detail) {
-                        console.log("delete Detail")
                         this.store.deleteDetailEffect(detail)
                     }
                 }
@@ -230,22 +229,21 @@ export class SummerComponent implements OnInit, OnDestroy {
         return dialogRef.afterClosed();
     }
 
-    createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined) {
-        console.log("(click) createItem detail", detail);
-
+    createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined, host: Hosts | undefined) {
         if (detail) {
             const item: Partial<ApartmentItem> = {detailId: detail.id};
             const data: ApartmentItemDialogData = {
                 languages: detail.iso.map(iso => iso.iso),
                 item: item,
-                colors: colors
+                colors: colors,
+                roles: this.authStore.userRoles,
+                host: host
             };
 
             this.openDialogItem(data).pipe(
                 filter(val => !!val),
                 takeUntil(this.unsubscribe$)
             ).subscribe(detailProps => {
-                    console.log("props", detailProps);
                     if (detailProps.id) {
                         this.store.updateItemEffect(detailProps)
                     } else {
@@ -271,10 +269,10 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
 
-    updateDetail(header: Header | null, detail: ApartmentDetail | null) {
+    updateTitlesAndIcons(header: Header | null, detail: ApartmentDetail | null) {
         const selectedLanguages: string[] | undefined = header?.languages;
         const partial: Partial<ApartmentDetail> = {...detail}
-        const data: ApartmentDetailDialogData = {
+        const data: Partial<ApartmentDetailDialogData> = {
             languages: selectedLanguages,
             detail: partial,
             colors: header?.colors
@@ -285,16 +283,16 @@ export class SummerComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
                 if (detailProps.id) {
-                    this.store.updateDetailEffect(detailProps)
+                    this.store.updateDetailEffect(detailProps);
                 }
             }
         );
 
     }
 
-    openApartmentDetailDialog(data?: ApartmentDetailDialogData) {
+    openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
         const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '400px',
+            width: '420px',
             data: {
                 ...data
             },
@@ -323,13 +321,14 @@ export class SummerComponent implements OnInit, OnDestroy {
          }*/
     }
 
-    transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined): Widget {
+    transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined, host: Hosts | undefined): Widget {
 
         return {
             item: item,
             languages: detail.iso.map(iso => iso.iso),
             component: ChipMap.get(item.chip),
-            colors: colors
+            colors: colors,
+            host: host
         };
     }
 

@@ -16,7 +16,7 @@
                         </mat-chip-option>
                     </mat-chip-listbox>
                     <div class="button-container">
-                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors)">
+                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors, header?.host)">
                             <mat-icon>add_circle</mat-icon>
                             new Item
                         </button>
@@ -38,7 +38,7 @@
                     @if (activeDetail && activeDetail?.iso) {
                         <widget [loggedIn]="loggedIn" [selectedIso]="selectedIso" [columns]="activeDetail.columns"
                                 cdkDrag
-                                [data]="transformItemToWidget(activeDetail, data, header?.colors)"></widget>
+                                [data]="transformItemToWidget(activeDetail, data, header?.colors, header?.host)"></widget>
                     }
                 }
             </mat-card-content>

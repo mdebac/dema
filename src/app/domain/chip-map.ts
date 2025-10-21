@@ -6,6 +6,7 @@ import {YoutubeComponent} from "../features/widget/type/video/youtube.component"
 import {PictureComponent} from "../features/widget/type/picture/picture.component";
 import {ShoppingComponent} from "../features/widget/type/shopping/shopping.component";
 import {FormComponent} from "../features/widget/type/form/form.component";
+import {DomainsComponent} from "../features/widget/type/domains/domains.component";
 
 export const ChipMap = new Map<Chip, any>([
   [Chip.TEXT, TextComponent],
@@ -13,5 +14,6 @@ export const ChipMap = new Map<Chip, any>([
   [Chip.VIDEO, YoutubeComponent],
   [Chip.PICTURE, PictureComponent],
   [Chip.FORM, FormComponent],
-  [Chip.SHOPPING, ShoppingComponent]
+  [Chip.SHOPPING, ShoppingComponent],
+  [Chip.DOMAINS, DomainsComponent],
 ])

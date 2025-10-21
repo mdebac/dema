@@ -10,9 +10,9 @@
   </parent>
   <groupId>com.creator</groupId>
   <artifactId>dema</artifactId>
-  <version>1.0.12</version>
+  <version>1.0.13</version>
   <name>dema</name>
-  <description>Spring Boot project for book social network</description>
+  <description>Dema Web Creator</description>
   <properties>
     <java.version>17</java.version>
   </properties>
@@ -99,8 +99,8 @@
         <version>11.10.4</version>
         <configuration>
           <url>jdbc:mysql://localhost:3306/dema_db</url>
-          <user>root</user>
-          <password>root</password>
+          <user>user</user>
+          <password>password</password>
         </configuration>
       </plugin>
       <plugin>

@@ -48,6 +48,9 @@ public class DetailsService {
             );
             payload.getPanel().setIso(panelIso);
             payload.getPanel().setOrderNum(1);
+
+          //  Integer orderNum = Integer.sum(menuRepository.finderNumByMain_Id(payload.getMenu().getMainId()) , 1);
+           // payload.getMenu().setOrderNum(orderNum);
             menu = menuService.addMenu(payload.getMenu());
         } else {
             menu = menuService.updateMenu(payload.getMenu().getId(), payload.getMenu());
@@ -55,6 +58,10 @@ public class DetailsService {
 
         Panel panel;
         if (payload.getPanel().getId() == null) {
+
+          //  Integer orderNum = Integer.sum( panelRepository.findOrderNumTop1OrderNumByMenu_Id(menu.getId()) , 1);
+          //  payload.getPanel().setOrderNum(orderNum);
+
             panel = panelService.addPanel(menu.getId(), payload.getPanel());
         } else {
             panel = panelService.updatePanel(menu.getId(), payload.getPanel());
@@ -160,18 +167,10 @@ public class DetailsService {
 
     @Transactional(readOnly = true)
     public Detail findDetailByUrlLabels(String host, String menuUrl, String menuPanelUrl) {
-
         MainEntity mainHostEntity = mainRepository.findByHost(host)
                 .orElseThrow(() -> new RuntimeException("Main was not found with label [" + host + "]"));
-
-        mainHostEntity.getMenus().forEach(mainMenuEntity -> {
-            System.out.println("menuUrl--" + mainMenuEntity.getMenuUrl());
-        });
-
         MenuEntity menu = mainHostEntity.getMenus().stream().filter(a -> a.getMenuUrl().equals(menuUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Menu was not found with menuUrl [" + menuUrl + "]"));
-
         PanelEntity panel = menu.getPanels().stream().filter(a -> a.getPanelUrl().equals(menuPanelUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Panel was not found with panelUrl [" + menuPanelUrl + "]"));
-
         return detailMapper.toDomain(
                 detailRepository.findByMenu_IdAndPanel_Id(menu.getId(), panel.getId()).orElseThrow(() -> new RuntimeException("Detail was not found by menu [" + menu.getId() + "] and panel [" + panel.getId() + "]")));
     }
@@ -180,7 +179,6 @@ public class DetailsService {
     public Detail findDetailByDetailId(Long detailId) {
         return detailMapper.toDomain(detailRepository.findById(detailId).orElseThrow(() -> new RuntimeException("Detail was not found with detailId [" + detailId + "]")));
     }
-
 }
 
 

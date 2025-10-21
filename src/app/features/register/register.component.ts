@@ -7,6 +7,8 @@ import {RegistrationRequest} from "../../domain/registration-request";
 import {AuthenticationService} from "../../services/authentication.service";
 import {Colors} from "../../domain/colors";
 import {ApartmentStore} from "../../services/apartments-store.service";
+import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatFabButton} from "@angular/material/button";
 
 @Component({
     selector: 'dema-register',
@@ -16,6 +18,11 @@ import {ApartmentStore} from "../../services/apartments-store.service";
         NgIf,
         NgFor,
         FormsModule,
+        MatCard,
+        MatCardContent,
+        MatCardFooter,
+        MatCardHeader,
+        MatFabButton,
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

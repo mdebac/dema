@@ -20,13 +20,13 @@ export class MainTableDatasource extends DataSource<Apartment> {
   disconnect(collectionViewer: CollectionViewer): void {
   }
 
-  loadApartments(
+  loadDomains(
     chip:Chip | null = null,
     title:string | null = null,
     sortDirection:string = 'asc',
     pageIndex:number = 0,
     pageSize:number = 20)  {
-    this.apartmentStore.loadApartments(chip,title,sortDirection,pageIndex,pageSize);
+    this.apartmentStore.loadDomains(chip,title,sortDirection,pageIndex,pageSize);
   }
 
 }

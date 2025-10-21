@@ -6,7 +6,6 @@ import com.infodema.webcreator.domain.core.MainCriteria;
 import com.infodema.webcreator.domain.projections.MainProjection;
 import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.MainService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -57,11 +55,16 @@ public class MainController {
                 .body(mainService.findCustomers(UtilityHelper.resolveHostForDevelopment(host), pageable));
     }
 
+    @GetMapping("/find/domains")
+    public ResponseEntity<Page<Main>> findDomains(Pageable pageable) {
+        log.info("findDomains by pageable={}", pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(mainService.findDomains(pageable));
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteApartment(@PathVariable Long id,
                                          @RequestHeader("Host") String host) {
-        System.out.println("delete Main - " + id);
         mainService.deleteMain(id, host);
         return ResponseEntity.noContent().build();
     }
@@ -76,14 +79,8 @@ public class MainController {
     }
 
     @GetMapping(value = "/{id}")
-    public Main getById(@PathVariable("id") Long id) {
-        return mainService.findById(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<Main> create(@RequestPart Main payload, @RequestPart(value = "file", required = false) MultipartFile file) {
-
-        Main main = mainService.saveMain(payload, file);
+    public ResponseEntity<Main> getById(@PathVariable("id") Long id) {
+        Main main = mainService.findById(id);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(main.getId())
@@ -91,11 +88,18 @@ public class MainController {
         return ResponseEntity.created(location).body(main);
     }
 
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestPart Main payload,
+                                       @RequestPart(value = "file", required = false) MultipartFile file,
+                                       @RequestPart(value = "fileBg", required = false) MultipartFile fileBg) {
+        mainService.saveMain(payload, file, fileBg);
+        return ResponseEntity.noContent().build();
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/users/{userId}/roles/{role}")
     ResponseEntity<Void> updateUserRole(@PathVariable Long userId,
                                         @PathVariable String role) {
-        System.out.println("updateUserRole - " + role);
         mainService.updateUserRole(userId, role);
         return ResponseEntity.noContent().build();
     }

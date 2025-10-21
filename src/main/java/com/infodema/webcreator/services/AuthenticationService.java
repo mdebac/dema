@@ -48,10 +48,6 @@ public class AuthenticationService {
 
 
     public void register(RegistrationRequest request) throws MessagingException {
-
-        System.out.println("----------UserName" + mail_username);
-        System.out.println("----------Password" + mail_password);
-
         var userRole = roleRepository.findByName("USER")
                 // todo - better exception handling
                 .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
