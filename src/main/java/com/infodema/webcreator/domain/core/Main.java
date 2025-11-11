@@ -39,8 +39,8 @@ public class Main extends AbstractAuditModel {
     private String infoColorLight;
     private String acceptColor;
     private String acceptColorLight;
-    private byte[] image;
-    private byte[] imageBackground;
+    private byte[] iconImage;
+    private byte[] backgroundImage;
     private Boolean removePicture;
     private Boolean removePictureBackground;
     private Integer linearPercentage;

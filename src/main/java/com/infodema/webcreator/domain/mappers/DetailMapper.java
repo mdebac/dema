@@ -35,7 +35,7 @@ public class DetailMapper extends AbstractMapper {
                 .id(entity.getId())
                 .show(entity.getShowProgram())
                 .columns(entity.getColumns())
-                .backgroundColorOn(entity.isBackgroundColorOn())
+                .backgroundColor(entity.getBackgroundColor())
                 .cornerRadius(entity.getCornerRadius())
                 .items(itemMapper.toDomain(entity.getItems()))
                 .iso(toDomainDetailIso(entity.getIso()))
@@ -43,8 +43,8 @@ public class DetailMapper extends AbstractMapper {
                 .createdBy(entity.getCreatedBy())
                 .modifiedOn(entity.getModifiedOn())
                 .modifiedBy(entity.getModifiedBy())
-                .menu(menuMapper.toDomain(entity.getMenu()))
-                .panel(panelMapper.toDomain(entity.getPanel()))
+                .topMenu(menuMapper.toDomain(entity.getMenu()))
+                .sideMenu(panelMapper.toDomain(entity.getPanel()))
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class DetailMapper extends AbstractMapper {
                 .iso(toEntityDetailIso(detail.getIso()))
                 .showProgram(detail.isShow())
                 .columns(detail.getColumns())
-                .backgroundColorOn(detail.isBackgroundColorOn())
+                .backgroundColor(detail.getBackgroundColor())
                 .cornerRadius(detail.getCornerRadius())
                 .items(itemMapper.toEntity(detail.getItems()))
                 .createdOn(detail.getCreatedOn())
@@ -76,7 +76,7 @@ public class DetailMapper extends AbstractMapper {
         }
         entity.setShowProgram(detail.isShow());
         entity.setColumns(detail.getColumns());
-        entity.setBackgroundColorOn(detail.isBackgroundColorOn());
+        entity.setBackgroundColor(detail.getBackgroundColor());
         entity.setCornerRadius(detail.getCornerRadius());
 
         if(detail.getItems() != null) {

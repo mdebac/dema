@@ -1,14 +1,13 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, Input} from '@angular/core';
 import {Router} from '@angular/router';
-
-import { NgIf, NgFor } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgIf, NgFor} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import {RegistrationRequest} from "../../domain/registration-request";
 import {AuthenticationService} from "../../services/authentication.service";
-import {Colors} from "../../domain/colors";
-import {ApartmentStore} from "../../services/apartments-store.service";
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 import {MatFabButton} from "@angular/material/button";
+import {first} from "rxjs";
+import {ReCaptchaV3Service} from "ng-recaptcha-2";
 
 @Component({
     selector: 'dema-register',
@@ -20,7 +19,6 @@ import {MatFabButton} from "@angular/material/button";
         FormsModule,
         MatCard,
         MatCardContent,
-        MatCardFooter,
         MatCardHeader,
         MatFabButton,
     ],
@@ -28,32 +26,41 @@ import {MatFabButton} from "@angular/material/button";
 })
 export class RegisterComponent {
 
-  registerRequest: RegistrationRequest = {email: '', firstname: '', lastname: '', password: '', host: ''};
-  errorMsg: Array<string> = [];
+    readonly recaptchaV3Service = inject(ReCaptchaV3Service);
+    readonly authService = inject(AuthenticationService);
+    readonly router = inject(Router);
 
-  constructor(
-    private router: Router,
-    private authService: AuthenticationService
-  ) {
-      console.log("RegisterComponent ngOnInit")
-  }
+    registerRequest: RegistrationRequest = {email: '', firstname: '', lastname: '', password: '', host: ''};
+    errorMsg: Array<string> = [];
+    showPassword = false;
 
-  login() {
-    this.router.navigate(['login']);
-  }
+    constructor(
+    ) {
+        console.log("RegisterComponent ngOnInit")
+    }
 
-  register() {
-    this.errorMsg = [];
-    this.authService.register({
-      body: this.registerRequest
-    })
-      .subscribe({
-        next: () => {
-          this.router.navigate(['activate-account']);
-        },
-        error: (err) => {
-          this.errorMsg = err.error.validationErrors;
-        }
-      });
-  }
+    login() {
+        this.router.navigate(['login']);
+    }
+
+    register() {
+        this.errorMsg = [];
+
+        this.recaptchaV3Service.execute('importantAction').subscribe((token) => {
+            this.authService
+                .register({
+                    body: this.registerRequest,
+                    captcha: token
+                })
+                .pipe(first())
+                .subscribe({
+                    next: () => {
+                        this.router.navigate(['activate-account']);
+                    },
+                    error: (err) => {
+                        this.errorMsg = err.error.validationErrors;
+                    }
+                });
+        });
+    }
 }

@@ -1,50 +1,60 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
-import {skipUntil} from 'rxjs';
-import { NgIf } from '@angular/common';
-import { CodeInputModule } from 'angular-code-input';
+import {first, skipUntil} from 'rxjs';
+import {NgIf} from '@angular/common';
+import {CodeInputModule} from 'angular-code-input';
 import {AuthenticationService} from "../../services/authentication.service";
 import {MatFabButton} from "@angular/material/button";
+import {TranslatePipe} from "@ngx-translate/core";
+import {AuthStore} from "../../services/authentication/auth-store";
+import {ApartmentStore} from "../../services/apartments-store.service";
+import {ReCaptchaV3Service} from "ng-recaptcha-2";
 
 @Component({
     selector: 'app-activate-account',
     templateUrl: './activate-account.component.html',
     styleUrls: ['./activate-account.component.scss'],
-  imports: [NgIf, CodeInputModule, MatFabButton],
+    imports: [NgIf, CodeInputModule, MatFabButton, TranslatePipe],
 })
 export class ActivateAccountComponent {
 
-  message = '';
-  isOkay = true;
-  submitted = false;
-  constructor(
-    private router: Router,
-    private authService: AuthenticationService
-  ) {}
+    readonly router = inject(Router);
+    readonly authService = inject(AuthenticationService);
+    readonly recaptchaV3Service = inject(ReCaptchaV3Service);
 
-  private confirmAccount(token: string) {
-    this.authService.confirm({
-      token
-    }).subscribe({
-      next: () => {
-        this.message = 'Your account has been successfully activated.\nNow you can proceed to login';
-        this.submitted = true;
-      },
-      error: () => {
-        this.message = 'Token has been expired or invalid';
-        this.submitted = true;
-        this.isOkay = false;
-      }
-    });
-  }
+    message = '';
+    isOkay = true;
+    submitted = false;
 
-  redirectToLogin() {
-    this.router.navigate(['login']);
-  }
+    private confirmAccount(token: string) {
 
-  onCodeCompleted(token: string) {
-    this.confirmAccount(token);
-  }
+        this.recaptchaV3Service.execute('importantAction').subscribe((captcha) => {
+            this.authService.confirm({
+                token,
+                captcha: captcha
+            })
+                .pipe(first())
+                .subscribe({
+                    next: () => {
+                        this.message = 'Your account has been successfully activated.\nNow you can proceed to login';
+                        this.submitted = true;
+                    },
+                    error: () => {
+                        this.message = 'Token has been expired or invalid';
+                        this.submitted = true;
+                        this.isOkay = false;
+                    }
+                });
+        });
+    }
 
-  protected readonly skipUntil = skipUntil;
+    redirectToLogin() {
+        this.router.navigate(['login']);
+    }
+
+    onCodeCompleted(token: string) {
+        this.confirmAccount(token);
+    }
+
+    protected readonly skipUntil = skipUntil;
 }

@@ -37,8 +37,8 @@ public class DetailEntity extends BaseAuditEntity {
     private Integer cornerRadius;
     @Convert(converter = TrueFalseConverter.class)
     private Boolean showProgram;
-    @Convert(converter = TrueFalseConverter.class)
-    private boolean backgroundColorOn;
+
+    private String backgroundColor;
 
    @OneToMany(mappedBy = "detail")
    //@Fetch(FetchMode.SUBSELECT)

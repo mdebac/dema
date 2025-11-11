@@ -23,7 +23,7 @@ import {
     MatRow,
 } from '@angular/material/table';
 import {MainTableDatasource} from "../main-table-datasource";
-import {merge, Subject, tap} from "rxjs";
+import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {filter, takeUntil} from "rxjs/operators";
 import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
@@ -32,15 +32,15 @@ import {MatIcon} from '@angular/material/icon';
 import {ApartmentStore} from "../../../services/apartments-store.service";
 import {Chip} from "../../../domain/chip.enum";
 import {Apartment} from "../../../domain/apartment";
-import {ApartmentDialogComponent} from "../../dialogs/apartment-dialog/apartment-dialog.component";
 import {ConformationDialogComponent} from "../../dialogs/conformation-dialog/conformation-dialog.component";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Customer} from "../../../domain/customer";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {NgFor} from "@angular/common";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {getAllRoles, Roles} from "../../../domain/roles";
+import {Roles} from "../../../domain/roles";
 import {AuthStore} from "../../../services/authentication/auth-store";
+import {ApartmentDialogComponent} from "../../dialogs/apartment-dialog/apartment-dialog.component";
 
 @Component({
     selector: 'customers-table',
@@ -57,7 +57,6 @@ import {AuthStore} from "../../../services/authentication/auth-store";
         MatHeaderCell,
         MatCellDef,
         MatCell,
-        RouterLinkActive,
         MatIconButton,
         MatIcon,
         MatSortHeader,
@@ -65,10 +64,11 @@ import {AuthStore} from "../../../services/authentication/auth-store";
         MatHeaderRow,
         MatRowDef,
         MatRow,
-        MatFabButton,
-        TranslatePipe,
         MatSelect,
         MatOption,
+        TranslatePipe,
+        RouterLinkActive,
+        MatFabButton,
     ],
     animations: [
         trigger('detailExpand', [
@@ -155,7 +155,7 @@ export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy
 
     conformationDialog() {
         const dialogRef = this.dialog.open(ConformationDialogComponent, {
-            width: '320px',
+            width: '20rem',
             data: this.translateService.instant('delete.page')
         });
         return dialogRef.afterClosed();
@@ -173,15 +173,16 @@ export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy
         );
     }
 
+
     updateApartment(apartment: Apartment) {
         console.log("updateApartment dialog enter", apartment);
         this.openApartmentDialog(apartment).pipe(
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
-            console.log("updateApartment dialog finish", detailProps);
-             this.store.createMainEffect(detailProps);
-             window.location.reload();
+                console.log("updateApartment dialog finish", detailProps);
+                this.store.createMainEffect(detailProps);
+                window.location.reload();
             }
         );
     }
@@ -196,23 +197,7 @@ export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy
         return dialogRef.afterClosed();
     }
 
-
-    // toggleRow(element: Apartment) {
-    //     element.customersDS && (element.customersDS as MatTableDataSource<Customer>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
-    //
-    //     console.log("--");
-    //     // this.cd.detectChanges();
-    //     // @ts-ignore
-    //   //  this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).sort = this.innerSort?.toArray()[index]);
-    // }
-
-    // applyFilter(event: any) {
-    //     console.log("applyFilter", event.value);
-    //     this.innerTables?.forEach((table, index) => (table.dataSource as MatTableDataSource<Customer>).filter = event.value.trim().toLowerCase());
-    // }
-
     onToggleCustomers(element: Apartment){
-        console.log("onToggleCustomers", element);
         if(element == this.expandedElement){
             this.expandedElement = null;
         }else{
@@ -220,11 +205,6 @@ export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy
         }
     }
 
-    resolveHeader(colName: string){
-        return this.translateService.instant(colName + '.customer.table')
-    }
-
-    protected readonly getAllRoles = getAllRoles;
     protected readonly Roles = Roles;
 }
 

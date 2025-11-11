@@ -21,12 +21,12 @@
 <div class="button-container">
 
     @if (loggedIn){
-        <button mat-flat-button color="primary" (click)="openCV(itemId)">
+        <button mat-fab extended (click)="openCV(itemId)">
             <mat-icon>login</mat-icon>
             {{ "job.apply.button" | translate }}
         </button>
     } @else {
-        <button mat-flat-button color="primary" (click)="openRegistrationWarning()">
+        <button mat-fab extended (click)="openRegistrationWarning()">
             <mat-icon>login</mat-icon>
             {{ "job.apply.button" | translate }}
         </button>

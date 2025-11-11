@@ -1,126 +1,111 @@
 <ng-container>
-
+    <div id="top"></div>
     <mat-card class="dashboard-card">
         <mat-card-header>
-            <!--            <breadcrumbs [breadcrumbs]="breadcrumbs"></breadcrumbs>-->
-            @if (isAdmin() || isManager()) {
-                <!-- if admin/manager -->
-                <div class="header-actions">
 
-                    <div class="grb">
-                        <div class="grb-crveno"></div>
-                        <div class="grb-bijelo"></div>
-                        <div class="grb-bijelo"></div>
-                        <div class="grb-crveno"></div>
-                    </div>
-
-                    <mat-chip-listbox (change)="fillBackground($event, activeDetail)">
-                        <mat-chip-option [selected]="activeDetail?.backgroundColorOn">
-                            <mat-icon>format_color_fill</mat-icon>
-                        </mat-chip-option>
-                    </mat-chip-listbox>
-
-                    <button mat-flat-button [matMenuTriggerFor]="menu">
-                        <mat-icon>auto_awesome_mosaic</mat-icon>
-                        {{ "summer.layout" | translate }}
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <div class="actionButtons">
-
-                            @if (activeDetail?.menu?.side === Side.LEFT) {
-                                <button mat-flat-button (click)="addToRightMenuPanel(activeDetail)">
-                                    <mat-icon>view_sidebar</mat-icon>
-                                    {{ "summer.add.menu.to.right" | translate }}
-                                </button>
+            @if (isMobile) {
+                <div class="menu-container" #menuContainer (click)="menuContainerClick()">
+                    @if (activeDetail?.sideMenu?.image) {
+                        <div class="image-desc">
+                            <img src="{{'data:image/jpg;base64,' + activeDetail?.sideMenu?.image}}" alt=""/>
+                        </div>
+                    } @else {
+                        <div class="menu-icon">
+                            @if (activeDetail?.sideMenu?.icon) {
+                                <mat-icon class="icon-display icon-active"> {{ activeDetail?.sideMenu?.icon }}
+                                </mat-icon>
                             } @else {
-                                <button mat-flat-button (click)="addToLeftMenuPanel(activeDetail)">
-                                    <mat-icon style="transform: rotate(180deg)">view_sidebar</mat-icon>
-                                    {{ "summer.add.menu.to.left" | translate }}
-                                </button>
-                            }
-
-                            @if (activeDetail?.menu?.layout === Layout.CENTER) {
-                                <button mat-flat-button (click)="fullScreen(activeDetail)">
-                                    <mat-icon style="transform: rotate(90deg)">expand</mat-icon>
-                                    {{ "summer.full.screen" | translate }}
-                                </button>
-                            } @else {
-                                <button mat-flat-button (click)="center(activeDetail)">
-                                    <mat-icon style="transform: rotate(90deg)">compress</mat-icon>
-                                    {{ "summer.center" | translate }}
-                                </button>
-                            }
-
-                            @if (activeDetail?.menu?.panelOn) {
-                                <button mat-flat-button (click)="panelOff(activeDetail)">
-                                    <i class="fa fa-columns" aria-hidden="true"></i>
-                                    {{ "summer.panel.off" | translate }}
-                                </button>
-                            } @else {
-                                <button mat-flat-button (click)="panelOn(activeDetail)">
-                                    <i class="fa fa-columns" aria-hidden="true"></i>
-                                    {{ "summer.panel.on" | translate }}
-                                </button>
+                                <mat-icon class="icon-display icon-active">favorite</mat-icon>
                             }
                         </div>
-                    </mat-menu>
+                    }
 
-                    <button mat-flat-button [matMenuTriggerFor]="menuColumns">
-                        <i class="fa-solid fa-table-cells"></i>
-                        {{ "summer.columns" | translate }}
-                    </button>
-                    <mat-menu #menuColumns="matMenu">
-                        <mat-button-toggle-group hideSingleSelectionIndicator="true"
-                                                 [value]="activeDetail?.columns"
-                                                 (change)="onChangeColumns($event,activeDetail)">
-                            <mat-button-toggle [value]="1">1</mat-button-toggle>
-                            <mat-button-toggle [value]="2">2</mat-button-toggle>
-                            <mat-button-toggle [value]="3">3</mat-button-toggle>
-                            <mat-button-toggle [value]="4">4</mat-button-toggle>
-                            <mat-button-toggle [value]="5">5</mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </mat-menu>
+                    <div class="menu-text">
+                        <div class="menu-title-text">
 
-                    <div class="button-container">
-                        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors, header?.host)">
-                            <mat-icon>add_circle</mat-icon>
-                            {{ "summer.new.item" | translate }}
-                        </button>
-                    </div>
-                    <div class="button-container">
-                        <button mat-flat-button (click)="updateTitlesAndIcons(header, activeDetail)">
-                            <mat-icon>update</mat-icon>
-                            {{ "title.and.icons" | translate }}
-                        </button>
-                    </div>
-                    <div class="button-container">
-                        <button [disabled]="onlyOne(header?.menus)" mat-flat-button
-                                (click)="deleteDetail(activeDetail)">
-                            <mat-icon>delete</mat-icon>
-                            {{ "delete.page" | translate }}
-                        </button>
+                            @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
+                                @if (selectedIso === iso.iso) {
+                                    {{ iso.title }}
+                                }
+                            }
+
+                        </div>
+                        <div class="menu-description-text">
+                            @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
+                                @if (selectedIso === iso.iso) {
+                                    {{ iso.description }}
+                                }
+                            }
+
+                        </div>
                     </div>
                 </div>
             }
-            <div class="header-title">
-                <div class="container">
-                    <div class="content">
-                        <div class="editor">
-                            <ngx-editor [editor]="editor"
-                                        [ngModel]="getTitle(selectedIso, activeDetail?.iso)"
-                                        [disabled]="true"
-                                        [placeholder]="''"
-                            >
-                            </ngx-editor>
+
+            <!--   <breadcrumbs [breadcrumbs]="breadcrumbs"></breadcrumbs>-->
+            @if (isAdmin() || isManager()) {
+
+                <div class="header-actions">
+
+                    <div>
+                        <button mat-flat-button [matMenuTriggerFor]="pageActions">
+                            <i class="fa-solid fa-gears fa-xl"></i>
+                            {{ "page.actions" | translate }}
+                        </button>
+                    </div>
+                    <mat-menu #pageActions="matMenu">
+                        <div class="actionButtons">
+                            <ng-container>
+                                <page-actions (click)="$event.stopPropagation()"
+                                              [activeDetail]="activeDetail"
+                                              [header]="header"
+                                              [direction]="'column'"
+                                ></page-actions>
+                            </ng-container>
+                        </div>
+                    </mat-menu>
+
+                    <div>
+                        <button mat-flat-button [matMenuTriggerFor]="headerActions">
+                            <i class="fa-solid fa-chess-rook"></i>
+                            {{ "header.actions" | translate }}
+                        </button>
+                    </div>
+                    <mat-menu #headerActions="matMenu">
+                        <div class="actionButtons">
+                            <ng-container>
+                                <header-actions (click)="$event.stopPropagation()"
+                                                [header]="header"
+                                ></header-actions>
+                            </ng-container>
+                        </div>
+                    </mat-menu>
+
+                </div>
+
+            }
+            @if (!hideContent) {
+                <div class="header-title">
+                    <div class="container">
+                        <div class="content">
+                            <div class="editor">
+                                <ngx-editor [editor]="editor"
+                                            [ngModel]="getTitle(selectedIso, activeDetail?.iso)"
+                                            [disabled]="true"
+                                            [placeholder]="''"
+                                >
+                                </ngx-editor>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+
         </mat-card-header>
 
         @if (activeDetail?.items) {
             <mat-card-content
-                    cdkDropList
+                    cdkDropList [hidden]="hideContent"
                     [cdkDropListDisabled]="!(isAdmin || isManager)"
                     [cdkDropListData]="activeDetail!.items"
                     (cdkDropListDropped)="drop($event)"
@@ -128,12 +113,54 @@
                 @for (data of activeDetail?.items; track data.id) {
 
                     @if (activeDetail && activeDetail?.iso) {
-                        <widget [loggedIn]="loggedIn"  [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso" [columns]="activeDetail.columns"
+                        <widget [loggedIn]="loggedIn" [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso"
+                                [columns]="activeDetail.columns"
                                 cdkDrag
-                                [data]="transformItemToWidget(activeDetail, data, header?.colors, header?.host)"></widget>
+                                [data]="transformItemToWidget(activeDetail, data, header?.colors, header?.main?.host, isMobile)"></widget>
                     }
                 }
             </mat-card-content>
+            <div class="make-space"><br></div>
         }
+
+        @if (isMobile) {
+            @for (panel of activeDetail?.topMenu?.panels; track panel.id; let i = $index) {
+                @for (iso of panel.iso; track iso.iso) {
+                    @if (selectedIso === iso.iso) {
+                        @if (panel.panelUrl !== activeDetail?.sideMenu?.panelUrl) {
+
+                            <div class="menu-container-list"
+                                 (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
+                                @if (panel.image) {
+                                    <div class="image-desc">
+                                        <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+                                    </div>
+                                } @else {
+                                    <div class="menu-icon">
+                                        @if (panel.icon) {
+                                            <mat-icon class="icon-display icon-active"> {{ panel.icon }}
+                                            </mat-icon>
+                                        } @else {
+                                            <mat-icon class="icon-display icon-active">favorite</mat-icon>
+                                        }
+                                    </div>
+                                }
+                                <div class="menu-text">
+                                    <div class="menu-title-text">
+                                        {{ iso.title }}
+                                    </div>
+                                    <div class="menu-description-text">
+                                        {{ iso.description }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                }
+            }
+        }
+
     </mat-card>
+
 </ng-container>

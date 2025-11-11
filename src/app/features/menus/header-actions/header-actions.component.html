@@ -1,0 +1,179 @@
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>format_color_fill</mat-icon>
+            <div class="naslov">Change Colors</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons" [formGroup]="form">
+        <mat-label>Primary Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="primaryColor" [value]="primaryColor"><br>
+
+        <mat-label>Secondary Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="secondaryColor" [value]="secondaryColor"><br>
+
+        <mat-label>Danger Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="dangerColor" [value]="dangerColor"><br>
+
+        <mat-label>Warn Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="warnColor" [value]="warnColor"><br>
+
+        <mat-label>Info Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="infoColor" [value]="infoColor"><br>
+
+        <mat-label>Accept Color</mat-label>
+        <input type="color" (change)="changeColor()" formControlName="acceptColor" [value]="acceptColor">
+    </div>
+</mat-expansion-panel>
+
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-regular fa-image fa-xl text"></i>
+            <div class="naslov">Logo image</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons" [formGroup]="form">
+        <input #logoImageInput
+                (change)="selectLogo($event)"
+                class="form-control"
+                type="file"
+                accept="image/*"
+        >
+        <mat-error></mat-error>
+
+        <br>
+        @if (showPicture) {
+            <img width="100" src="{{showPicture}}" alt=""/>
+            <mat-checkbox (change)="onRemovePicture($event)">
+                {{ "remove.image" | translate }}
+            </mat-checkbox>
+        }
+        <br>
+        {{ toBigImage }}
+    </div>
+</mat-expansion-panel>
+
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-solid fa-image fa-xl text"></i>
+            <div class="naslov">Background image</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons text" [formGroup]="form">
+        <input #backgroundImageInput
+                (change)="selectBackgroundImage($event)"
+                class="form-control"
+                type="file"
+                accept="image/*"
+        >
+        <mat-error></mat-error>
+
+        <br>
+        @if (showBackgroundImage) {
+            <img width="100" src="{{showBackgroundImage}}" alt=""/>
+            <mat-checkbox (change)="onRemoveBackgroundPicture($event)">
+                {{ "remove.image" | translate }}
+            </mat-checkbox>
+        }
+        <br>
+        {{ toBigImage }}
+    </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon><span class="material-symbols-outlined">transition_fade</span></mat-icon>
+            <div class="naslov">Gradient Background</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons" [formGroup]="form">
+
+        {{rate}}
+        <mat-slider class="my-slider" min="0" max="100" step="1" showTickMarks discrete [displayWith]="formatLabel">
+            <input matSliderThumb value="{{rate}}" (valueChange)="changeSlider($event)">
+        </mat-slider>
+    </div>
+</mat-expansion-panel>
+
+<!--<mat-expansion-panel class="custom-panel"-->
+<!--                     (click)="changeText(activeDetail, header?.colors, header?.main?.host)" hideToggle>-->
+<!--    <mat-expansion-panel-header>-->
+<!--        <mat-panel-title>-->
+<!--            <mat-icon>add_circle</mat-icon>-->
+<!--            <div class="naslov">{{ "summer.new.item" | translate }}</div>-->
+<!--        </mat-panel-title>-->
+<!--    </mat-expansion-panel-header>-->
+<!--</mat-expansion-panel>-->
+
+<!--<mat-expansion-panel #createNewItemPanel class="custom-panel"-->
+<!--                     (click)="createNewItem(activeDetail, header?.colors, header?.main?.host)" hideToggle>-->
+<!--    <mat-expansion-panel-header>-->
+<!--        <mat-panel-title>-->
+<!--            <mat-icon>add_circle</mat-icon>-->
+<!--            <div class="naslov">{{ "summer.new.item" | translate }}</div>-->
+<!--        </mat-panel-title>-->
+<!--    </mat-expansion-panel-header>-->
+<!--</mat-expansion-panel>-->
+
+<!--    <mat-expansion-panel class="custom-panel" (click)="deleteDetail(activeDetail)" hideToggle>-->
+<!--        <mat-expansion-panel-header>-->
+<!--            <mat-panel-title>-->
+<!--                <mat-icon>delete</mat-icon>-->
+<!--                <div class="naslov">{{ "delete.page" | translate }}</div>-->
+<!--            </mat-panel-title>-->
+<!--        </mat-expansion-panel-header>-->
+<!--    </mat-expansion-panel>-->
+
+
+<!--    <div class="button-container">-->
+<!--        <button mat-flat-button-->
+<!--                (click)="changeHeader(header?.main)">-->
+<!--            <i class="fa-solid fa-chess-rook"></i>-->
+<!--            {{ "change.header" | translate }}-->
+<!--        </button>-->
+<!--    </div>-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--<mat-expansion-panel-->
+<!--        [expanded]="false"-->
+<!--        (opened)="panelOpenState = true"-->
+<!--        (closed)="panelOpenState = false"-->
+<!--        hideToggle-->
+<!--&gt;-->
+<!--    <mat-expansion-panel-header>-->
+<!--        <div class="panel-header">-->
+<!--            <div class="panel-arrow">-->
+<!--                @if (!panelOpenState) {-->
+<!--                    <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>-->
+<!--                }-->
+<!--                @if (panelOpenState) {-->
+<!--                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>-->
+<!--                }-->
+<!--            </div>-->
+<!--            <div class="panel-title">-->
+<!--              uiuiuiui-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </mat-expansion-panel-header>-->
+<!--    <mat-panel-description>-->
+<!--        <mat-expansion-panel-->
+<!--                [expanded]="false"-->
+<!--                (opened)="subpanel = true"-->
+<!--                (closed)="subpanel = false"-->
+<!--                hideToggle-->
+<!--        >-->
+<!--            <mat-expansion-panel-header>-->
+<!--                sdddddd-->
+<!--            </mat-expansion-panel-header>-->
+<!--        </mat-expansion-panel>-->
+<!--    </mat-panel-description>-->
+<!--</mat-expansion-panel>-->

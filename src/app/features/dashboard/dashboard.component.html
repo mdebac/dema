@@ -15,7 +15,7 @@
                             <p> {{ "my.dashboard" | translate }} </p>
                         </div>
                     </h2>
-                    @if (isAdmin || isManager && vm.header?.host === Hosts.DEMA_APARTMENTS){
+                    @if (isAdmin || isManager && vm.header?.main?.host === Hosts.DEMA_APARTMENTS){
                         <div>
                             <button (click)="createApartment()"
                                     mat-fab extended>
@@ -33,7 +33,7 @@
                                 [apartmentsCount]="vm.apartmentsCount"
                         ></customers-table>
                     }
-                    @if (isUser && vm.header?.host === Hosts.ADRIATICSUN_EU){
+                    @if (isUser && vm.header?.main?.host === Hosts.ADRIATICSUN_EU){
                         //user status table
                     }
                 </mat-card-content>

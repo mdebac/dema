@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +24,21 @@ public class MenuService {
     private final MenuMapper menuMapper;
 
     @Transactional
-    public Menu addMenu(Menu payload) {
+    public Menu addMenu(Menu payload, MultipartFile file) {
 
         MainEntity mainEntity = mainRepository.findById(payload.getMainId())
                 .orElseThrow(() -> new EntityNotFoundException("No Main found with ID:: " + payload.getMainId()));
 
         MenuEntity menuEntity = menuMapper.toEntity(payload);
+
+        if (payload.getRemoveImage() != null && payload.getRemoveImage() == Boolean.TRUE) {
+            menuEntity.setImage(null);
+        } else {
+            if (file != null) {
+                menuEntity.setImage(file);
+            }
+        }
+
         menuEntity.setMain(mainEntity);
 
         menuRepository.save(menuEntity);
@@ -49,14 +59,22 @@ public class MenuService {
 
 
     @Transactional
-    public Menu updateMenu(Long id, Menu payload) {
+    public Menu updateMenu(Long id, Menu menu, MultipartFile file) {
 
         MenuEntity entity = menuRepository.findById(id).orElseThrow(() -> {
             log.warn("Menu with id {} was not found", id);
             return new RuntimeException(NOT_FOUND);
         });
 
-        menuMapper.updateEntityByModel(entity, payload);
+        if (menu.getRemoveImage() != null && menu.getRemoveImage()) {
+            entity.setImage(null);
+        } else {
+            if (file != null) {
+                entity.setImage(file);
+            }
+        }
+
+        menuMapper.updateEntityByModel(entity, menu);
         return menuMapper.toDomain(menuRepository.save(entity));
     }
 

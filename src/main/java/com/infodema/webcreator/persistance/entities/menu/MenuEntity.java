@@ -9,7 +9,9 @@ import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.type.TrueFalseConverter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +28,11 @@ public class MenuEntity extends BaseAuditEntity {
 
     private String icon;
     private Integer orderNum;
+    private String imageFileName;
+    private String imageMimeType;
+    private long imageSize;
+    @Column(name = "image_content", columnDefinition="MEDIUMBLOB")
+    private byte[] imageContent;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,6 +48,8 @@ public class MenuEntity extends BaseAuditEntity {
     @Convert(converter = TrueFalseConverter.class)
     private Boolean panelOn;
 
+    @Convert(converter = TrueFalseConverter.class)
+    private Boolean searchOn;
 
     @ManyToOne
     @JoinColumn(name = "main_id", nullable = false)
@@ -56,6 +65,21 @@ public class MenuEntity extends BaseAuditEntity {
     )
     @Builder.Default
     private Set<MenuIsoEntity> iso = new HashSet<>();
+
+    @SneakyThrows
+    public void setImage(MultipartFile multipartFile){
+        if(multipartFile != null){
+            setImageFileName(multipartFile.getOriginalFilename());
+            setImageMimeType(multipartFile.getContentType());
+            setImageSize(multipartFile.getSize());
+            setImageContent(IOUtils.toByteArray(multipartFile.getInputStream()) );
+        }else{
+            setImageContent(null);
+            setImageSize(0);
+            setImageMimeType(null);
+            setImageFileName(null);
+        }
+    }
 
     @Transient
     public String getMenuUrl() {

@@ -6,7 +6,7 @@ import {EMPTY, Subject} from "rxjs";
 import {filter, takeUntil} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {FormsModule} from '@angular/forms';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslatePipe} from '@ngx-translate/core';
 
@@ -14,7 +14,7 @@ import {TranslatePipe} from '@ngx-translate/core';
     selector: 'job',
     templateUrl: './job.component.html',
     styleUrl: './job.component.scss',
-    imports: [NgxEditorComponent, FormsModule, MatButton, MatIcon, TranslatePipe]
+    imports: [NgxEditorComponent, FormsModule, MatButton, MatIcon, TranslatePipe, MatFabButton]
 })
 export class JobComponent implements OnInit, OnDestroy {
 

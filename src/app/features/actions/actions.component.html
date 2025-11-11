@@ -1,0 +1,118 @@
+
+
+<div class="header-actions">
+
+<!--    <mat-chip-listbox (change)="fillBackground($event, activeDetail)">-->
+<!--        <mat-chip-option [selected]="activeDetail?.backgroundColorOn">-->
+<!--            <mat-icon>format_color_fill</mat-icon>-->
+<!--        </mat-chip-option>-->
+<!--    </mat-chip-listbox>-->
+
+    <button mat-flat-button [matMenuTriggerFor]="colorMenu">
+        <mat-icon>format_color_fill</mat-icon>
+        Background color
+    </button>
+    <mat-menu #colorMenu="matMenu">
+        <div class="actionButtons">
+            <mat-button-toggle-group [value]="activeDetail?.backgroundColor"
+                                     (change)="onChangeBackgroundColor($event, activeDetail)">
+                <mat-button-toggle class="primaryColor" [value]=header?.colors?.primaryColor></mat-button-toggle>
+                <mat-button-toggle class="secondaryColor" [value]=header?.colors?.secondaryColor></mat-button-toggle>
+                <mat-button-toggle class="dangerColor" [value]=header?.colors?.dangerColor></mat-button-toggle>
+                <mat-button-toggle class="warnColor" [value]=header?.colors?.warnColor></mat-button-toggle>
+                <mat-button-toggle class="infoColor" [value]=header?.colors?.infoColor></mat-button-toggle>
+                <mat-button-toggle class="acceptColor" [value]=header?.colors?.acceptColor></mat-button-toggle>
+                <mat-button-toggle class="whiteColor" [value]="'#FFFFFF'"></mat-button-toggle>
+                <mat-button-toggle class="blackColor" [value]="'#000000'"></mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </mat-menu>
+
+    <button mat-flat-button [matMenuTriggerFor]="menu">
+        <mat-icon>auto_awesome_mosaic</mat-icon>
+        {{ "summer.layout" | translate }}
+    </button>
+    <mat-menu #menu="matMenu">
+        <div class="actionButtons">
+
+            @if (activeDetail?.topMenu?.side === Side.LEFT) {
+                <button mat-flat-button (click)="addToRightMenuPanel(activeDetail)">
+                    <mat-icon>view_sidebar</mat-icon>
+                    {{ "summer.add.menu.to.right" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="addToLeftMenuPanel(activeDetail)">
+                    <mat-icon style="transform: rotate(180deg)">view_sidebar</mat-icon>
+                    {{ "summer.add.menu.to.left" | translate }}
+                </button>
+            }
+
+            @if (activeDetail?.topMenu?.layout === Layout.CENTER) {
+                <button mat-flat-button (click)="fullScreen(activeDetail)">
+                    <mat-icon style="transform: rotate(90deg)">expand</mat-icon>
+                    {{ "summer.full.screen" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="center(activeDetail)">
+                    <mat-icon style="transform: rotate(90deg)">compress</mat-icon>
+                    {{ "summer.center" | translate }}
+                </button>
+            }
+
+            @if (activeDetail?.topMenu?.panelOn) {
+                <button mat-flat-button (click)="panelOff(activeDetail)">
+                    <i class="fa fa-columns" aria-hidden="true"></i>
+                    {{ "summer.panel.off" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="panelOn(activeDetail)">
+                    <i class="fa fa-columns" aria-hidden="true"></i>
+                    {{ "summer.panel.on" | translate }}
+                </button>
+            }
+        </div>
+    </mat-menu>
+
+    <button mat-flat-button [matMenuTriggerFor]="menuColumns">
+        <i class="fa-solid fa-table-cells"></i>
+        {{ "summer.columns" | translate }}
+    </button>
+    <mat-menu #menuColumns="matMenu">
+        <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                 [value]="activeDetail?.columns"
+                                 (change)="onChangeColumns($event,activeDetail)">
+            <mat-button-toggle [value]="1">1</mat-button-toggle>
+            <mat-button-toggle [value]="2">2</mat-button-toggle>
+            <mat-button-toggle [value]="3">3</mat-button-toggle>
+            <mat-button-toggle [value]="4">4</mat-button-toggle>
+            <mat-button-toggle [value]="5">5</mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-menu>
+
+    <div class="button-container">
+        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors, header?.main?.host)">
+            <mat-icon>add_circle</mat-icon>
+            {{ "summer.new.item" | translate }}
+        </button>
+    </div>
+    <div class="button-container">
+        <button mat-flat-button (click)="updateTitlesAndIcons(header, activeDetail)">
+            <mat-icon>update</mat-icon>
+            {{ "title.and.icons" | translate }}
+        </button>
+    </div>
+    <div class="button-container">
+        <button [disabled]="onlyOne(header?.menus)" mat-flat-button
+                (click)="deleteDetail(activeDetail)">
+            <mat-icon>delete</mat-icon>
+            {{ "delete.page" | translate }}
+        </button>
+    </div>
+    <div class="button-container">
+        <button mat-flat-button
+                (click)="changeHeader(header?.main)">
+            <i class="fa-solid fa-chess-rook"></i>
+            {{ "change.header" | translate }}
+        </button>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 
 export interface ActiveMenu {
-    activeMenuUrl: string | null;
-    activePanelUrl: string | null;
+    top: string | null;
+    side: string | null;
 }

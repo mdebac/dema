@@ -26,7 +26,10 @@ public class Menu extends AbstractAuditModel {
     private Layout layout;
     private Boolean hideMenuPanelIfOne;
     private Boolean panelOn;
+    private Boolean searchOn;
     private Integer orderNum;
+    private byte[] image;
+    private Boolean removeImage;
     private Set<MenuIso> iso;
     private List<Panel> panels;
 }

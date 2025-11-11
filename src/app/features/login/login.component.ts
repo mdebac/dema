@@ -1,13 +1,16 @@
-import {Component} from '@angular/core';
-import {Router} from '@angular/router';
-import { NgIf, NgFor } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {Component, inject} from '@angular/core';
+import {Router, RouterLink} from '@angular/router';
+import {NgIf, NgFor} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import {AuthenticationRequest} from "../../domain/authentication-request";
-import {AuthenticationService} from "../../services/authentication.service";
-import {TokenService} from "../../services/token.service";
 import {AuthStore} from "../../services/authentication/auth-store";
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 import {MatFabButton} from "@angular/material/button";
+import {ApartmentStore} from "../../services/apartments-store.service";
+import {LetDirective} from "@ngrx/component";
+import {TranslatePipe} from "@ngx-translate/core";
+import {first} from "rxjs";
+import {ReCaptchaV3Service} from "ng-recaptcha-2";
 
 @Component({
     selector: 'app-login',
@@ -20,32 +23,46 @@ import {MatFabButton} from "@angular/material/button";
         MatCard,
         MatCardContent,
         MatCardHeader,
-        MatCardFooter,
         MatFabButton,
+        LetDirective,
+        TranslatePipe,
+        RouterLink,
     ],
 })
 export class LoginComponent {
 
-  authRequest: AuthenticationRequest = {email: '', password: ''};
-  errorMsg: Array<string> = [];
+    readonly router = inject(Router);
+    readonly authStore= inject(AuthStore);
+    readonly store= inject(ApartmentStore);
+    readonly recaptchaV3Service = inject(ReCaptchaV3Service);
 
-  constructor(
-    private router: Router,
-    private authService: AuthenticationService,
-    private tokenService: TokenService,
-    private authStore: AuthStore
-  ) {
-  }
+    authRequest: AuthenticationRequest = {email: '', password: ''};
+    errorMsg: Array<string> = [];
+    isMobile$ = this.store.isMobile$;
 
-  login() {
-    this.errorMsg = [];
+    showPassword: boolean = false;
 
-    this.authStore.login(this.authRequest.email, this.authRequest.password).subscribe(
-        () => {
-            //     this.tokenService.token = res.token as string;
-                   this.router.navigate(['']);
-               }
-    );
+    login() {
+        this.errorMsg = [];
+
+        this.recaptchaV3Service.execute('importantAction').subscribe((token) => {
+            this.authStore
+                .login(this.authRequest.email, this.authRequest.password, token)
+                .pipe(first())
+                .subscribe({
+                    next: () => {
+                        this.router.navigate(['']);
+                    },
+                    error: (err) => {
+                        this.errorMsg = err.error.validationErrors;
+                    }
+                });
+        });
+    }
+
+    register() {
+        this.router.navigate(['register']);
+    }
 
     // this.authService.authenticate({
     //   body: this.authRequest
@@ -65,10 +82,4 @@ export class LoginComponent {
     // });
 
 
-
-  }
-
-  register() {
-    this.router.navigate(['register']);
-  }
 }

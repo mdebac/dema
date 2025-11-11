@@ -9,12 +9,14 @@ import {RequestBuilder} from "../../domain/request-builder";
 
 export interface Confirm$Params {
   token: string;
+  captcha: string;
 }
 
 export function confirm(http: HttpClient, rootUrl: string, params: Confirm$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
   const rb = new RequestBuilder(rootUrl, confirm.PATH, 'get');
   if (params) {
     rb.query('token', params.token, {});
+    rb.header("captcha-response", params.captcha);
   }
 
   return http.request(

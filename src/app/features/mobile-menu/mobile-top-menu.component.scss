@@ -1,0 +1,47 @@
+@use '@angular/material' as mat;
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+
+:host {
+  @include mat.icon-overrides((
+          color: $primary-color,
+  ));
+  padding: 0;
+  margin: 0;
+}
+
+.close.mat-mdc-button-base {
+  //margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  color: $secondary-color;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
+  --mdc-protected-button-container-color: $secondary-color;
+  // justify-content: left;
+  padding: 0;
+  margin: 0;
+  min-width: 2.5rem;
+}
+
+.open.mat-mdc-button-base {
+  margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+  color: $primary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
+  --mdc-protected-button-container-color: $secondary-color;
+  // justify-content: left;
+}
+
+.mat-mdc-extended-fab:hover{
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+.mat-mdc-extended-fab{
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.actionButtons{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}

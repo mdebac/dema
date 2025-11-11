@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class PanelService {
     private final DetailRepository detailRepository;
 
     @Transactional
-    public Panel addPanel(Long menuId, Panel payload) {
+    public Panel addPanel(Long menuId, Panel payload, MultipartFile file) {
         log.info("Adding Panel to menuId {}", menuId);
 
         MenuEntity menuEntity = menuRepository.findById(menuId)
@@ -32,6 +33,14 @@ public class PanelService {
 
         PanelEntity panelEntity = panelMapper.toEntity(payload);
         panelEntity.setMenu(menuEntity);
+
+        if (payload.getRemoveImage() != null && payload.getRemoveImage() == Boolean.TRUE) {
+            panelEntity.setImage(null);
+        } else {
+            if (file != null) {
+                panelEntity.setImage(file);
+            }
+        }
 
         panelRepository.save(panelEntity);
         return panelMapper.toDomain(panelEntity);
@@ -50,16 +59,23 @@ public class PanelService {
         panelRepository.deleteById(panelId);
     }
 
-
     @Transactional
-    public Panel updatePanel(Long id, Panel payload) {
+    public Panel updatePanel(Long id, Panel sideMenu, MultipartFile file) {
 
         PanelEntity entity = panelRepository.findById(id).orElseThrow(() -> {
             log.warn("Panel with id {} was not found for updating", id);
             return new RuntimeException(NOT_FOUND);
         });
 
-        panelMapper.updateEntityByModel(entity, payload);
+        if (sideMenu.getRemoveImage() != null && sideMenu.getRemoveImage()) {
+            entity.setImage(null);
+        } else {
+            if (file != null) {
+                entity.setImage(file);
+            }
+        }
+
+        panelMapper.updateEntityByModel(entity, sideMenu);
         return panelMapper.toDomain(panelRepository.save(entity));
     }
 

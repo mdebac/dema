@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
 import {catchError, concatMap, Observable, of, tap, throwError} from 'rxjs';
 import {BaseService} from './base-service';
@@ -36,9 +36,9 @@ export class ApartmentsHttpService extends BaseService {
         let panel = "";
 
         if (header) {
-            if (header.id) {
+            if (header.main.id) {
 
-                if(detailUrl){
+                if (detailUrl) {
 
                     const menu = header?.menus.find(a => a.menuUrl === detailUrl);
                     if (menu) {
@@ -50,21 +50,21 @@ export class ApartmentsHttpService extends BaseService {
                                 panel = menu.panels[0].panelUrl;
                             }
                         } else {
-                            detail = header.activeDetailUrl;
-                            panel = header.activePanelUrl;
+                            detail = header.activeTopMenuUrl;
+                            panel = header.activeSideMenuUrl;
                         }
                     } else {
-                        detail = header.activeDetailUrl;
-                        panel = header.activePanelUrl;
+                        detail = header.activeTopMenuUrl;
+                        panel = header.activeSideMenuUrl;
                     }
 
-                }else{
+                } else {
                     const menu = header?.menus.find(a => a.menuUrl === detailUrl);
                 }
 
             } else {
-                detail = header.activeDetailUrl;
-                panel = header.activePanelUrl;
+                detail = header.activeTopMenuUrl;
+                panel = header.activeSideMenuUrl;
             }
 
             const url = this.url + '/find/details';
@@ -147,7 +147,7 @@ export class ApartmentsHttpService extends BaseService {
     }
 
     deleteApartmentDetail(detail: ApartmentDetail) {
-        const url = this.url  + '/' + detail.menu.mainId +  '/' + detail.menu.id +  '/' + detail.panel.id + '/details/' + detail.id;
+        const url = this.url + '/' + detail.topMenu.mainId + '/' + detail.topMenu.id + '/' + detail.topMenu.id + '/details/' + detail.id;
         console.log('(http request) delete Detail URL', url);
         return this.http.delete(url)
             .pipe(
@@ -166,15 +166,34 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
+
     createDetail(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
         const url = this.url + "/details";
         const fetchHeader = this.fetchHeader();
         console.log('(http request) create Detail', detail, url);
-        return this.http.post<ApartmentDetail>(url, detail).pipe(
+
+        const formData = new FormData();
+        if (detail.topMenu?.image) {
+           formData.append('top', detail.topMenu.image);
+           detail.topMenu.image = null;
+        }
+        if (detail.sideMenu?.image) {
+            formData.append('side', detail.sideMenu.image);
+           detail.sideMenu.image = null;
+        }
+        formData.append('payload', new Blob([JSON.stringify(detail)], {
+            type: 'application/json'
+        }));
+        // //TODO images
+        // console.log('(http request) formData', formData.values());
+
+        return this.http.post<ApartmentDetail>(url, formData).pipe(
             tap((response) => console.log('(http response) Detail created', response)),
             concatMap(detail => {
                 return fetchHeader.pipe(
-                    map(h=> { return { detail: detail, header: h }})
+                    map(h => {
+                        return {detail: detail, header: h}
+                    })
                 );
             }),
             catchError((err) => this.errorService.handleError(err)),
@@ -182,14 +201,30 @@ export class ApartmentsHttpService extends BaseService {
     }
 
     updateDetail(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
-        const url = this.url + "/details/" + detail.id;
+        const url = this.url + "/details";
         const fetchHeader = this.fetchHeader();
         console.log('(http request) update detail service', detail);
-        return this.http.put<ApartmentDetail>(url, detail).pipe(
+
+        let formData = new FormData();
+        if (detail.topMenu?.image) {
+            formData.append('top', detail.topMenu.image);
+            detail.topMenu.image = null;
+        }
+        if (detail.sideMenu?.image) {
+            formData.append('side', detail.sideMenu.image);
+            detail.sideMenu.image = null;
+        }
+        formData.append('detail', new Blob([JSON.stringify(detail)], {
+            type: 'application/json'
+        }));
+
+        return this.http.put<ApartmentDetail>(url, formData).pipe(
             tap((response) => console.log('(http response) update detail service', response)),
             concatMap(detail => {
                 return fetchHeader.pipe(
-                    map(h=> { return { detail: detail, header: h }})
+                    map(h => {
+                        return {detail: detail, header: h}
+                    })
                 );
             }),
             catchError((err) => this.errorService.handleError(err)),
@@ -236,23 +271,31 @@ export class ApartmentsHttpService extends BaseService {
 
     }
 
-    createMain(apartment: Partial<Apartment>): Observable<void> {
+    createMain(apartment: Partial<Apartment>): Observable<Header> {
         const url = this.url;
         console.log('(http request) create-update Web page', apartment);
+        const fetchHeader = this.fetchHeader();
         let formData = new FormData();
-        if (apartment.image) {
-            formData.append('file', apartment.image);
-            apartment.image = null;
+        if (apartment.iconImage) {
+            formData.append('file', apartment.iconImage);
+            apartment.iconImage = null;
         }
-        if (apartment.imageBackground) {
-            formData.append('fileBg', apartment.imageBackground);
-            apartment.imageBackground = null;
+        if (apartment.backgroundImage) {
+            formData.append('fileBg', apartment.backgroundImage);
+            apartment.backgroundImage = null;
         }
         formData.append('payload', new Blob([JSON.stringify(apartment)], {
             type: 'application/json'
         }));
         return this.http.post<void>(url, formData).pipe(
-            tap((response) => console.log('(http response) create-update Web page:', response)),
+            tap((response) => console.log('(http response) create-update Main')),
+            concatMap(_ => {
+                return fetchHeader.pipe(
+                    map(header => {
+                        return header
+                    })
+                );
+            }),
             catchError((err) => this.errorService.handleError(err)),
         );
     }
@@ -261,7 +304,17 @@ export class ApartmentsHttpService extends BaseService {
     updateMenu(menu: Partial<Menu>): Observable<Menu> {
         const url = this.url + "/menu/" + menu.id;
         console.log('(http request) update Menu', menu);
-        return this.http.put<Menu>(url, menu).pipe(
+
+        const formData = new FormData();
+        if (menu.image) {
+            formData.append('file', menu.image);
+            menu.image = null;
+        }
+        formData.append('menu', new Blob([JSON.stringify(menu)], {
+            type: 'application/json'
+        }));
+
+        return this.http.put<Menu>(url, formData).pipe(
             tap((response) => console.log('(http response) update Menu', response)),
             catchError((err) => this.errorService.handleError(err)),
         );
@@ -282,6 +335,66 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
+
+    sendForgotPasswordEmail(email: string, token: string): Observable<void> {
+        const url = this.url + '/auth/forgot-password-email';
+        const headers = new HttpHeaders().set('captcha-response', token);
+
+        console.log('(http request) sendForgotPasswordEmail URL ---' + url, email);
+        // @ts-ignore
+        return this.http
+            .get<void>(url, {
+                params: new HttpParams().set("email", email), headers: headers
+            },)
+            .pipe(
+                tap((res) => console.log('(http response) sendForgotPasswordEmail', res)),
+                catchError((err) => {
+                    console.log("(http error) sendForgotPasswordEmail error", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
+    confirmNewPassword(password: string, token: string, captcha: string): Observable<void> {
+        const url = this.url + '/auth/confirm-new-password';
+        const headers = new HttpHeaders().set('captcha-response', captcha);
+        const request = {password: password, token: token};
+        console.log('(http request) confirmNewPassword URL ---' + url);
+        // @ts-ignore
+        return this.http
+            .post<void>(url, request, { headers: headers })
+            .pipe(
+                tap((res) => console.log('(http response) confirmNewPassword', res)),
+                catchError((err) => {
+                    console.log("(http error) confirmNewPassword error", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
+    /*
+      createCvData(cvData: CvData): Observable<void> {
+        const headers = new HttpHeaders().set('captcha-response', cvData.captchaResponse);
+        const url = this.url;
+        console.log('(http request) create CvData', cvData);
+        console.log('(http request) create CvData headers', headers);
+        let formData = new FormData();
+        if (cvData.content) {
+          formData.append('file', cvData.content);
+          cvData.content = null;
+        }
+        formData.append('payload', new Blob([JSON.stringify(cvData)], {
+          type: 'application/json'
+        }));
+        return this.http.post<void>(url, formData, {headers: headers}).pipe(
+          tap((response) => console.log('(http response) create CvData', response)),
+          catchError((err) => {
+            console.log("(http error) create CvData", err);
+            return this.errorService.handleError(err);
+          }),
+        );
+      }
+     */
 
     fetchDetailById(detailId: number): Observable<ApartmentDetail> {
         const url = this.url + '/detail/' + detailId;

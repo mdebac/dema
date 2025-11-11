@@ -21,25 +21,20 @@ import {MatIcon} from '@angular/material/icon';
 import {NgFor} from '@angular/common';
 import {MatFormField, MatLabel, MatError, MatHint} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
-import {ColorPickerDirective} from 'ngx-color-picker';
 import {
     MatExpansionModule,
 } from "@angular/material/expansion";
 import {TranslatePipe} from "@ngx-translate/core";
 import {MatDivider} from "@angular/material/divider";
-import {MatCheckbox} from "@angular/material/checkbox";
 import {AuthStore} from "../../../services/authentication/auth-store";
 import {Roles} from "../../../domain/roles";
 import {Hosts} from "../../../domain/hosts";
-import {MatSlider, MatSliderThumb} from "@angular/material/slider";
-import clone from 'lodash/cloneDeep';
-import merge from 'lodash/merge';
 
 @Component({
     selector: 'apartment-dialog',
     templateUrl: './apartment-dialog.component.html',
     styleUrl: './apartment-dialog.component.scss',
-    imports: [MatCheckbox,
+    imports: [
         MatDivider,
         MatExpansionModule,
         MatCard,
@@ -55,10 +50,10 @@ import merge from 'lodash/merge';
         MatInput,
         MatError,
         MatHint,
-        ColorPickerDirective,
         MatFabButton,
         TranslatePipe,
-        MatDivider, MatSlider, MatSliderThumb]
+        MatDivider
+    ]
 })
 
 export class ApartmentDialogComponent implements OnInit, OnDestroy {
@@ -69,24 +64,9 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
     authStore = inject(AuthStore);
     unsubscribe$ = new Subject<void>();
 
-    selectedLogo: File | null = null;
-    selectedBackgroundImage: File | null = null;
-
-    selectedPicture: string | undefined;
-    selectedPictureBackground: string | undefined;
-
-    isOpened: boolean = true;
-    primaryColor: string = '#e920e9';
-    secondaryColor: string = '#e920e9';
-    dangerColor: string = '#e920e9';
-    warnColor: string = '#e920e9';
-    infoColor: string = '#e920e9';
-    acceptColor: string = '#e920e9';
 
     form: FormGroup;
     languages: string[] = [];
-    toBigImage: string = "";
-    toBigBackgroundImage: string = "";
 
     arrayItems: {
         text: string;
@@ -117,10 +97,10 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
             infoColorLight: [this.apartment?.infoColorLight],
             acceptColor: [this.apartment?.acceptColor],
             acceptColorLight: [this.apartment?.acceptColorLight],
-            linearPercentage: [this.apartment?.linearPercentage ? this.apartment?.linearPercentage : 0],
+            linearPercentage: [this.apartment?.linearPercentage ? this.apartment?.linearPercentage : 1],
             price: [this.apartment?.price],
-            image: [this.apartment?.image],
-            imageBackground: [this.apartment?.imageBackground],
+            iconImage: [this.apartment?.iconImage],
+            backgroundImage: [this.apartment?.backgroundImage],
             iso: this.fb.array([]),
             removePicture: this.apartment?.removePicture ? this.apartment?.removePicture : false,
             removePictureBackground: this.apartment?.removePictureBackground ? this.apartment?.removePictureBackground : false,
@@ -137,43 +117,7 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         } else {
             this.languages.push(defaultIso);
         }
-        if (apartment?.image) {
-            this.selectedLogo = apartment.image;
-        }
-        if (apartment?.imageBackground) {
-            this.selectedBackgroundImage = apartment.imageBackground;
-        }
-        this.primaryColor = apartment?.primaryColor ? apartment.primaryColor : "";
-        this.secondaryColor = apartment?.secondaryColor ? apartment.secondaryColor : "";
 
-        this.dangerColor = apartment?.dangerColor ? apartment.dangerColor : "";
-        this.warnColor = apartment?.warnColor ? apartment.warnColor : "";
-        this.infoColor = apartment?.infoColor ? apartment.infoColor : "";
-        this.acceptColor = apartment?.acceptColor ? apartment.acceptColor : "";
-    }
-
-    onChangePrimaryColor(color: any) {
-        this.form.patchValue({primaryColor: color});
-    }
-
-    onChangeSecondaryColor(color: string) {
-        this.form.patchValue({secondaryColor: color});
-    }
-
-    onChangeDangerColor(color: string) {
-        this.form.patchValue({dangerColor: color});
-    }
-
-    onChangeWarnColor(color: string) {
-        this.form.patchValue({warnColor: color});
-    }
-
-    onChangeInfoColor(color: string) {
-        this.form.patchValue({infoColor: color});
-    }
-
-    onChangeAcceptColor(color: string) {
-        this.form.patchValue({acceptColor: color});
     }
 
     createApartmentIso(iso: ApartmentIso) {
@@ -187,10 +131,6 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
 
     get isHostDemaApartments(): boolean {
         return this.form.get('host')?.value === Hosts.DEMA_APARTMENTS;
-    }
-
-    openClose() {
-        this.isOpened = !this.isOpened;
     }
 
     get isoArray(): FormArray {
@@ -211,10 +151,8 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
     createApartment() {
         if (this.form.valid) {
             const apartmentProps = this.form.getRawValue() as Partial<Apartment>;
-            const images = {image: this.selectedLogo, imageBackground: this.selectedBackgroundImage} as Partial<Apartment>;
-            const mergedClone = merge(apartmentProps, images);
-            console.log("mergedClone", mergedClone);
-           this.dialogRef.close(mergedClone);
+          //  const images = {...apartmentProps, iconImage: this.selectedLogo, backgroundImage: this.selectedBackgroundImage} as Partial<Apartment>;
+            this.dialogRef.close(apartmentProps);
         }
     }
 
@@ -226,59 +164,6 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         this.unsubscribe$.next();
         this.unsubscribe$.unsubscribe();
     }
-
-    selectLogo(event: any) {
-
-        if (event.target.files[0].size < 589000) {
-            this.selectedLogo = event.target.files[0];
-            if (this.selectedLogo) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.selectedPicture = reader.result as string;
-                };
-                reader.readAsDataURL(this.selectedLogo);
-            }
-            this.toBigImage = "";
-        } else {
-            this.toBigImage = "< 0.5 Mb";
-        }
-    }
-
-    selectBackgroundImage(event: any) {
-
-        if (event.target.files[0].size < 589000) {
-            this.selectedBackgroundImage = event.target.files[0];
-            if (this.selectedBackgroundImage) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.selectedPictureBackground = reader.result as string;
-                };
-                reader.readAsDataURL(this.selectedBackgroundImage);
-            }
-            this.toBigBackgroundImage = "";
-        } else {
-            this.toBigBackgroundImage = "< 0.5 Mb";
-        }
-    }
-
-    get showPicture(): string | undefined {
-        if (this.selectedPicture) {
-            return this.selectedPicture;
-        } else if (this.apartment?.image) {
-            return 'data:image/jpg;base64,' + this.apartment.image
-        }
-        return;
-    }
-
-    get showBackgroundImage(): string | undefined {
-        if (this.selectedPictureBackground) {
-            return this.selectedPictureBackground;
-        } else if (this.apartment?.imageBackground) {
-            return 'data:image/jpg;base64,' + this.apartment.imageBackground
-        }
-        return;
-    }
-
 
     get isNew(): boolean {
         return !this.form.value.id
@@ -379,7 +264,7 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
 
     openChooseLanguageDialog(chosenLanguages: string[]) {
         const dialogRef = this.dialog.open(ChooseIsoDialogComponent, {
-            width: '400px',
+            width: '25rem',
             data: chosenLanguages,
         });
 
@@ -390,35 +275,8 @@ export class ApartmentDialogComponent implements OnInit, OnDestroy {
         this.selectedIsoTitle = active;
     }
 
-    removePicture(event: any) {
-        this.form.patchValue({removePicture: event.checked})
-    }
 
-    removePictureBackground(event: any) {
-        this.form.patchValue({removePictureBackground: event.checked})
-    }
 
-    formatLabel(value: number): string {
-        if (value >= 1000) {
-            const bilo  = Math.round(value / 1000);
-            return bilo + '';
-        }
-        return `${value}`;
-    }
-
-    onKeyUp(event:any){
-        console.log("onKeyUp event", event);
-    }
-
-    changeSlider(event: any){
-        this.form.patchValue({linearPercentage: event/1000})
-    }
-
-    get rate(){
-          return this.form.value.linearPercentage;
-    }
-
-    protected readonly defaultIso = defaultIso;
 }
 
 ///https://stackblitz.com/edit/angular-ckvs4z?file=src%2Fapp%2Fform-field-appearance-example.html

@@ -17,11 +17,11 @@ export class UserButtonsComponent {
     authStore = inject(AuthStore);
 
     @Input() user: any;
+    @Input() isLoggedIn: boolean = false;
+    @Input() isMobile: boolean = false;
 
     logout() {
-        //   localStorage.removeItem('token');
         this.authStore.logout();
-        //  window.location.reload();
     }
 
 }

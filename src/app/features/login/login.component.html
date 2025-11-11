@@ -1,14 +1,19 @@
-<ng-container>
+<ng-container *ngrxLet="{
+    isMobile: isMobile$
+ } as vm">
+
     <mat-card class="dashboard-card">
         <mat-card-header>
 
             <div class="loginSpace">
 
-                <div class="gap1Space">
-                </div>
+                @if (!vm.isMobile) {
+                    <div class="gap1Space">
+                    </div>
+                }
 
                 <div class="contentSpace">
-                    <h3 class="text-center"><b>Login</b></h3>
+                    <h3 class="text-center"><b>{{ 'sign.in' | translate }}</b></h3>
 
                     <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
                         <p *ngFor="let msg of errorMsg">{{ msg }}</p>
@@ -35,10 +40,42 @@
                                placeholder="name@example.com">
                         <br>
                     </div>
+
                     <div>
                         <label for="password" class="form-label">Password</label>
-                        <input [(ngModel)]="authRequest.password" type="password" class="form-control" id="password"
-                               placeholder="Password">
+                        <div class="input-group">
+                            <input [(ngModel)]="authRequest.password"
+                                   type="{{showPassword ? 'text' : 'password'}}" class="form-control myInput"
+                                   id="password"
+                                   placeholder="Password">
+
+                            <div class="input-group-append">
+                                <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true"
+                                   *ngIf="!showPassword"></i>
+                                <i class="fa fa-eye-slash" (click)="showPassword = !showPassword"
+                                   aria-hidden="true" *ngIf="showPassword"></i>
+                            </div>
+
+                        </div>
+                        <a class="link" routerLink="/forgot">{{ 'forgot.your.password' | translate }}</a>
+                    </div>
+
+
+                    <br>
+                    <div class="contentSpaceActions">
+                        <div>
+                            <button class="max" mat-fab extended (click)="login()">
+                                {{ 'sign.in' | translate }}
+                            </button>
+                        </div>
+                        <div>
+                            <button class="max" mat-fab extended (click)="register()">
+                                {{ 'register' | translate }}
+                            </button>
+                            <br>
+                            {{ 'login.dont.have.account' | translate }}
+                        </div>
+
                     </div>
                 </div>
 
@@ -46,32 +83,6 @@
                 </div>
             </div>
         </mat-card-content>
-
-        <mat-card-footer>
-
-            <div class="loginSpace">
-
-                <div class="gap1Space">
-                </div>
-
-                <div class="contentSpaceActions">
-                    <div>
-                        <button mat-fab extended (click)="login()">
-                            Sign in
-                        </button>
-                    </div>
-                    <div>
-                        Don't have an account?
-                        <button mat-fab extended (click)="register()">
-                            Register
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gap2Space">
-            </div>
-        </mat-card-footer>
     </mat-card>
 </ng-container>
 

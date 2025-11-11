@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, catchError, EMPTY, Observable, switchMap} from 'rxjs';
 import {filter, map, shareReplay, tap} from 'rxjs/operators';
 import {AuthenticationService} from "../authentication.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
@@ -133,9 +133,10 @@ export class AuthStore {
         }
     }
 
-    login(email:string, password:string): Observable<string | undefined> {
+    login(email:string, password:string, token: string): Observable<string | undefined> {
         return this.authService.authenticate({
-            body: {email, password}
+            body: {email, password},
+            captcha: token
         })
             .pipe(
                 tap(user => {
@@ -148,6 +149,24 @@ export class AuthStore {
                 shareReplay()
             );
     }
+    //
+    // readonly recaptchaConfirmNewPassword =
+    //     this.effect((params$: Observable<{
+    //         password: string;
+    //         token: string;
+    //     }>) => params$.pipe(
+    //         switchMap(({password, token}) =>
+    //             this.recaptchaV3Service.execute('importantAction')
+    //                 .pipe(
+    //                     tap({
+    //                         next: (captcha: string) => this.confirmNewPassword({password, token, captcha}),
+    //                         error: (error) => console.log("recaptchaConfirmNewPassword error", error),
+    //                     }),
+    //                     catchError(() => EMPTY)
+    //                 )
+    //         ),
+    //     ));
+    //
 
     logout() {
         this.tokenSubject.next(null);

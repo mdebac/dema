@@ -55,6 +55,12 @@
       <artifactId>jjwt-api</artifactId>
       <version>0.12.5</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.19.0</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
@@ -93,16 +99,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-maven-plugin</artifactId>
-        <version>11.10.4</version>
-        <configuration>
-          <url>jdbc:mysql://localhost:3306/dema_db</url>
-          <user>user</user>
-          <password>password</password>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>

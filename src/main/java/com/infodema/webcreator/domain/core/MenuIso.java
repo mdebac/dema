@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 public class MenuIso {
+    private String description;
     private String title;
     private String iso;
 }

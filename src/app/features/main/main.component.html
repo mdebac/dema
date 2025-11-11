@@ -1,5 +1,6 @@
 <ng-container *ngrxLet="{
     columns: columns$,
+    isMobile: isMobile$,
     cornerRadius: cornerRadius$,
     isLoggedIn: loggedIn$,
     selectedIso: selectedIso$,
@@ -45,7 +46,9 @@
                   [activeDetailInput]="vm.activeDetail"
                   [header]="vm.header"
                   [roles]="vm.roles"
+                  [paddingTop]="vm.shrinkMenu ? '0.5rem' : 0"
                   [closedMenu]="vm.shrinkMenu"
+                  [justifyMenu]="vm.shrinkMenu ? 'center' : 'left'"
                   [disableAddingNewPanels]="vm.disableAddingNewPanels"
             ></menu>
         </mat-grid-tile>
@@ -55,6 +58,7 @@
                        [rowspan]="vm.stateLayout?.center === 0 ? 0 : 13">
             <summer [loggedIn]="vm.isLoggedIn"
                     [col]="vm.columns"
+                    [isMobile]="vm.isMobile"
                     [cornerRadius]="vm.cornerRadius"
                     [selectedIso]="vm.selectedIso"
                     [activeDetail]="vm.activeDetail"
@@ -63,6 +67,8 @@
                     [backgroundColor]="vm.backgroundColorSummer"
                     [actionsBorderColor]="vm.actionsBorderColorSummer"
             ></summer>
+
+
         </mat-grid-tile>
 
         <mat-grid-tile class="menu-tile"
@@ -74,7 +80,9 @@
                   [activeDetailInput]="vm.activeDetail"
                   [header]="vm.header"
                   [roles]="vm.roles"
+                  [paddingTop]="vm.shrinkMenu ? '0.5rem' : '0'"
                   [closedMenu]="vm.shrinkMenu"
+                  [justifyMenu]="vm.shrinkMenu ? 'center' : 'left'"
                   [disableAddingNewPanels]="vm.disableAddingNewPanels"
             ></menu>
         </mat-grid-tile>
@@ -96,5 +104,12 @@
                        [colspan]="vm.stateLayout?.gapR"
                        [rowspan]="vm.stateLayout?.gapR === 0 ? 0 : 13">
         </mat-grid-tile>
+
     </mat-grid-list>
+
+
 </ng-container>
+<footer class="createdBy">
+
+    created by <a href="https://info-dema.eu/web_creator">Dema Web Creator</a>
+</footer>

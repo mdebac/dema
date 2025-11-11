@@ -73,6 +73,31 @@ $secondary-color: var(--secondary-color);
   display: flex;
   flex-direction: row;
   flex-grow: 0.14;
-  margin-left: 6rem;
   justify-content: space-between;
+}
+.contentSpace{
+  width: 15rem;
+}
+.max{
+  width: 100%;
+}
+.link{
+  padding-top: 2px;
+  font-size: smaller;
+  text-decoration: none;
+  color: $secondary-color;
+}
+.link:hover{
+  padding-top: 2px;
+  font-size: smaller;
+  font-weight: bolder;
+  cursor: pointer;
+  text-decoration: none;
+}
+.input-group-append{
+  position: absolute;
+  right: 1.2rem;
+  top: 0.7rem;
+  scale: 1.5;
+  cursor: pointer;
 }

@@ -1,0 +1,322 @@
+@use '@angular/material' as mat;
+
+$corner-radius: var(--corner-radius);
+$left: var(--left-padding);
+$right: var(--right-padding);
+$background-color: var(--background-color);
+$actions-border-color: var(--actions-border-color);
+$direction: var(--direction);
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$danger-color: var(--danger-color);
+$warn-color: var(--warn-color);
+$info-color: var(--info-color);
+$accept-color: var(--accept-color);
+
+:host {
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+  @include mat.expansion-overrides((
+          actions-divider-color: orange,
+    // container-background-color: red,
+          container-text-color:black,
+
+  ));
+}
+
+//mat-accordion {
+//  // color: white;
+//  min-height: 4rem;
+//}
+
+.expPnl {
+  color: black;
+  min-height: 4rem;
+  background-color: darkolivegreen;
+}
+//.mat-expansion-panel{
+//
+//}
+//.mat-expansion-panel-content
+//{
+//  //color: white;
+//  min-height: 4rem;
+//}
+//--mat-expansion-container-background-color
+
+
+
+
+mat-slide-toggle {
+  margin: 8px 0;
+  display: block;
+  font-weight: normal;
+}
+
+.dashboard-card {
+  position: absolute;
+  top: 1px;
+
+  left: $left;
+  right: $right;
+  bottom: 10px;
+
+  background-color: $background-color;
+  border: 2px solid $primary-color;
+  overflow-y: auto;
+  //scrollbar-color: $secondary-color $primary-color;
+  @include mat.card-overrides((
+          elevated-container-shape: $corner-radius
+  ));
+}
+
+.dashboard-card mat-card-content {
+  padding-top: 0.5rem;
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-col), 1fr);
+  // grid-template-columns: repeat(1, 1fr);
+  gap: 16px;
+}
+
+.mat-mdc-card-header {
+  display: flex;
+  overflow: visible;
+  flex-direction: column;
+  align-items: start;
+}
+
+.header-actions{
+  display: flex;
+  flex-direction: $direction;
+  width: 100%;
+}
+
+.header-title{
+  display: flex;
+  flex-direction: row;
+}
+
+.container {
+  justify-content: left;
+  justify-items: left;
+  justify-self: left;
+  align-items: start;
+  align-content: start;
+  align-self: start;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  // align-items: start;
+  // justify-content: left;
+  --ngx-editor-background-color: $primary-color;
+  --ngx-editor-border-color: $primary-color;
+  font-size: large;
+}
+
+
+.button-container {
+  padding: 2px;
+}
+
+.grb {
+  align-items: center;
+  color: $primary-color;
+  padding-right: 30px;
+  align-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 20px);
+  grid-template-rows: repeat(2, 20px);
+}
+
+.grb-crveno {
+  width: 20px;
+  height: 20px;
+  background-color: $secondary-color;
+}
+
+.grb-bijelo {
+  width: 20px;
+  height: 20px;
+  background-color: $primary-color;
+}
+
+
+.content {
+  width: 100%;
+  line-height: 30px;
+  justify-content: left;
+  justify-items: left;
+  justify-self: left;
+  align-items: start;
+  align-content: start;
+  align-self: start;
+}
+
+.editor {
+  .NgxEditor {
+  }
+
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+    margin-bottom: 0.7rem;
+
+    pre {
+      white-space: pre !important;
+    }
+  }
+}
+
+
+.mat-mdc-button-base {
+  margin: 8px 8px 8px 8px;
+  color: $secondary-color;
+  border-radius: 10px;
+  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
+  --mdc-protected-button-container-color: $secondary-color;
+
+  --mdc-extended-fab-pressed-container-elevation-shadow: none;
+  --mdc-filled-button-container-color: $primary-color;
+  border: 2px solid $secondary-color;
+}
+
+
+.mat-mdc-unelevated-button {
+  background-color: $primary-color ;
+  color: $secondary-color;
+  @include mat.icon-overrides((
+          color: $secondary-color,
+  ));
+  justify-content: left;
+}
+.mat-mdc-unelevated-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+  @include mat.icon-overrides((
+          color: $primary-color,
+  ));
+  justify-content: left;
+}
+
+.mat-mdc-extended-fab:hover {
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+
+.mat-mdc-extended-fab {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.mat-mdc-mini-fab {
+  background-color: $primary-color;
+  color: $secondary-color;
+
+}
+.actionButtons{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+
+.mat-mdc-standard-chip.mdc-evolution-chip__text-label{
+  color: $secondary-color;
+}
+
+.mat-mdc-standard-chip.mdc-evolution-chip--selected:not(.mdc-evolution-chip--disabled) {
+  background-color: $primary-color;
+  --mdc-chip-selected-label-text-color:  var(--secondary-color);
+  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
+}
+
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+  background-color: $primary-color;
+  --mdc-chip-selected-label-text-color:  var(--secondary-color);
+  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
+  --mdc-chip-label-text-color: var(--secondary-color);
+  --mdc-chip-label-text-weight: large;
+}
+
+
+.primaryColor{
+  --mat-standard-button-toggle-background-color: #{$primary-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$primary-color};
+  width: 50px;
+}
+.secondaryColor{
+  --mat-standard-button-toggle-background-color: #{$secondary-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
+  width: 50px;
+}
+.dangerColor{
+  --mat-standard-button-toggle-background-color: #{$danger-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$danger-color};
+  width: 50px;
+}
+
+.warnColor{
+  --mat-standard-button-toggle-background-color: #{$warn-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$warn-color};
+  width: 50px;
+}
+
+.infoColor{
+  --mat-standard-button-toggle-background-color: #{$info-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$info-color};
+  width: 50px;
+}
+
+.acceptColor{
+  --mat-standard-button-toggle-background-color: #{$accept-color};
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: #{$accept-color};
+  width: 50px;
+}
+
+.whiteColor{
+  --mat-standard-button-toggle-background-color: white;
+  --mat-standard-button-toggle-selected-state-text-color: black;
+  --mat-standard-button-toggle-selected-state-background-color: white;
+  width: 50px;
+}
+
+.blackColor{
+  --mat-standard-button-toggle-background-color: black;
+  --mat-standard-button-toggle-selected-state-text-color: white;
+  --mat-standard-button-toggle-selected-state-background-color: black;
+  width: 50px;
+}
+//
+.panel-header{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.panel-title{
+ flex-grow: 0.9;
+}
+.panel-arrow{
+  flex-grow: 0.1;
+}
+.custom-panel {
+  background-color: $primary-color;
+  color: $secondary-color;
+  margin-top: 0.5rem;
+}
+
+.naslov{
+  padding-left: 1rem;
+  color: $secondary-color;
+}
+//https://www.fusonic.net/en/blog/angular-material-customization
+
+//mat-flat-button

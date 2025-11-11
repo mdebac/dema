@@ -18,7 +18,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         const authReq = req.clone({
             headers: new HttpHeaders({
                     Authorization: 'Bearer ' + token,
-                    'captcha-response': captcha ? captcha : ""
+                    'captcha-response': captcha ? captcha : "",
                 },
             )
         });

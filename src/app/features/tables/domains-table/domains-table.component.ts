@@ -24,7 +24,7 @@ import {
 import {Apartment} from "../../../domain/apartment";
 import {MainTableDatasource} from "../main-table-datasource";
 import {Subject} from "rxjs";
-import {NgIf, NgStyle} from "@angular/common";
+import {NgStyle} from "@angular/common";
 
 @Component({
   selector: 'domains-table',
@@ -36,7 +36,6 @@ import {NgIf, NgStyle} from "@angular/common";
     MatRowDef,
     MatSort,
     MatTable,
-    NgIf,
     NgStyle,
   ],
   templateUrl: './domains-table.component.html',

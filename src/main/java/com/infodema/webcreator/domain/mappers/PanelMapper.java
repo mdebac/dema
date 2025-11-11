@@ -32,6 +32,7 @@ public class PanelMapper extends AbstractMapper {
                 .panelUrl(entity.getPanelUrl())
                 .icon(entity.getIcon())
                 .orderNum(entity.getOrderNum())
+                .image(entity.getImageContent())
                 .iso(toDomainIso(entity.getIso()))
                 .createdOn(entity.getCreatedOn())
                 .createdBy(entity.getCreatedBy())

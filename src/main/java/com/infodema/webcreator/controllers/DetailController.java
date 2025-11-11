@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -45,16 +46,17 @@ public class DetailController {
 
     @PostMapping("/details")
     public ResponseEntity<Detail> create(
-            @Valid @RequestBody Detail payload
+            @RequestPart("payload") Detail payload,
+            @RequestPart(value = "top", required = false) MultipartFile top,
+            @RequestPart(value = "side", required = false) MultipartFile side
     ) {
-        Detail detail = detailsService.create(payload);
+        Detail detail = detailsService.create(payload,top,side);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(detail.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(detail);
+       return ResponseEntity.created(location).body(detail);
     }
-
 
     @DeleteMapping("/{mainId}/{menuId}/{panelId}/details/{detailId}")
     public ResponseEntity<Void> remove(
@@ -66,13 +68,13 @@ public class DetailController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/details/{id}")
+    @PutMapping("/details")
     public Detail update(
-            @PathVariable("id") Long id,
-            @Valid @RequestBody Detail detail) {
-
-        return detailsService.updateDetail(id, detail);
+            @RequestPart Detail detail,
+            @RequestPart(value = "top", required = false) MultipartFile top,
+            @RequestPart(value = "side", required = false) MultipartFile side
+    ) {
+        return detailsService.updateDetail(detail, top, side);
     }
-
 
 }

@@ -49,7 +49,7 @@ public class MainService {
     private final DetailsService detailsService;
     private final UserRepository userRepository;
     private final CustomerMapper customerMapper;
-    private final MainCustomerMapper mainCustomerMapper;
+    private final MainWithoutChildrenMapper mainWithoutChildrenMapper;
     private final PanelMapper panelMapper;
     private final MenuMapper menuMapper;
 
@@ -64,7 +64,7 @@ public class MainService {
         String role = String.join(",", SecurityUtils.getUserRoles());
 
         if (role.equals(Roles.ADMIN.name())) {
-            Page<Main> allEntities =  mainCustomerMapper.toDomain(mainRepository.findAll(mainPageable));
+            Page<Main> allEntities =  mainWithoutChildrenMapper.toDomain(mainRepository.findAll(mainPageable));
             allEntities.getContent().forEach(main -> {
                 main.setCustomers(customerMapper.toDomain(userRepository.findByHost(main.getHost())).stream().filter(a-> !a.getRole().equals(Roles.ADMIN.name())).toList());
             });
@@ -72,7 +72,7 @@ public class MainService {
         }
 
         if (role.equals(Roles.MANAGER.name())) {
-            Main main = mainCustomerMapper.toDomain(mainRepository.findByHost(host).orElseThrow());
+            Main main = mainWithoutChildrenMapper.toDomain(mainRepository.findByHost(host).orElseThrow());
             main.setCustomers(customerMapper.toDomain(userRepository.findByHost(host)).stream().filter(a-> a.getRole().equals(Roles.USER.name())).toList());
             return new PageImpl<>(Collections.singletonList(main));
         }
@@ -82,7 +82,7 @@ public class MainService {
 
     @Transactional(readOnly = true)
     public Page<Main> findDomains(Pageable mainPageable) {
-        return mainCustomerMapper.toDomain(mainRepository.findAll(mainPageable));
+        return mainWithoutChildrenMapper.toDomain(mainRepository.findAll(mainPageable));
     }
 
     @Transactional
@@ -113,45 +113,43 @@ public class MainService {
         main.setOwner(auditorAware.getCurrentAuditor().orElseThrow());
 
         MainEntity entity = mainMapper.toEntity(main);
-        if (file != null) {
 
-            if (main.getRemovePicture() != null && main.getRemovePicture()) {
-                entity.setImage(null);
-                entity.setRemovePicture(false);
-            } else {
+
+        if (main.getRemovePicture() != null && main.getRemovePicture() == Boolean.TRUE) {
+            entity.setImage(null);
+        } else {
+            if (file != null) {
                 entity.setImage(file);
-            }
-
-        } else {
-            if (main.getId() != null) {
-                mainRepository.findById(main.getId()).ifPresent(current -> {
-                    entity.setFileName(current.getFileName());
-                    entity.setMimeType(current.getMimeType());
-                    entity.setSize(current.getSize());
-                    entity.setContent(current.getContent());
-                });
-            }
-        }
-
-        if (fileBg != null) {
-
-            if (main.getRemovePictureBackground() != null && main.getRemovePictureBackground()) {
-                entity.setImageBackground(null);
-                entity.setRemoveBackground(false);
             } else {
-                entity.setImageBackground(fileBg);
-            }
-
-        } else {
-            if (main.getId() != null) {
-                mainRepository.findById(main.getId()).ifPresent(current -> {
-                    entity.setFileNameBackground(current.getFileNameBackground());
-                    entity.setMimeTypeBackground(current.getMimeTypeBackground());
-                    entity.setSizeBackground(current.getSizeBackground());
-                    entity.setContentBackground(current.getContentBackground());
-                });
+                if (main.getId() != null) {
+                    mainRepository.findById(main.getId()).ifPresent(current -> {
+                        entity.setFileName(current.getFileName());
+                        entity.setMimeType(current.getMimeType());
+                        entity.setSize(current.getSize());
+                        entity.setContent(current.getContent());
+                    });
+                }
             }
         }
+
+
+        if (main.getRemovePictureBackground() != null && main.getRemovePictureBackground() == Boolean.TRUE) {
+            entity.setImageBackground(null);
+        } else {
+            if (fileBg != null) {
+                entity.setImageBackground(fileBg);
+            } else {
+                if (main.getId() != null) {
+                    mainRepository.findById(main.getId()).ifPresent(current -> {
+                        entity.setFileNameBackground(current.getFileNameBackground());
+                        entity.setMimeTypeBackground(current.getMimeTypeBackground());
+                        entity.setSizeBackground(current.getSizeBackground());
+                        entity.setContentBackground(current.getContentBackground());
+                    });
+                }
+            }
+        }
+
 
         MainEntity mainEntity = mainRepository.save(entity);
         if (main.getId() == null) {
@@ -160,6 +158,7 @@ public class MainService {
                     MenuIsoEntity.builder()
                             .iso(Country.fromCode("GB-eng"))
                             .title("title")
+                            .description("description")
                             .build()
             );
 
@@ -167,7 +166,8 @@ public class MainService {
             menuPanelIso.add(
                     PanelIsoEntity.builder()
                             .iso(Country.fromCode("GB-eng"))
-                            .title("Panel title")
+                            .title("Side title")
+                            .description("Side description")
                             .build()
             );
 
@@ -197,8 +197,8 @@ public class MainService {
                     panelEntity.getId(),
                     Detail.builder()
                             .columns(1)
-                            .backgroundColorOn(true)
-                            .show(false)
+                            .backgroundColor("")
+                            .show(true)
                             .iso(
                                     Collections.singleton(DetailIso.builder()
                                     .iso("GB-eng")
@@ -222,7 +222,7 @@ public class MainService {
         List<MenuEntity> menus = entity.getMenus();
       //  List<MenuPanelItem> menuPanelItem =  panelMapper.toDomain(details.ge)).collect(Collectors.toList());
         return Header.builder()
-                .id(entity.getId())
+                .main(mainWithoutChildrenMapper.toDomain(entity))
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))
                 .languages(
                         entity.getIso().stream()
@@ -238,6 +238,7 @@ public class MainService {
                                         .side(menu.getSide())
                                         .layout(menu.getLayout())
                                         .panelOn(menu.getPanelOn())
+                                        .searchOn(menu.getSearchOn())
                                         .hideMenuPanelIfOne(menu.getHideMenuPanelIfOne())
                                         .mainId(menu.getMain().getId())
                                         .orderNum(menu.getOrderNum())
@@ -247,10 +248,10 @@ public class MainService {
                                 )
                                 .collect(Collectors.toList())
                 )
-                .activeDetailUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getMenuUrl())
-                .activePanelUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getPanels().stream().min(Comparator.comparing(PanelEntity::getOrderNum)).orElseThrow().getPanelUrl())
-                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
-                .host(entity.getHost())
+                .activeTopMenuUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getMenuUrl())
+                .activeSideMenuUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getPanels().stream().min(Comparator.comparing(PanelEntity::getOrderNum)).orElseThrow().getPanelUrl())
+//                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
+//                .host(entity.getHost())
                 .colors(Colors.builder()
                         .primaryColor(entity.getPrimaryColor())
                         .secondaryColor(entity.getSecondaryColor())
@@ -265,8 +266,9 @@ public class MainService {
                         .dangerColor(entity.getDangerColor())
                         .dangerColorLight(entity.getDangerColorLight())
                         .build())
-                .backgroundImage(entity.getContentBackground())
-                .iconImage(entity.getContent()).build();
+//                .backgroundImage(entity.getContentBackground())
+//                .iconImage(entity.getContent())
+                .build();
     }
 
     @Transactional

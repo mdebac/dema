@@ -28,9 +28,8 @@ public class Detail extends AbstractAuditModel {
     private Set<DetailIso> iso;
     private Integer cornerRadius;
 //    cornerRadiusPanel: number;
-    private boolean backgroundColorOn;
+    private String backgroundColor;
 
-    private Menu menu;
-    private Panel panel;
-
+    private Menu topMenu;
+    private Panel sideMenu;
 }

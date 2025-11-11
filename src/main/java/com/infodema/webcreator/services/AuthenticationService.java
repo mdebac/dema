@@ -2,9 +2,7 @@ package com.infodema.webcreator.services;
 
 import com.infodema.webcreator.config.security.CustomAuthentication;
 import com.infodema.webcreator.config.security.JwtService;
-import com.infodema.webcreator.domain.auth.AuthenticationRequest;
-import com.infodema.webcreator.domain.auth.AuthenticationResponse;
-import com.infodema.webcreator.domain.auth.RegistrationRequest;
+import com.infodema.webcreator.domain.auth.*;
 import com.infodema.webcreator.domain.email.EmailTemplateName;
 import com.infodema.webcreator.persistance.entities.security.Token;
 import com.infodema.webcreator.persistance.entities.security.User;
@@ -65,6 +63,12 @@ public class AuthenticationService {
         sendValidationEmail(user);
     }
 
+    public void forgotPassword(ForgotPasswordRequest request) throws MessagingException {
+
+        User user = userRepository.findByEmailAndHost(request.getEmail(), request.getHost()).orElseThrow(() -> new UsernameNotFoundException("User not found for forgotPassword"));
+        sendForgotPasswordValidationEmail(user);
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var auth = authenticationManager.authenticate(
                 new CustomAuthentication(
@@ -105,6 +109,26 @@ public class AuthenticationService {
         tokenRepository.save(savedToken);
     }
 
+
+    @Transactional
+    public void setNewPassword(SetNewPasswordRequest request) throws MessagingException {
+
+        Token savedToken = tokenRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+        if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            sendForgotPasswordValidationEmail(savedToken.getUser());
+            throw new RuntimeException("Forgot password token has expired. A new token has been send to the same email address");
+        }
+
+        var user = userRepository.findById(savedToken.getUser().getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenRepository.save(savedToken);
+    }
+
     private String generateAndSaveActivationToken(User user) {
         // Generate a token
         String generatedToken = generateActivationCode(6);
@@ -131,6 +155,20 @@ public class AuthenticationService {
                 "Account activation"
                 );
     }
+
+    private void sendForgotPasswordValidationEmail(User user) throws MessagingException {
+        var newToken = generateAndSaveActivationToken(user);
+
+        emailService.sendEmail(
+                user.getEmail(),
+                user.getFullName(),
+                EmailTemplateName.CHANGE_PASSWORD,
+                "",
+                newToken,
+                "Change your password"
+        );
+    }
+
 
     private String generateActivationCode(int length) {
         String characters = "0123456789";

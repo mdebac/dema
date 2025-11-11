@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,43 +36,43 @@ public class DetailsService {
     private final PanelService panelService;
 
     @Transactional
-    public Detail create(Detail payload) {
+    public Detail create(Detail payload, MultipartFile topMenuImageFile, MultipartFile sideMenuImageFile) {
 
         Menu menu;
-        if (payload.getMenu().getId() == null) {
+        if (payload.getTopMenu().getId() == null) {
 
-            MenuIso eng = payload.getMenu().getIso().stream().filter(i -> i.getIso().equals(Country.EN.getCountryCode())).findFirst().orElseThrow();
-            Set<PanelIso> panelIso = new HashSet<>();
-            panelIso.add(PanelIso.builder()
-                    .title(eng.getTitle())
-                    .iso(Country.EN.getCountryCode())
-                    .build()
-            );
-            payload.getPanel().setIso(panelIso);
-            payload.getPanel().setOrderNum(1);
+          //  MenuIso eng = payload.getTopMenu().getIso().stream().filter(i -> i.getIso().equals(Country.EN.getCountryCode())).findFirst().orElseThrow();
+//            Set<PanelIso> panelIso = new HashSet<>();
+//            panelIso.add(PanelIso.builder()
+//                    .title(eng.getTitle())
+//                    .iso(Country.EN.getCountryCode())
+//                    .build()
+//            );
+//            payload.getSideMenu().setIso(panelIso);
+//            payload.getSideMenu().setOrderNum(1);
 
           //  Integer orderNum = Integer.sum(menuRepository.finderNumByMain_Id(payload.getMenu().getMainId()) , 1);
            // payload.getMenu().setOrderNum(orderNum);
-            menu = menuService.addMenu(payload.getMenu());
+            menu = menuService.addMenu(payload.getTopMenu(), topMenuImageFile);
         } else {
-            menu = menuService.updateMenu(payload.getMenu().getId(), payload.getMenu());
+            menu = menuService.updateMenu(payload.getTopMenu().getId(), payload.getTopMenu(), topMenuImageFile);
         }
 
         Panel panel;
-        if (payload.getPanel().getId() == null) {
+        if (payload.getSideMenu().getId() == null) {
 
           //  Integer orderNum = Integer.sum( panelRepository.findOrderNumTop1OrderNumByMenu_Id(menu.getId()) , 1);
           //  payload.getPanel().setOrderNum(orderNum);
 
-            panel = panelService.addPanel(menu.getId(), payload.getPanel());
+            panel = panelService.addPanel(menu.getId(), payload.getSideMenu(), sideMenuImageFile);
         } else {
-            panel = panelService.updatePanel(menu.getId(), payload.getPanel());
+            panel = panelService.updatePanel(menu.getId(), payload.getSideMenu(), sideMenuImageFile);
         }
 
         if (payload.getId() == null) {
             return addDetail(menu.getId(), panel.getId(), payload);
         } else {
-            return updateDetail(payload.getId(), payload);
+            return updateDetail(payload, topMenuImageFile, sideMenuImageFile);
         }
 
     }
@@ -126,13 +128,13 @@ public class DetailsService {
     }
 
     @Transactional
-    public Detail updateDetail(Long id, Detail payload) {
-        log.info("Updating Detail {}", id);
+    public Detail updateDetail(Detail payload, MultipartFile topMenuImageFile, MultipartFile sideMenuImageFile) {
+        log.info("Updating Detail {}", payload.getId());
 
-        menuService.updateMenu(payload.getMenu().getId(), payload.getMenu());
-        panelService.updatePanel(payload.getPanel().getId(), payload.getPanel());
+        menuService.updateMenu(payload.getTopMenu().getId(), payload.getTopMenu(), topMenuImageFile);
+        panelService.updatePanel(payload.getSideMenu().getId(), payload.getSideMenu(), sideMenuImageFile);
 
-        DetailEntity entity = detailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND));
+        DetailEntity entity = detailRepository.findById(payload.getId()).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND));
 
         detailMapper.updateEntityByModel(entity, payload);
 

@@ -1,102 +1,84 @@
-
 <ng-container
-        *ngrxLet="{ menuSide:menuSide$, header:header$,isLoggedOut: authStore.isLoggedOut$, isLoggedIn: authStore.isLoggedIn$, selectedIso: selectedIso$, role: role$, user:user$} as vm">
+        *ngrxLet="{
+        isMobile:isMobile$,
+        menuSide:menuSide$,
+        header:header$,
+        isLoggedIn: authStore.isLoggedIn$,
+        selectedIso: selectedIso$,
+        role: role$,
+        user:user$
+        } as vm"
+>
 
     <div class="grid-container">
 
-        <div class="flex-container">
+        <div class="header-container">
 
+            <div class="iconSpace">
+                @if (vm.isMobile) {
+                    <!--                    <img width="50" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
+                } @else {
+                    <!--                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
+                    {{ getIconText(vm.selectedIso, vm.header?.iso) }}
+                }
+            </div>
 
-                <div class="iconSpace">
-
-                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"
-                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>
-                    <p>{{ getIconText(vm.selectedIso, vm.header?.iso) }}</p>
-
-                </div>
-
-                <div class="rightSpace">
-                    <div class="contentSpace">
-                        <div class="headerText">
-                            <div class="logoText">
-                                {{ getIconTitle(vm.selectedIso, vm.header?.iso) }}
-                                <div class="grb">
-                                    <div class="grb-crveno"></div>
-                                    <div class="grb-bijelo"></div>
-                                    <div class="grb-bijelo"></div>
-                                    <div class="grb-crveno"></div>
-                                </div>
-                            </div>
-                            <div class="descriptionText">
-                                {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}
-                            </div>
+            <div class="rightSpace">
+                <div class="contentSpace">
+                    <div class="headerText">
+                        <div class="titleText">
+                            {{ getIconTitle(vm.selectedIso, vm.header?.iso) }}
+                            <!--                            <div class="grb">-->
+                            <!--                                <div class="grb-crveno"></div>-->
+                            <!--                                <div class="grb-bijelo"></div>-->
+                            <!--                                <div class="grb-bijelo"></div>-->
+                            <!--                                <div class="grb-crveno"></div>-->
+                            <!--                            </div>-->
                         </div>
-                        <div class="isoSpaceLanguage">
-                            <iso-buttons *ngIf="vm.header?.languages" [countries]="vm.header?.languages"
-                                         [selectedIn]="vm.selectedIso"
-                                         (selectedOut)="activeIso($event)">
-                            </iso-buttons>
-                            @if (vm.isLoggedIn) {
-                                <user-buttons [user]="vm.user">
-                                </user-buttons>
-                            }
-                            @if (vm.isLoggedOut) {
-                                <div class="button-container">
-                                    <button routerLink="/login"
-                                            routerLinkActive="activebutton"
-                                            mat-fab extended>
-                                        <mat-icon>favorite</mat-icon>
-                                        Login
-                                    </button>
-                                </div>
-                                <div class="button-container">
-                                    <button routerLink="/register"
-                                            routerLinkActive="activebutton"
-                                            mat-fab extended>
-                                        <mat-icon>favorite</mat-icon>
-                                        Register
-                                    </button>
-                                </div>
-                            }
+                        @if (!vm.isMobile) {
+                        <div class="descriptionText">
+                            {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}
                         </div>
+                        }
                     </div>
+                    <div class="isoSpaceLanguage">
 
-                    <div class="buttonSpace">
+                        <iso-buttons *ngIf="vm.header?.languages" [countries]="vm.header?.languages"
+                                     [selectedIn]="vm.selectedIso"
+                                     [isMobile]="vm.isMobile"
+                                     (selectedOut)="activeIso($event)">
+                        </iso-buttons>
 
-                        <div class="tabButtons">
-                            @if (vm.header?.id && (vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase()))){
-                                <button mat-icon-button (click)="createMenuDetail(vm.header)">
-                                    <mat-icon>add</mat-icon>
-                                </button>
-                            }
+                        <user-buttons [user]="vm.user"
+                                      [isMobile]="vm.isMobile"
+                                      [isLoggedIn]="vm.isLoggedIn">
+                        </user-buttons>
 
-                            @for (headerDetail of vm.header?.menus; track headerDetail.menuUrl) {
-                                @for (iso of headerDetail.iso; track iso.iso) {
-                                    @if (vm.selectedIso === iso.iso) {
-                                        <div>
-                                            <button
-                                                    routerLink="{{ headerDetail.menuUrl }}"
-                                                    routerLinkActive="activebutton"
-                                                    mat-fab extended>
-                                                <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}
-                                                </mat-icon>
-                                                {{ iso.title}}
-                                            </button>
-                                        </div>
-                                    }
-                                }
-                            }
-                        </div>
-                        <div class="dashboardButtons">
-
-                        </div>
+                        @if (vm.isMobile) {
+                          <mobile-top-menu
+                                  [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+                                  [header]="vm.header"
+                                  [selectedIso]="vm.selectedIso">
+                          </mobile-top-menu>
+                        }
                     </div>
                 </div>
 
-
+                @if (!vm.isMobile) {
+                    <top-menu
+                            [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+                            [header]="vm.header"
+                            [selectedIso]="vm.selectedIso"
+                            [direction]="'row'"
+                    ></top-menu>
+                }
+            </div>
         </div>
 
-            <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
-
+        <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
     </div>
+
+    <main-conf [header]="vm.header"></main-conf>
 </ng-container>

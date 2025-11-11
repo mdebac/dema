@@ -3,17 +3,20 @@ import {CountryIso, getValueByKeyForStringEnum} from "../../domain/countries-iso
 import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
 import { NgClass } from '@angular/common';
+import {UserButtonsComponent} from "../user-buttons/user-buttons.component";
 
 @Component({
     selector: 'iso-buttons',
     templateUrl: './iso-buttons.component.html',
     styleUrl: './iso-buttons.component.scss',
-    imports: [MatButton, MatMenuTrigger, NgClass, MatMenu]
+    imports: [MatButton, MatMenuTrigger, NgClass, MatMenu, UserButtonsComponent]
 })
 export class IsoButtonsComponent {
 
   countriesIso: string[] | undefined | null;
   selectedIso : string = '';
+
+  @Input() isMobile: boolean = false;
 
   @Input() set selectedIn(country: string | null) {
     if(country){

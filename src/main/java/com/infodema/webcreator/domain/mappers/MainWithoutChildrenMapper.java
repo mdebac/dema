@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class MainCustomerMapper extends AbstractMapper {
+public class MainWithoutChildrenMapper extends AbstractMapper {
 
     private final MainMapper mainMapper;
 
@@ -21,7 +21,6 @@ public class MainCustomerMapper extends AbstractMapper {
     public List<Main> toDomain(List<MainEntity> entities) {
         return convertCollection(entities, this::toDomain);
     }
-
 
     public Main toDomain(MainEntity entity) {
         return Main.builder()
@@ -42,9 +41,9 @@ public class MainCustomerMapper extends AbstractMapper {
                 .dangerColor(entity.getDangerColor())
                 .dangerColorLight(entity.getDangerColorLight())
                 .secondaryColor(entity.getSecondaryColor())
-                .image(entity.getContent())
+                .iconImage(entity.getContent())
                 .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
-                .imageBackground(entity.getContentBackground())
+                .backgroundImage(entity.getContentBackground())
                 .host(entity.getHost())
                 .price(entity.getPrice())
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))

@@ -1,22 +1,27 @@
-<mat-table class="mat-elevation-z8 full-width-table text" #outerSort="matSort" [dataSource]="dataSource" multiTemplateDataRows matSort>
+<mat-table class="mat-elevation-z8 full-width-table text" #outerSort="matSort" [dataSource]="dataSource"
+           multiTemplateDataRows matSort>
 
     <ng-container matColumnDef="customers">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell (click)="onToggleCustomers(row)" *matCellDef="let row;">
-            <mat-icon class="arrows">{{row == expandedElement ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}}</mat-icon>
+            <mat-icon class="arrows">{{ row == expandedElement ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+            </mat-icon>
         </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let row;">
+            @if (isAdmin) {
             <button mat-fab extended (click)="updateApartment(row)"
                     routerLinkActive="activebutton"> {{ "update.domain.page" | translate }}
             </button>
-
-            <button mat-icon-button (click)="deleteApartment(row.id)">
-                <mat-icon>delete</mat-icon>
-            </button>
+            }
+            @if (isAdmin) {
+                <button mat-icon-button (click)="deleteApartment(row.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            }
         </mat-cell>
     </ng-container>
 
@@ -29,44 +34,35 @@
         <mat-header-cell *matHeaderCellDef>expandedCustomers</mat-header-cell>
         <mat-cell *matCellDef="let row">
             <table #innerTables mat-table #innerSort="matSort" [dataSource]="row.customersDS" matSort>
-                    <ng-container matColumnDef="name">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
-                        <mat-cell *matCellDef="let row">{{ row['name'] }}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="email">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-                        <mat-cell *matCellDef="let row">{{ row['email'] }}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="role">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
-
-
-                            <mat-cell *matCellDef="let element">
-
-                                @if(isAdmin){
-
-                                    @if(element['role'] !== "ADMIN"){
-                                        <mat-select [(value)]="element['role']" (selectionChange)="changeRole(element['id'], element['role'])">
-                                            <mat-option *ngFor="let role of rolesToChoose" [value]="role">
-                                                {{role}}
-                                            </mat-option>
-                                        </mat-select>
-                                    }
-                                    @else{
-                                        {{element['role']}}
-                                    }
-                                }@else{
-
-                                    {{element['role']}}
-                                }
-
-                            </mat-cell>
-
-
-                    </ng-container>
-
-                  <mat-header-row *matHeaderRowDef="innerDisplayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: innerDisplayedColumns;" >
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row['name'] }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row['email'] }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        @if (isAdmin) {
+                            @if (element['role'] !== "ADMIN") {
+                                <mat-select [(value)]="element['role']"
+                                            (selectionChange)="changeRole(element['id'], element['role'])">
+                                    <mat-option *ngFor="let role of rolesToChoose" [value]="role">
+                                        {{ role }}
+                                    </mat-option>
+                                </mat-select>
+                            } @else {
+                                {{ element['role'] }}
+                            }
+                        } @else {
+                            {{ element['role'] }}
+                        }
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="innerDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: innerDisplayedColumns;">
                 </mat-row>
             </table>
         </mat-cell>
@@ -76,7 +72,7 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-    <mat-row *matRowDef="let element; columns: displayedColumns;" >
+    <mat-row *matRowDef="let element; columns: displayedColumns;">
     </mat-row>
 
     <mat-row *matRowDef="let element; columns: ['expandedCustomers']"

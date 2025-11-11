@@ -6,7 +6,7 @@ import {defaultIso} from "../../../domain/countries-iso";
 import {ApartmentItemIso} from "../../../domain/apartment-item-iso";
 import {ValidateImageSize} from "../../../validators/image-size.validator";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
-import {Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar} from "ngx-editor";
+import {Editor, NgxEditorComponent, NgxEditorMenuComponent, TBItems, Toolbar} from "ngx-editor";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {IsoButtonsComponent} from '../../iso-buttons/iso-buttons.component';
@@ -19,6 +19,16 @@ import {Chip} from "../../../domain/chip.enum";
 import {Hosts} from "../../../domain/hosts";
 import {Roles} from "../../../domain/roles";
 
+
+
+export const TEXT_FORMATTING_TYPE: { [key: string]: TBItems } = {
+  BOLD: 'bold',
+  ITALIC: 'italic',
+  BULLET_LIST: 'bullet_list',
+  ORDERED_LIST: 'ordered_list',
+};
+
+
 @Component({
     selector: 'item-dialog',
     templateUrl: './item-dialog.component.html',
@@ -26,7 +36,7 @@ import {Roles} from "../../../domain/roles";
   imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, TranslatePipe, MatFabButton]
 })
 export class ItemDialogComponent implements OnDestroy {
-  //store = inject(ApartmentStore);
+
   fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<ItemDialogComponent>)
   translateService = inject(TranslateService);
@@ -46,6 +56,7 @@ export class ItemDialogComponent implements OnDestroy {
     ['ordered_list', 'bullet_list'],
     [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
     ['link'],
+    [TEXT_FORMATTING_TYPE],
     ['align_left', 'align_center', 'align_right', 'align_justify','text_color', 'background_color'],
   ];
   colorPresets = [""];

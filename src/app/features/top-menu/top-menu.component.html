@@ -1,0 +1,22 @@
+<div class="buttonSpace">
+
+    @if (canEdit) {
+        <button mat-icon-button (click)="createMenuDetail(header)">
+            <mat-icon>add</mat-icon>
+        </button>
+    }
+    @for (headerDetail of header?.menus; track headerDetail.menuUrl) {
+        @for (iso of headerDetail.iso; track iso.iso) {
+            @if (selectedIso === iso.iso) {
+                    <button routerLink="{{ headerDetail.menuUrl }}"
+                            routerLinkActive="activebutton"
+                            mat-fab extended>
+                        <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}
+                        </mat-icon>
+                        {{ iso.title }}
+                    </button>
+            }
+        }
+    }
+
+</div>

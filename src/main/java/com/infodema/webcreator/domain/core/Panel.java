@@ -23,4 +23,6 @@ public class Panel extends AbstractAuditModel {
     private String icon;
     private Integer orderNum;
     private Set<PanelIso> iso;
+    private byte[] image;
+    private Boolean removeImage;
 }

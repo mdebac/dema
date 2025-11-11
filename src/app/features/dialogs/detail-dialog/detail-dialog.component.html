@@ -6,28 +6,51 @@
             {{ "title.and.icons" | translate }}
         }</h2>
         <ng-container>
-            <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle" (selectedOut)="activeIso($event)">
+            <iso-buttons [countries]="languages" [selectedIn]="selectedIso" (selectedOut)="activeIso($event)">
             </iso-buttons>
         </ng-container>
     </mat-card-header>
 
     <mat-card-content [formGroup]="form">
-
-
         <ng-container formArrayName="iso">
             <ng-container *ngFor="let item of isoArray.controls; let i = index">
                 @if (isIsoSelected(item.value)) {
                     <div class="container">
                         <ng-container class="row-input-container-left" [formGroupName]="i">
                             <div class="text title">{{ "detail.dialog.title" | translate }}</div>
-                            <ngx-editor-menu [editor]="editor(item.value.iso)" [colorPresets]="colorPresets"
-                                             [toolbar]="toolbar">
-                            </ngx-editor-menu>
-                            <ngx-editor [editor]="editor(item.value.iso)" formControlName="title">
-                            </ngx-editor>
-                            <div class="text">
-                                {{ remainingSize(item.value.iso) }}
-                            </div>
+
+                            <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+                                <mat-expansion-panel-header>
+
+                                    <ngx-editor
+                                            [editor]="editor(item.value.iso)"
+                                            [innerHTML]="getPageTitle(item.value.iso)"
+                                           >
+                                    </ngx-editor>
+
+                                </mat-expansion-panel-header>
+                                <div class="actionButtons">
+
+                                    <quill-editor
+                                            format="text"
+                                            [(ngModel)]="content"
+                                            [ngModelOptions]="quillConfiguration"
+
+                                    > </quill-editor>
+
+                                    <ngx-editor-menu [editor]="editor(item.value.iso)" [colorPresets]="colorPresets"
+                                                     [toolbar]="toolbar">
+                                    </ngx-editor-menu>
+                                    <ngx-editor [editor]="editor(item.value.iso)" formControlName="title">
+                                    </ngx-editor>
+
+
+                                    <div class="text">
+                                        {{ remainingSize(item.value.iso) }}
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+
                         </ng-container>
                     </div>
                 }
@@ -37,29 +60,83 @@
         @if (isNew && !isNewMenu && isNewPanel){
 
         } @else {
-            <ng-container formGroupName="menu">
+            <ng-container formGroupName="topMenu">
                 <ng-container formArrayName="iso">
                     <ng-container *ngFor="let item of isoArray.controls; let i = index">
                         @if (isIsoSelected(item.value)) {
                             <div class="container">
                                 <ng-container [formGroupName]="i">
-                                    <div class="text title2">Menu label</div>
+                                    <div class="text title2">Top menu</div>
 
-                                    <mat-form-field class="mylabel">
-                                        <mat-label>Label</mat-label>
-                                        <input matInput formControlName="title" placeholder="Label">
-                                        <mat-error>Min 2, Max 10</mat-error>
-                                    </mat-form-field>
+                                    <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                @if (showTopMenuImage) {
+                                                    <img width="50" src="{{showTopMenuImage}}" alt=""/>
+                                                }
+                                                <div class="naslov">
+                                                    {{ getTopMenuLabel(selectedIso) }}
+                                                </div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="actionButtons">
+                                            <mat-form-field class="mylabel">
+                                                <mat-label>Label</mat-label>
+                                                <input matInput formControlName="title" placeholder="Label">
+                                                <mat-error>Min 2, Max 20</mat-error>
+                                            </mat-form-field>
+                                            @if (menuIcon){
+                                                <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
+                                                    <mat-icon>{{ menuIcon }}</mat-icon>
+                                                </button>
+                                            } @else {
+                                                <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            }
+                                            <input #topMenuImageInput
+                                                    (change)="selectTopMenuImage($event)"
+                                                    class="form-control"
+                                                    type="file"
+                                                    accept="image/*"
+                                            >
+                                            <mat-error></mat-error>
+                                            @if (showTopMenuImage) {
+                                                <mat-checkbox (change)="onRemoveTopMenuImage($event)">
+                                                    {{ "remove.image" | translate }}
+                                                </mat-checkbox>
+                                            }
+                                            {{ toBigTopMenuImage }}
+                                        </div>
+                                    </mat-expansion-panel>
 
-                                    @if (menuIcon){
-                                        <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
-                                            <mat-icon>{{ menuIcon }}</mat-icon>
-                                        </button>
-                                    } @else {
-                                        <button class="myicon" (click)="openMenuIconDialog()" mat-fab>
-                                            <mat-icon>close</mat-icon>
-                                        </button>
-                                    }
+                                    <div class="eyes">
+                                        <i class="fa fa-eye fa-xl" (click)="setVisible()" aria-hidden="true"
+                                           *ngIf="visible"></i>
+                                        <i class="fa fa-eye-slash fa-xl" (click)="setVisible()"
+                                           aria-hidden="true" *ngIf="!visible"></i>
+                                    </div>
+
+
+<!--                                    <div class="actionButtons" [formGroup]="form">-->
+<!--                                        <input-->
+<!--                                                (change)="selectLogo($event)"-->
+<!--                                                class="form-control"-->
+<!--                                                type="file"-->
+<!--                                                accept="image/*"-->
+<!--                                        >-->
+<!--                                        <mat-error></mat-error>-->
+
+<!--                                        <br>-->
+<!--                                        @if (showPicture) {-->
+<!--                                            <img width="100" src="{{showPicture}}" alt=""/>-->
+<!--                                            <mat-checkbox (change)="onRemovePicture($event)">-->
+<!--                                                {{ "remove.image" | translate }}-->
+<!--                                            </mat-checkbox>-->
+<!--                                        }-->
+<!--                                        <br>-->
+<!--                                        {{ toBigImage }}-->
+<!--                                    </div>-->
 
                                 </ng-container>
                             </div>
@@ -71,37 +148,68 @@
         }
 
         @if (menuSide === Side.LEFT || menuSide === Side.RIGHT){
-            <ng-container formGroupName="panel">
+            <ng-container formGroupName="sideMenu">
                 <ng-container formArrayName="iso">
                     <ng-container *ngFor="let item of isoArray.controls; let i = index">
                         @if (isIsoSelected(item.value)) {
                             <div class="container">
                                 <ng-container [formGroupName]="i">
+                                    <div class="text title2">Side menu</div>
 
-                                    <div class="text title2">Panel label</div>
-                                    <mat-form-field class="mylabel">
-                                        <mat-label>Label</mat-label>
-                                        <input matInput formControlName="title" placeholder="Label">
-                                        <mat-error>Min 2, Max 10</mat-error>
-                                    </mat-form-field>
+                                    <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
 
-                                    @if (panelIcon){
-                                        <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
-                                            <mat-icon>{{ panelIcon }}</mat-icon>
-                                        </button>
-                                    }
-                                    @else {
-                                        <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
-                                            <mat-icon>close</mat-icon>
-                                        </button>
-                                    }
+                                                @if (showSideMenuImage) {
+                                                    <img width="50" src="{{showSideMenuImage}}" alt=""/>
+                                                }
 
-                                    <mat-form-field class="full">
-                                        <mat-label>Description</mat-label>
-                                        <input matInput formControlName="description" placeholder="Description">
-                                        <mat-error>Max 50</mat-error>
-                                    </mat-form-field>
+                                                <div class="naslov">
+                                                    {{ getSideMenuLabel(selectedIso) }}
+                                                </div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="actionButtons">
+
+                                            <mat-form-field class="mylabel">
+                                                <mat-label>Label</mat-label>
+                                                <input matInput formControlName="title" placeholder="Label">
+                                                <mat-error>Min 2, Max 20</mat-error>
+                                            </mat-form-field>
+
+                                            <mat-form-field class="full">
+                                                <mat-label>Description</mat-label>
+                                                <input matInput formControlName="description" placeholder="Description">
+                                                <mat-error>Max 50</mat-error>
+                                            </mat-form-field>
+
+                                            @if (panelIcon){
+                                                <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
+                                                    <mat-icon>{{ panelIcon }}</mat-icon>
+                                                </button>
+                                            }
+                                            @else {
+                                                <button class="myicon" (click)="openPanelIconDialog()" mat-fab>
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            }
+                                            <input #sideMenuImageInput
+                                                   (change)="selectSideMenuImage($event)"
+                                                   class="form-control"
+                                                   type="file"
+                                                   accept="image/*"
+                                            >
+                                            <mat-error></mat-error>
+                                            @if (showSideMenuImage) {
+                                                <mat-checkbox (change)="onRemoveSideMenuImage($event)">
+                                                    {{ "remove.image" | translate }}
+                                                </mat-checkbox>
+                                            }
+                                            {{ toBigSideMenuImage }}
+                                        </div>
+                                    </mat-expansion-panel>
+
 
                                 </ng-container>
                             </div>

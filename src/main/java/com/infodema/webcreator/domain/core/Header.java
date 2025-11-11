@@ -1,5 +1,6 @@
 package com.infodema.webcreator.domain.core;
 
+import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +17,12 @@ public class Header {
     private Long id;
     private List<Menu> menus;
     private List<String> languages;
-    private byte[] iconImage;
-    private byte[] backgroundImage;
     private Integer linearPercentage;
     private String name;
-    private String activeDetailUrl;
-    private String activePanelUrl;
+    private String activeTopMenuUrl;
+    private String activeSideMenuUrl;
     private String host;
     private Colors colors;
     private Set<MainIso> iso;
+    private Main main;
 }

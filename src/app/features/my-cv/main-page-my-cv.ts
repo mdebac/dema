@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {filter} from "rxjs/operators";
-import {of} from "rxjs";
 import { LetDirective } from '@ngrx/component';
 import { MyCvContainerComponent } from './my-cv-container/my-cv-container.component';
 

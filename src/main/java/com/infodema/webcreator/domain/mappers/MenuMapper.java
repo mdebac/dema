@@ -37,6 +37,8 @@ public class MenuMapper extends AbstractMapper {
                 .side(entity.getSide())
                 .layout(entity.getLayout())
                 .panelOn(entity.getPanelOn())
+                .searchOn(entity.getSearchOn())
+                .image(entity.getImageContent())
                 .hideMenuPanelIfOne(entity.getHideMenuPanelIfOne())
                 .orderNum(entity.getOrderNum())
                 .panels(panelMapper.toDomain(entity.getPanels()))
@@ -48,10 +50,6 @@ public class MenuMapper extends AbstractMapper {
                 .build();
     }
 
-    public List<MenuEntity> toEntity(List<Menu> models) {
-        return convertCollection(models, this::toEntity);
-    }
-
     public MenuEntity toEntity(Menu menu) {
         return MenuEntity.builder()
                 .id(menu.getId())
@@ -60,6 +58,7 @@ public class MenuMapper extends AbstractMapper {
                 .side(menu.getSide())
                 .layout(menu.getLayout())
                 .panelOn(menu.getPanelOn())
+                .searchOn(menu.getSearchOn())
                 .hideMenuPanelIfOne(menu.getHideMenuPanelIfOne())
                 .orderNum(menu.getOrderNum())
                 .panels(panelMapper.toEntity(menu.getPanels()))
@@ -87,6 +86,7 @@ public class MenuMapper extends AbstractMapper {
         return MenuIso.builder()
                 .iso(entity.getIso().getCountryCode())
                 .title(entity.getTitle())
+                .description(entity.getDescription())
                 .build();
     }
 
@@ -94,6 +94,7 @@ public class MenuMapper extends AbstractMapper {
         return MenuIsoEntity.builder()
                 .iso(Country.fromCode(domain.getIso()))
                 .title(domain.getTitle())
+                .description(domain.getDescription())
                 .build();
     }
 }

@@ -1,0 +1,10 @@
+ALTER TABLE main DROP COLUMN remove_background;
+ALTER TABLE main DROP COLUMN remove_picture;
+ALTER TABLE menu ADD COLUMN image_content MEDIUMBLOB;
+ALTER TABLE menu ADD COLUMN image_size bigint not null;
+ALTER TABLE menu ADD COLUMN image_file_name varchar(255);
+ALTER TABLE menu ADD COLUMN image_mime_type varchar(255);
+ALTER TABLE panel ADD COLUMN image_content MEDIUMBLOB;
+ALTER TABLE panel ADD COLUMN image_size bigint not null;
+ALTER TABLE panel ADD COLUMN image_file_name varchar(255);
+ALTER TABLE panel ADD COLUMN image_mime_type varchar(255);

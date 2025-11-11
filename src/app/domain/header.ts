@@ -1,20 +1,23 @@
 import {Menu} from "./menu";
 import {ApartmentIso} from "./apartment-iso";
 import {Colors} from "./colors";
-import {Hosts} from "./hosts";
+import {Apartment} from "./apartment";
 
 export interface Header{
-  id:number;
-  iconImage: File;
-  backgroundImage: File;
-  linearPercentage: number;
   languages: string[];
   menus: Menu[];
-  activeDetailUrl:string;
-  activePanelUrl:string;
+  activeTopMenuUrl:string;
+  activeSideMenuUrl:string;
   iso: ApartmentIso [];
   colors: Colors;
-  host: Hosts;
+  main: Apartment;
 }
 
+/*
+//                .id(entity.getId())
+                //                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
+//                .host(entity.getHost())
+//                .backgroundImage(entity.getContentBackground())
+//                .iconImage(entity.getContent())
 
+ */

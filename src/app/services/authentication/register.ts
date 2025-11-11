@@ -8,7 +8,8 @@ import {RegistrationRequest} from "../../domain/registration-request";
 import {RequestBuilder} from "../../domain/request-builder";
 
 export interface Register$Params {
-      body: RegistrationRequest
+      body: RegistrationRequest,
+      captcha: string
 }
 
 export function register(http: HttpClient, rootUrl: string, params: Register$Params, context?: HttpContext): Observable<StrictHttpResponse<{
@@ -16,6 +17,7 @@ export function register(http: HttpClient, rootUrl: string, params: Register$Par
   const rb = new RequestBuilder(rootUrl, register.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
+    rb.header("captcha-response", params.captcha);
   }
 
   return http.request(

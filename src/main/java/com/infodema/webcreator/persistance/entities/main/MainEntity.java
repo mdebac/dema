@@ -45,12 +45,6 @@ public class MainEntity extends BaseAuditEntity {
     private String acceptColorLight;
     private Integer linearPercentage;
 
-    @Convert(converter = TrueFalseConverter.class)
-    private Boolean removePicture;
-
-    @Convert(converter = TrueFalseConverter.class)
-    private Boolean removeBackground;
-
     @Column(unique=true)
     private String host;
 
@@ -94,7 +88,6 @@ public class MainEntity extends BaseAuditEntity {
     private String fileName;
     private String mimeType;
     private long size;
-
     @Column(name = "content", columnDefinition="MEDIUMBLOB")
     private byte[] content;
 

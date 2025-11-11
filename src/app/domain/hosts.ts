@@ -3,6 +3,7 @@ export enum Hosts {
   DEMA_APARTMENTS="dema-apartments.eu",
   INFO_DEMA_EU="info-dema.eu",
   DEV_NEWS_EU="dev-news.eu",
+  DEMA_CREATOR_COM="dema-creator.com",
 }
 
 export function getHostsByKeyForStringEnum(value: string) {

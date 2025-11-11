@@ -2,9 +2,9 @@
     <mat-card-header>
         <h2 class="button-container-left">
             @if (isNew) {
-                Create new
+                {{ 'create.page' | translate }}
             } @else {
-                Update
+                {{ 'update.page' | translate }}
             }</h2>
         <div class="languageSpace">
             <button mat-icon-button (click)="chooseLanguages()">
@@ -24,18 +24,18 @@
                     @if (isIsoSelected(item.value)) {
                         <div class="row-input-container-left text" [formGroupName]="i">
                             <mat-form-field appearance="outline">
-                                <mat-label>Title</mat-label>
+                                <mat-label>{{ 'dialog.main.title' | translate }}</mat-label>
                                 <input matInput formControlName="title">
-                                <mat-hint align="end">{{ 'dialog.main.title' | translate }}</mat-hint>
+                                <mat-hint align="end">{{ 'dialog.main.title.hint' | translate }}</mat-hint>
                                 <mat-error>
-                                    Min 3, Max 15
+                                    Min 3, Max 30
                                 </mat-error>
                             </mat-form-field>
                         </div>
 
                         <div class="row-input-container-left" [formGroupName]="i">
                             <mat-form-field appearance="outline">
-                                <mat-label>Description</mat-label>
+                                <mat-label>{{ 'dialog.main.description' | translate }}</mat-label>
                                 <textarea matInput formControlName="description"></textarea>
                                 <mat-hint align="end">{{ 'dialog.main.description.hint' | translate }}</mat-hint>
                                 <mat-error>
@@ -81,104 +81,9 @@
 
         <div class="dialog-right">
 
-            <mat-expansion-panel class="custom-panel" (click)="openClose()" (opened)="isOpened" (closed)="!isOpened">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        {{ 'dialog.main.colors' | translate }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <div class="row-input-container-left full-width">
-                    <mat-label>Primary Color</mat-label>
-                    <br>
-                    <input [value]="primaryColor"
-                           [style.background]="primaryColor"
-                           [(colorPicker)]="primaryColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangePrimaryColor(primaryColor=$event)"
-                    />
-                </div>
-                <div class="row-input-container-left full-width">
-                    <mat-label>Secondary Color</mat-label>
-                    <br>
-                    <input [value]="secondaryColor"
-                           [style.background]="secondaryColor"
-                           [(colorPicker)]="secondaryColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangeSecondaryColor(secondaryColor=$event)"
-                    />
-                </div>
-
-                <div class="row-input-container-left full-width">
-                    <mat-label>Danger Color</mat-label>
-                    <br>
-                    <input [value]="dangerColor"
-                           [style.background]="dangerColor"
-                           [(colorPicker)]="dangerColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangeDangerColor(dangerColor=$event)"
-                    />
-                </div>
-                <div class="row-input-container-left full-width">
-                    <mat-label>Warn Color</mat-label>
-                    <br>
-                    <input [value]="warnColor"
-                           [style.background]="warnColor"
-                           [(colorPicker)]="warnColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangeWarnColor(warnColor=$event)"
-                    />
-                </div>
-                <div class="row-input-container-left full-width">
-                    <mat-label>Info Color</mat-label>
-                    <br>
-                    <input [value]="infoColor"
-                           [style.background]="infoColor"
-                           [(colorPicker)]="infoColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangeInfoColor(infoColor=$event)"
-                    />
-                </div>
-                <div class="row-input-container-left full-width">
-                    <mat-label>Accept Color</mat-label>
-                    <br>
-                    <input [value]="acceptColor"
-                           [style.background]="acceptColor"
-                           [(colorPicker)]="acceptColor"
-                           [cpOKButton]="true"
-                           (colorPickerChange)="onChangeAcceptColor(acceptColor=$event)"
-                    />
-                </div>
-
-            </mat-expansion-panel>
-
-
-            <br>
 
             <div class="row-input-container-left">
 
-                <mat-label>Logo</mat-label>
-                <br>
-                  <input
-                    (change)="selectLogo($event)"
-                    class="form-control"
-                    type="file"
-                    id="formFile"
-                    accept="image/*"
-            >
-                <mat-error></mat-error>
-            </div>
-
-            <div class="row-input-container-left">
-                @if (showPicture) {
-                    <img width="100" src="{{showPicture}}" alt=""/>
-                    <mat-checkbox (change)="removePicture($event)">
-                        {{ "remove.image" | translate }}
-                    </mat-checkbox>
-                }
-                <br>
-                {{ toBigImage }}
-                <br>
                 <mat-divider></mat-divider>
 
                 <div class="buttonSpace">
@@ -201,42 +106,6 @@
 
         </div>
 
-
-        <div class="dialog-right text">
-            <div class="row-input-container-left">
-
-                <mat-label>Background Image</mat-label>
-                <br>
-                <input
-                        (change)="selectBackgroundImage($event)"
-                        class="form-control"
-                        type="file"
-                        id="backgroundImage"
-                        accept="image/*"
-                >
-                <mat-error></mat-error>
-            </div>
-
-            <div class="row-input-container-left">
-                @if (showBackgroundImage) {
-                    <img width="100" src="{{showBackgroundImage}}" alt=""/>
-                    <mat-checkbox (change)="removePictureBackground($event)">
-                        {{ "remove.image" | translate }}
-                    </mat-checkbox>
-                }
-                <br>
-                {{ toBigBackgroundImage }}
-                <br>
-
-                @if (showBackgroundImage) {
-                    {{rate}}
-                    <mat-slider min="0" max="100000" step="1000" showTickMarks discrete [displayWith]="formatLabel" >
-                        <input matSliderThumb value="rate" (valueChange)="changeSlider($event)">
-                    </mat-slider>
-                }
-            </div>
-
-        </div>
 
     </mat-card-content>
 </mat-card>

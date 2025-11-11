@@ -43,7 +43,7 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days --> not used
   cors:
-    origins: http://localhost:8081/
+    origins: http://localhost:8081/,https://info-dema.eu,https://dema-apartments.eu/,https://adriaticsun.eu/,https://dev-news.eu/
 
 server:
   port: ${API_PORT}

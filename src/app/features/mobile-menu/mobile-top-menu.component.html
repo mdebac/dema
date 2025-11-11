@@ -1,0 +1,17 @@
+<div>
+    <button class="close" mat-button [matMenuTriggerFor]="iso">
+        <mat-icon>menu</mat-icon>
+    </button>
+</div>
+<mat-menu #iso="matMenu">
+    <div class="actionButtons">
+        <ng-container>
+            <top-menu
+                    [canEdit]="canEdit"
+                    [header]="header"
+                    [selectedIso]="selectedIso"
+                    [direction]="'column'"
+            ></top-menu>
+        </ng-container>
+    </div>
+</mat-menu>

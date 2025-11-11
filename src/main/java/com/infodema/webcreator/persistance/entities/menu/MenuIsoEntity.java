@@ -21,6 +21,9 @@ import lombok.experimental.SuperBuilder;
 public class MenuIsoEntity {
 
     @EqualsAndHashCode.Exclude
+    private String description;
+
+    @EqualsAndHashCode.Exclude
     private String title;
 
     @Column(nullable = false)

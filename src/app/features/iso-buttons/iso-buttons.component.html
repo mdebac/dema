@@ -1,5 +1,7 @@
 <div>
-    {{ getValueByKeyForStringEnum(selectedIso) }}
+    @if (!isMobile){
+        {{ getValueByKeyForStringEnum(selectedIso) }}
+    }
     <button mat-button [matMenuTriggerFor]="iso">
         <div [ngClass]="flag(selectedIso)"></div>
     </button>

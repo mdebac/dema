@@ -22,7 +22,7 @@ import {Menu} from "../domain/menu";
 import {Layout, layoutMap} from "../domain/layout";
 import {Side} from "../domain/side";
 import {LayoutState} from "../domain/layout-state";
-import {ShareableService} from "./shareable.service";
+import {ReCaptchaV3Service} from "ng-recaptcha-2";
 
 export interface ApartmentState {
     page: Page<Apartment>;
@@ -43,8 +43,8 @@ export interface ApartmentState {
     //   loadHeader: boolean,
     headerLoading: boolean,
 
-    activeMenuUrl: string | null;
-    activePanelUrl: string | null;
+    activeTopMenuUrl: string | null;
+    activeSideMenuUrl: string | null;
 
     segment: string | null;
     selectedApartmentId: number | null,
@@ -55,6 +55,8 @@ export interface ApartmentState {
     footerVisible: boolean,
 
     shrinkMenu: boolean,
+    isMobile: boolean,
+    isEmailSent: boolean,
 
     loading: boolean;
     error: ApiError | null;
@@ -75,8 +77,8 @@ export const initialApartmentState: ApartmentState = {
     header: null,
     //   loadHeader: false,
     headerLoading: false,
-    activeMenuUrl: null,
-    activePanelUrl: null,
+    activeTopMenuUrl: null,
+    activeSideMenuUrl: null,
     segment: null,
 
     filterChip: null,
@@ -85,6 +87,8 @@ export const initialApartmentState: ApartmentState = {
     paginationSize: 20,
     paginationSort: 'created_on,DESC',
     shrinkMenu: true,
+    isMobile: false,
+    isEmailSent: false,
 
     footerVisible: false,
 
@@ -96,7 +100,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     readonly service = inject(ApartmentsHttpService);
     readonly router = inject(Router);
     readonly translateService = inject(TranslateService);
-    readonly shareableService = inject(ShareableService);
+    readonly recaptchaV3Service = inject(ReCaptchaV3Service);
 
     apartmentsPage$: Observable<Page<Apartment>> = this.select((state) => state.page);
     loading$: Observable<boolean> = this.select((state) => state.loading);
@@ -107,23 +111,22 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     filterChip$: Observable<Chip | null> = this.select((state) => state.filterChip);
     filterTitle$: Observable<string | null> = this.select((state) => state.filterTitle);
     selectedDetailPage$: Observable<ApartmentDetail | null> = this.select((state) => state.selectedDetailPage);
-    activeMenuUrl$: Observable<string | null> = this.select((state) => state.activeMenuUrl);
-    activePanelUrl$: Observable<string | null> = this.select((state) => state.activePanelUrl);
+    activeTopMenuUrl$: Observable<string | null> = this.select((state) => state.activeTopMenuUrl);
+    activeSideMenuUrl$: Observable<string | null> = this.select((state) => state.activeSideMenuUrl);
     header$: Observable<Header | null> = this.select((state) => state.header);
     shrinkMenu$: Observable<boolean> = this.select((state) => state.shrinkMenu);
-
-    selectedIso$: Observable<string|null> = this.select((state) => state.selectedIso);
-
+    isMobile$: Observable<boolean> = this.select((state) => state.isMobile);
+    selectedIso$: Observable<string | null> = this.select((state) => state.selectedIso);
+    isEmailSent$: Observable<boolean> = this.select((state) => state.isEmailSent);
     footerVisible$: Observable<boolean> = this.select((state) => state.footerVisible);
-
 
     menuPanelVisible$: Observable<boolean> = this.select(
         this.selectedDetailPage$,
         (detail) => {
-            if (!detail?.menu.hideMenuPanelIfOne) {
+            if (!detail?.topMenu.hideMenuPanelIfOne) {
                 return true;
             } else {
-                if (detail?.menu?.panels?.length ? detail?.menu?.panels?.length < 2 : false) {
+                if (detail?.topMenu?.panels?.length ? detail?.topMenu?.panels?.length < 2 : false) {
                     return false;
                 } else {
                     return true;
@@ -132,28 +135,32 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         }
     );
 
-
     activeMenu$: Observable<ActiveMenu> = this.select(
         this.header$,
-        this.activeMenuUrl$,
-        this.activePanelUrl$,
-        (header, menu, panel) => {
+        this.activeTopMenuUrl$,
+        this.activeSideMenuUrl$,
+        (header, top, side) => {
 
-            if (menu) {
-                return {activeMenuUrl: menu, activePanelUrl: panel} as ActiveMenu;
+            if (top) {
+                return {top: top, side: side} as ActiveMenu;
             } else {
-                return {activeMenuUrl: header?.activeDetailUrl, activePanelUrl: header?.activePanelUrl} as ActiveMenu;
+                return {top: header?.activeTopMenuUrl, side: header?.activeSideMenuUrl} as ActiveMenu;
             }
         }
     );
 
     columns$: Observable<number> = this.select(
         this.selectedDetailPage$,
-        (page) => {
-            if (page && page.columns) {
-                return page?.columns;
-            } else {
+        this.isMobile$,
+        (page, isMobile) => {
+            if (isMobile) {
                 return 1;
+            } else {
+                if (page && page.columns) {
+                    return page?.columns;
+                } else {
+                    return 1;
+                }
             }
         }
     );
@@ -161,8 +168,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     hideMenuPanelIfOne$: Observable<boolean> = this.select(
         this.selectedDetailPage$,
         (page) => {
-            if (page && page.menu.hideMenuPanelIfOne) {
-                return page?.menu.hideMenuPanelIfOne;
+            if (page && page.topMenu.hideMenuPanelIfOne) {
+                return page?.topMenu.hideMenuPanelIfOne;
             } else {
                 return false;
             }
@@ -174,7 +181,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.selectedDetailPage$,
         (page) => {
 
-            return !(page?.menu?.panels?.length ? page?.menu?.panels?.length > 5 : true);
+            return !(page?.topMenu?.panels?.length ? page?.topMenu?.panels?.length > 5 : true);
 
         }
     );
@@ -195,8 +202,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     panelOn$: Observable<boolean> = this.select(
         this.selectedDetailPage$,
         (page) => {
-            if (page && page.menu.panelOn) {
-                return page?.menu.panelOn;
+            if (page && page.topMenu.panelOn) {
+                return page?.topMenu.panelOn;
             } else {
                 return false;
             }
@@ -206,8 +213,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     side$: Observable<Side> = this.select(
         this.selectedDetailPage$,
         (page) => {
-            if (page && page.menu.side) {
-                return page?.menu.side;
+            if (page && page.topMenu.side) {
+                return page?.topMenu.side;
             } else {
                 return Side.LEFT;
             }
@@ -217,8 +224,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     layout$: Observable<Layout> = this.select(
         this.selectedDetailPage$,
         (page) => {
-            if (page && page.menu.layout) {
-                return page?.menu.layout;
+            if (page && page.topMenu.layout) {
+                return page?.topMenu.layout;
             } else {
                 return Layout.FULL;
             }
@@ -256,6 +263,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         }
     );
 
+    //TODO pagination
     apartmentCriteria$: Observable<ApartmentCriteria> = this.select(
         this.filterChip$,
         this.filterTitle$,
@@ -283,27 +291,28 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
 
     backgroundColorSummer$: Observable<string> = this.select(
         this.selectedDetailPage$,
-        this.header$,
-        (detail, header) => {
-            if (detail?.backgroundColorOn) {
-                return header?.colors.primaryColor ? header?.colors.primaryColor : "";
+        (detail) => {
+            if (detail?.backgroundColor) {
+                return detail.backgroundColor;
             } else {
                 return "";
             }
         }
     );
 
+
     backgroundColorPanel$: Observable<string> = this.select(
         this.selectedDetailPage$,
-        this.header$,
-        (detail, header) => {
-            if (detail?.backgroundColorOn) {
-                return header?.colors.primaryColor ? header?.colors.primaryColor : "";
+        (detail) => {
+            if (detail?.backgroundColor) {
+                //TODO
+                return "";//detail.menu.backgroundColor;
             } else {
                 return "";
             }
         }
     );
+
 
     actionsBorderColorSummer$: Observable<string> = this.select(
         this.backgroundColorSummer$,
@@ -335,7 +344,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.hideMenuPanelIfOne$,
         this.panelOn$,
         this.shrinkMenu$,
-        (side, layout, hideMenuPanelOn, panelOn, shrinkedMenu) => {
+        this.isMobile$,
+        (side, layout, hideMenuPanelOn, panelOn, shrinkedMenu, isMobile) => {
 
             const sN: number = side === Side.LEFT ? 0 : 1;
             const lN: number = layout === Layout.CENTER ? 0 : 1;
@@ -343,13 +353,17 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
             const pN: number = panelOn ? 1 : 0;
             const shN: number = shrinkedMenu ? 1 : 0;
 
-            const key = sN + "," + lN + "," + hN + "," + pN + "," + shN;
-
-            return layoutMap.get(key);
+            if (isMobile) {
+                return {gapL: 0, panelL: 0, menuL: 0, center: 20, menuR: 0, panelR: 0, gapR: 0};
+            } else {
+                const key = sN + "," + lN + "," + hN + "," + pN + "," + shN;
+                return layoutMap.get(key);
+            }
         }
     );
 
 
+    //TODO pagination filter for apartman
     loadApartmentsByFilterEffect = this.effect(
         (criteria$: Observable<ApartmentCriteria>) => criteria$.pipe(
             tap(() => this.patchState({loading: true})),
@@ -378,7 +392,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 console.log("(effect) loadDetailByRouteLabelsEffect header", header);
             }),
             switchMap(([activeMenu, header]) =>
-                this.service.fetchDetailByRouteLabels(header, activeMenu?.activeMenuUrl, activeMenu?.activePanelUrl)
+                this.service.fetchDetailByRouteLabels(header, activeMenu?.top, activeMenu?.side)
                     .pipe(
                         tapResponse({
                             next: (response: ApartmentDetail | null) => {
@@ -422,11 +436,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
 
     loadCustomersEffect = this.effect(
         _ => _.pipe(
-            withLatestFrom(
-                this.header$,
-            ),
             switchMap(
-                ([_, header]) => this.service.myCustomers()
+                (_) => this.service.myCustomers()
                     .pipe(
                         tapResponse({
                             next: (response: Page<Apartment>) => {
@@ -456,7 +467,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                     .pipe(
                         tapResponse({
                             next: (response: Page<Apartment>) => {
-
                                 response.content.forEach(
                                     a => {
                                         a.customersDS = new MatTableDataSource(a.customers);
@@ -472,7 +482,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         ),
     );
 
-
     readonly createMainEffect = this.effect(
         (main$: Observable<Partial<Apartment>>) => main$.pipe(
             tap((main) => {
@@ -482,6 +491,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                 (main) => this.service.createMain(main)
                     .pipe(
                         tap({
+                            next: (response: Header) => this.patchState({header: response}),
                             error: (error) => this.patchState({error: error.error}),
                         }),
                         catchError(() => EMPTY),
@@ -490,6 +500,114 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                         )),
             ),
         ));
+
+    /*
+
+        this.recaptchaV3Service.execute('importantAction').subscribe((token) => {
+            this.store.sendForgotPasswordEmailEffect(this.authRequest.email, token)
+                .pipe(first())
+                .subscribe({
+                    next: (response) => {
+                        this.errorResponse = 'Registration successful';
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                        this.router.navigate(['/home']);
+                    },
+                    error: (error: any) => {
+                        var response = <ApiResponse>error.error;
+                        this.errorResponse = response.message;
+                        this.loading = false;
+                    }
+                });
+        });
+     */
+
+    readonly sendForgotPasswordEmailEffect = this.effect(
+        (email$: Observable<string>) => email$.pipe(
+            filter((email) => !!email || email.length < 1),
+            switchMap((email) =>
+                this.recaptchaV3Service.execute('importantAction')
+                    .pipe(
+                        tap({
+                            next: (token) =>
+                                this.patchState({isEmailSent: true}),
+                            error: (error: HttpErrorResponse) => this.patchState({error: error.error}),
+                        }),
+                        catchError(() => EMPTY)
+                    )
+            ),
+        ));
+
+    readonly sendForgotEmailPasswordWithToken = this.effect((params$: Observable<{
+        email: string;
+        token: string
+    }>) => params$.pipe(
+        switchMap(({email, token}) => this.service.sendForgotPasswordEmail(email, token).pipe(
+            tapResponse(
+                () => this.patchState({isEmailSent: true}),
+                (error: HttpErrorResponse) =>
+                    this.patchState({error: error.error}),
+            ),
+            catchError(() => EMPTY),
+            finalize(() => {
+                },
+            )),
+        ),
+    ));
+
+    readonly confirmNewPassword = this.effect((params$: Observable<{
+        password: string;
+        token: string;
+        captcha: string
+    }>) => params$.pipe(
+        switchMap(({password, token, captcha}) => this.service.confirmNewPassword(password, token, captcha).pipe(
+            tapResponse(
+                () => console.log("password has been changed notification"),
+                (error: HttpErrorResponse) =>
+                    this.patchState({error: error.error}),
+            ),
+            catchError(() => EMPTY),
+            finalize(() => this.patchState({isEmailSent: false}),
+            )),
+        ),
+    ));
+
+
+    readonly recaptchaConfirmNewPassword =
+        this.effect((params$: Observable<{
+            password: string;
+            token: string;
+        }>) => params$.pipe(
+            switchMap(({password, token}) =>
+                this.recaptchaV3Service.execute('importantAction')
+                    .pipe(
+                        tap({
+                            next: (captcha: string) => this.confirmNewPassword({password, token, captcha}),
+                            error: (error) => console.log("recaptchaConfirmNewPassword error", error),
+                        }),
+                        catchError(() => EMPTY)
+                    )
+            ),
+        ));
+
+
+    readonly recaptchaForgotPasswordEmail = this.effect(
+        (email$: Observable<string>) => email$.pipe(
+            filter((email) => !!email && email.length > 0),
+            switchMap((email) =>
+                this.recaptchaV3Service.execute('importantAction')
+                    .pipe(
+                        tap({
+                            next: (token: string) => this.sendForgotEmailPasswordWithToken({email, token}),
+                            error: (error) => console.log("recaptchaForgotPasswordEmail error", error),
+
+                        }),
+                        catchError(() => EMPTY)
+                    )
+            ),
+        ));
+
+
+    //    this.sendForgotEmailPasswordWithToken({email, token}
 
     readonly loadDetailByDetailIdEffect = this.effect(
         (detailId$: Observable<number>) => detailId$.pipe(
@@ -594,22 +712,22 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
 
     readonly createDetailEffect = this.effect(
         (detail$: Observable<Partial<ApartmentDetail>>) => detail$.pipe(
-            tap(() => console.log("(effect) create Detail")),
+            tap((detail) => console.log("(effect) create Detail", detail)),
             switchMap(
                 (detail) => this.service.createDetail(detail)
                     .pipe(
                         tap({
                             next: (response) => {
                                 this.patchState({selectedDetailPage: response.detail});
-                                const menuUrl = response.detail.menu.menuUrl ? response.detail.menu.menuUrl : response.header.activeDetailUrl;
-                                const panelUrl = response.detail.panel.panelUrl ? response.detail.panel.panelUrl : response.header.activePanelUrl;
+                                const topUrl = response.detail.topMenu.menuUrl ? response.detail.topMenu.menuUrl : response.header.activeTopMenuUrl;
+                                const sideUrl = response.detail.sideMenu.panelUrl ? response.detail.sideMenu.panelUrl : response.header.activeSideMenuUrl;
                                 const header: Header = {
                                     ...response.header,
-                                    activeDetailUrl: menuUrl,
-                                    activePanelUrl: panelUrl,
+                                    activeTopMenuUrl: topUrl,
+                                    activeSideMenuUrl: sideUrl,
                                 }
                                 this.patchState({header: header});
-                                this.router.navigate([menuUrl, panelUrl]);
+                                this.router.navigate([topUrl, sideUrl]);
                             },
                             error: (error) => this.patchState({error: error.error}),
                         }),
@@ -633,15 +751,15 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                         tap({
                             next: (response) => {
                                 this.patchState({selectedDetailPage: response.detail});
-                                const menuUrl = response.detail.menu.menuUrl ? response.detail.menu.menuUrl : response.header.activeDetailUrl;
-                                const panelUrl = response.detail.panel.panelUrl ? response.detail.panel.panelUrl : response.header.activePanelUrl;
+                                const menuTopUrl = response.detail.topMenu.menuUrl ? response.detail.topMenu.menuUrl : response.header.activeTopMenuUrl;
+                                const menuSideUrl = response.detail.sideMenu.panelUrl ? response.detail.sideMenu.panelUrl : response.header.activeSideMenuUrl;
                                 const header: Header = {
                                     ...response.header,
-                                    activeDetailUrl: menuUrl,
-                                    activePanelUrl: panelUrl,
+                                    activeTopMenuUrl: menuTopUrl,
+                                    activeSideMenuUrl: menuSideUrl,
                                 }
                                 this.patchState({header: header});
-                                this.router.navigate([menuUrl, panelUrl]);
+                                this.router.navigate([menuSideUrl, menuSideUrl]);
                             },
                             error: (error) => this.patchState({error: error.error}),
                         }),
@@ -664,7 +782,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                     .pipe(
                         tap({
                             next: (response) => {
-                                if (activeMenu.activeMenuUrl === response.menuUrl) {
+                                if (activeMenu.top === response.menuUrl) {
                                     this.loadHeaderByHost();
                                     // this.patchState({header: response});
                                     // this.patchState({activeDetailUrl: response.titleUrl});
@@ -713,7 +831,6 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     );
 
     setHeader(header: Header) {
-       // console.log("Header je setan", header);
         this.patchState({header: header});
     }
 
@@ -721,14 +838,17 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         console.log("ISO selected", country);
         this.translateService.use(country);
         this.patchState({selectedIso: country});
-        this.shareableService.setSelectedIso(country);
+    }
+
+    setMobileView(isMobile: boolean) {
+        this.patchState({isMobile: isMobile});
     }
 
     loadDomains(chip: Chip | null = null,
-                   title: string | null = null,
-                   sortDirection: string = 'asc',
-                   pageIndex: number = 0,
-                   pageSize: number = 20) {
+                title: string | null = null,
+                sortDirection: string = 'asc',
+                pageIndex: number = 0,
+                pageSize: number = 20) {
 
         // console.log("chip", chip);
         // console.log("title", title);
@@ -745,8 +865,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         });
     }
 
-    setActiveMenuAndPanel(menu: string, panel: string) {
-        this.patchState({activeMenuUrl: menu, activePanelUrl: panel});
+    setActiveMenuAndPanel(topMenu: string, sideMenu: string) {
+        this.patchState({activeTopMenuUrl: topMenu, activeSideMenuUrl: sideMenu});
     }
 
     shrinkMenu(shrinkMenu: boolean) {

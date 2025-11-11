@@ -42,8 +42,6 @@ import {AuthStore} from "../../services/authentication/auth-store";
     CdkDropList,
     WidgetComponent,
     CdkDrag,
-    MatChipListbox,
-    MatChipOption,
   ],
   templateUrl: './panel.component.html',
   styleUrl: './panel.component.scss'
@@ -105,23 +103,23 @@ export class PanelComponent implements OnDestroy {
     }
   }
 
-  backgroundColorSwitch(onOff: boolean, detail: ApartmentDetail | null) {
-    const detailUpdate: Partial<ApartmentDetail> = {
-      ...detail,
-      items: undefined,
-      iso: undefined,
-      backgroundColorOn: onOff,
-    }
-    this.store.updateDetailEffect(detailUpdate);
-  }
+  // backgroundColorSwitch(onOff: boolean, detail: ApartmentDetail | null) {
+  //   const detailUpdate: Partial<ApartmentDetail> = {
+  //     ...detail,
+  //     items: undefined,
+  //     iso: undefined,
+  //     backgroundColorOn: onOff,
+  //   }
+  //   this.store.updateDetailEffect(detailUpdate);
+  // }
 
-  fillBackground($event: any, detail: ApartmentDetail | null) {
-    if ($event.value) {
-      this.backgroundColorSwitch(true, detail);
-    } else {
-      this.backgroundColorSwitch(false, detail);
-    }
-  }
+  // fillBackground($event: any, detail: ApartmentDetail | null) {
+  //   if ($event.value) {
+  //     this.backgroundColorSwitch(true, detail);
+  //   } else {
+  //     this.backgroundColorSwitch(false, detail);
+  //   }
+  // }
 
   @Input() set col(col: number | null) {
     if (col) {
@@ -133,7 +131,7 @@ export class PanelComponent implements OnDestroy {
   loggedIn: boolean = false;
 
   @Input()
-  selectedIso: string = defaultIso;
+  selectedIso: string | null = defaultIso;
 
   unsubscribe$ = new Subject<void>();
   local: boolean = true;
@@ -173,10 +171,10 @@ export class PanelComponent implements OnDestroy {
     return dialogRef.afterClosed();
   }
 
-  createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined, host: Hosts | undefined) {
+  createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined, host: Hosts | undefined | null) {
     console.log("(click) createItem detail", detail);
 
-    if (detail) {
+    if (detail && host) {
       const item: Partial<ApartmentItem> = {detailId: detail.id};
       const data: ApartmentItemDialogData = {
         languages: detail.iso.map(iso => iso.iso),
@@ -297,32 +295,32 @@ export class PanelComponent implements OnDestroy {
   }
 
   addToRightMenuPanel(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, side: Side.RIGHT}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, side: Side.RIGHT}
     this.store.updateMenuEffect(menuUpdate);
   }
 
   addToLeftMenuPanel(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, side: Side.LEFT}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, side: Side.LEFT}
     this.store.updateMenuEffect(menuUpdate);
   }
 
   panelOn(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, panelOn: true}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, panelOn: true}
     this.store.updateMenuEffect(menuUpdate);
   }
 
   panelOff(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, panelOn: false}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, panelOn: false}
     this.store.updateMenuEffect(menuUpdate);
   }
 
   center(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, layout: Layout.CENTER}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, layout: Layout.CENTER}
     this.store.updateMenuEffect(menuUpdate);
   }
 
   fullScreen(detail: ApartmentDetail | null) {
-    const menuUpdate: Partial<Menu> = {...detail?.menu, panels: undefined, layout: Layout.FULL}
+    const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, layout: Layout.FULL}
     this.store.updateMenuEffect(menuUpdate);
   }
 

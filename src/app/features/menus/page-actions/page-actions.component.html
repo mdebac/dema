@@ -1,0 +1,180 @@
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>format_color_fill</mat-icon>
+            <div class="naslov"> {{ "dialog.main.colors" | translate }}</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons">
+        <mat-button-toggle-group [value]="activeDetail?.backgroundColor"
+                                 (change)="onChangeBackgroundColor($event, activeDetail)">
+            <mat-button-toggle class="primaryColor" [value]=header?.colors?.primaryColor></mat-button-toggle>
+            <mat-button-toggle class="secondaryColor" [value]=header?.colors?.secondaryColor></mat-button-toggle>
+            <mat-button-toggle class="dangerColor" [value]=header?.colors?.dangerColor></mat-button-toggle>
+            <mat-button-toggle class="warnColor" [value]=header?.colors?.warnColor></mat-button-toggle>
+            <mat-button-toggle class="infoColor" [value]=header?.colors?.infoColor></mat-button-toggle>
+            <mat-button-toggle class="acceptColor" [value]=header?.colors?.acceptColor></mat-button-toggle>
+            <mat-button-toggle class="whiteColor" [value]="'#FFFFFF'"></mat-button-toggle>
+            <mat-button-toggle class="blackColor" [value]="'#000000'"></mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+</mat-expansion-panel>
+
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>auto_awesome_mosaic</mat-icon>
+            <div class="naslov"> {{ "summer.layout" | translate }}</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons">
+            @if (activeDetail?.topMenu?.side === Side.LEFT) {
+                <button mat-flat-button (click)="addToRightMenuPanel(activeDetail)">
+                    <mat-icon>view_sidebar</mat-icon>
+                    {{ "summer.add.menu.to.right" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="addToLeftMenuPanel(activeDetail)">
+                    <mat-icon style="transform: rotate(180deg)">view_sidebar</mat-icon>
+                    {{ "summer.add.menu.to.left" | translate }}
+                </button>
+            }
+
+            @if (activeDetail?.topMenu?.layout === Layout.CENTER) {
+                <button mat-flat-button (click)="fullScreen(activeDetail)">
+                    <mat-icon style="transform: rotate(90deg)">expand</mat-icon>
+                    {{ "summer.full.screen" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="center(activeDetail)">
+                    <mat-icon style="transform: rotate(90deg)">compress</mat-icon>
+                    {{ "summer.center" | translate }}
+                </button>
+            }
+
+            @if (activeDetail?.topMenu?.panelOn) {
+                <button mat-flat-button (click)="panelOff(activeDetail)">
+                    <i class="fa fa-columns" aria-hidden="true"></i>
+                    {{ "summer.panel.off" | translate }}
+                </button>
+            } @else {
+                <button mat-flat-button (click)="panelOn(activeDetail)">
+                    <i class="fa fa-columns" aria-hidden="true"></i>
+                    {{ "summer.panel.on" | translate }}
+                </button>
+            }
+    </div>
+
+</mat-expansion-panel>
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-solid fa-table-cells fa-xl text"></i>
+            <div class="naslov"> {{ "summer.columns" | translate }}</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons">
+        <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                 [value]="activeDetail?.columns"
+                                 (change)="onChangeColumns($event,activeDetail)">
+            <mat-button-toggle [value]="1">1</mat-button-toggle>
+            <mat-button-toggle [value]="2">2</mat-button-toggle>
+            <mat-button-toggle [value]="3">3</mat-button-toggle>
+            <mat-button-toggle [value]="4">4</mat-button-toggle>
+            <mat-button-toggle [value]="5">5</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+</mat-expansion-panel>
+
+<mat-expansion-panel #updateTitlesAndIconsPanel class="custom-panel"
+                     (click)="updateTitlesAndIcons(header, activeDetail)" hideToggle>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>update</mat-icon>
+            <div class="naslov"> {{ "title.and.icons" | translate }}</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+</mat-expansion-panel>
+
+<mat-expansion-panel #createNewItemPanel class="custom-panel"
+                     (click)="createNewItem(activeDetail, header?.colors, header?.main?.host)" hideToggle>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>add_circle</mat-icon>
+            <div class="naslov">{{ "summer.new.item" | translate }}</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+</mat-expansion-panel>
+
+<!--<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">-->
+<!--    <mat-expansion-panel-header>-->
+<!--        <mat-panel-title>-->
+<!--            <i class="fa-solid fa-image fa-xl text"></i>-->
+<!--            <div class="naslov">Top Menu</div>-->
+<!--        </mat-panel-title>-->
+<!--    </mat-expansion-panel-header>-->
+<!--    <div class="actionButtons" [formGroup]="form">-->
+<!--        <input-->
+<!--                (change)="selectTopMenuImage($event)"-->
+<!--                class="form-control"-->
+<!--                type="file"-->
+<!--                accept="image/*"-->
+<!--        >-->
+<!--        <mat-error></mat-error>-->
+<!--        <br>-->
+<!--        @if (showTopMenuImage) {-->
+<!--            <img width="100" src="{{showTopMenuImage}}" alt=""/>-->
+<!--            <mat-checkbox (change)="onRemoveTopMenuPicture($event)">-->
+<!--                {{ "remove.image" | translate }}-->
+<!--            </mat-checkbox>-->
+<!--        }-->
+<!--        <br>-->
+<!--        {{ toBigTopMenuImage }}-->
+<!--    </div>-->
+<!--</mat-expansion-panel>-->
+
+<!--<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">-->
+<!--    <mat-expansion-panel-header>-->
+<!--        <mat-panel-title>-->
+<!--            <i class="fa-solid fa-image fa-xl text"></i>-->
+<!--            <div class="naslov">Side Menu</div>-->
+<!--        </mat-panel-title>-->
+<!--    </mat-expansion-panel-header>-->
+<!--    <div class="actionButtons" [formGroup]="form">-->
+<!--        <input-->
+<!--                (change)="selectSideMenuImage($event)"-->
+<!--                class="form-control"-->
+<!--                type="file"-->
+<!--                accept="image/*"-->
+<!--        >-->
+<!--        <mat-error></mat-error>-->
+
+<!--        <br>-->
+<!--        @if (showSideMenuImage) {-->
+<!--            <img width="100" src="{{showSideMenuImage}}" alt=""/>-->
+<!--            <mat-checkbox (change)="onRemoveSideMenuPicture($event)">-->
+<!--                {{ "remove.image" | translate }}-->
+<!--            </mat-checkbox>-->
+<!--        }-->
+<!--        <br>-->
+<!--        {{ toBigSideMenuImage }}-->
+<!--    </div>-->
+<!--</mat-expansion-panel>-->
+
+@if (!onlyOne(header?.menus)) {
+    <mat-expansion-panel class="custom-panel" (click)="deleteDetail(activeDetail)" hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>delete</mat-icon>
+                <div class="naslov">{{ "delete.page" | translate }}</div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    </mat-expansion-panel>
+}

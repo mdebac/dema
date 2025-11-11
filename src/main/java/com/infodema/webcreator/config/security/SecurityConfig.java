@@ -46,10 +46,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-
- /*   @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return webSecurity -> webSecurity.ignoring().requestMatchers("/images/**", "/js/**", "/assets/**","/css/**", "/webjars/**");
-    }*/
-
 }

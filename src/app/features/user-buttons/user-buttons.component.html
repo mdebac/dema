@@ -1,26 +1,42 @@
 <div>
-    {{user}}
-  <button mat-button [matMenuTriggerFor]="iso">
-      <mat-icon>person</mat-icon>
-  </button>
+    @if (!isMobile){
+        {{ user }}
+    }
+    <button class="close" mat-button [matMenuTriggerFor]="iso">
+        <mat-icon>person</mat-icon>
+    </button>
 </div>
 <mat-menu #iso="matMenu">
     <div class="actionButtons">
-            <ng-container  >
-                <ng-container>
-                    <button routerLink="/my"
-                            routerLinkActive="activebutton"
-                            mat-fab extended>
-                        <mat-icon>dashboard</mat-icon>
-                        {{ "my.dashboard" | translate }}
-                    </button>
-                </ng-container>
-                <button (click)="logout()"
+        <ng-container>
+            @if (isLoggedIn) {
+                <button class="open" routerLink="/my"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                    <mat-icon>dashboard</mat-icon>
+                    {{ "my.dashboard" | translate }}
+                </button>
+                <button class="open" (click)="logout()"
                         routerLinkActive="activebutton"
                         mat-fab extended>
                     <mat-icon>favorite</mat-icon>
                     Logout
                 </button>
-            </ng-container>
+            }
+            @if (!isLoggedIn) {
+                <button class="open" routerLink="/login"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                    <mat-icon>favorite</mat-icon>
+                    Login
+                </button>
+                <button class="open" routerLink="/register"
+                        routerLinkActive="activebutton"
+                        mat-fab extended>
+                    <mat-icon>favorite</mat-icon>
+                    Register
+                </button>
+            }
+        </ng-container>
     </div>
 </mat-menu>

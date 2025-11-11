@@ -21,6 +21,11 @@ $secondary-color: var(--secondary-color);
   //scrollbar-color: $secondary-color $primary-color;
 }
 
+.mat-expansion-panel-header {
+  height: 50px;
+}
+
+
 .dashboard-card mat-card-content {
   --ngx-editor-menubar-bg-color: $secondary-color;
   text-align: left;
@@ -30,11 +35,19 @@ $secondary-color: var(--secondary-color);
 }
 
 .container {
+  display: flex;
+  flex-direction: row;
   position: relative;
   border: 2px solid $secondary-color;
   border-radius: 10px;
   padding: .5rem 2rem;
   margin-bottom: 1rem;
+}
+
+.eyes{
+  align-content: center;
+  padding-left: 1rem;
+  margin: 0;
 }
 
 .mylabel{

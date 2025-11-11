@@ -14,14 +14,14 @@ export interface ApartmentDetail extends Audit{
 
   cornerRadius: number;
   cornerRadiusPanel: number;
-  backgroundColorOn: boolean;
+  backgroundColor: string;
 
 
   items: ApartmentItem[];
   iso: ApartmentDetailIso[];
 
-  menu: Partial<Menu>;
-  panel: Partial<Panel>;
+  topMenu: Partial<Menu>;
+  sideMenu: Partial<Panel>;
 }
 
 export interface ApartmentDetailDialogData {

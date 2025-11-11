@@ -1,11 +1,15 @@
 package com.infodema.webcreator.controllers;
 
+import com.infodema.webcreator.domain.auth.ForgotPasswordRequest;
+import com.infodema.webcreator.domain.auth.RegistrationRequest;
 import com.infodema.webcreator.domain.core.Header;
 import com.infodema.webcreator.domain.core.Main;
 import com.infodema.webcreator.domain.core.MainCriteria;
 import com.infodema.webcreator.domain.projections.MainProjection;
+import com.infodema.webcreator.domain.recaptcha.RequiresCaptcha;
 import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.MainService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -45,6 +49,7 @@ public class MainController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mainService.findHeaderByHost(UtilityHelper.resolveHostForDevelopment(host)));
     }
+
 
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @GetMapping("/customers")

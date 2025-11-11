@@ -5,16 +5,15 @@ import {Audit} from "./audit";
 import {ApartmentIso} from "./apartment-iso";
 import {Customer} from "./customer";
 import {MatTableDataSource} from "@angular/material/table";
+import {Hosts} from "./hosts";
 
 export interface Apartment extends Audit {
 
-  host: string;
+  host: Hosts;
   price: number | null;
   owner: User | null;
   detailId: number | null;
-
   //rate: number | null;
-
   primaryColor: string | null;
   secondaryColor: string | null;
   primaryColorLight: string | null;
@@ -34,11 +33,10 @@ export interface Apartment extends Audit {
   file: Blob | null;
   comments: ApartmentComment[];
   details: ApartmentDetail[];
-  image: File | null;
-  imageBackground: File | null;
+  iconImage: File | null;
+  backgroundImage: File | null;
   iso: ApartmentIso[];
 
   customers: Customer[];
   customersDS?: MatTableDataSource<Customer>;
-
 }

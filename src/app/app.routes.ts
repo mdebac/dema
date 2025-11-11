@@ -5,17 +5,18 @@ import {ActivateAccountComponent} from "./features/activate-account/activate-acc
 import {ApartmentsHttpService} from "./services/apartments-http.service";
 import {headerResolver} from "./services/guard/header-resolver";
 import {ApartmentStore} from "./services/apartments-store.service";
-import {ShareableService} from "./services/shareable.service";
 import {authGuard} from "./services/guard/auth.guard";
 import {DashboardComponent} from "./features/dashboard/dashboard.component";
 import {TranslateModule, TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {headerWithDetailResolver} from "./services/guard/header-with-detail-resolver";
+import {ForgotPasswordComponent} from "./features/forgot-password/forgot-password.component";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 export const routes: Routes = [
     {
         path: '',
         component: StartComponent,
-        providers: [ShareableService, ApartmentsHttpService, ApartmentStore, headerResolver, TranslateService,TranslateModule, TranslatePipe],
+        providers: [ApartmentsHttpService, ApartmentStore, headerResolver, TranslateService,TranslateModule, TranslatePipe, MatExpansionModule],
         resolve: {
             myData: headerResolver,
         },
@@ -31,6 +32,10 @@ export const routes: Routes = [
             {
                 path: 'login',
                 component: LoginComponent
+            } ,
+            {
+                path: 'forgot',
+                component: ForgotPasswordComponent
             } ,
             {
                 path: 'activate-account',

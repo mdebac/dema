@@ -13,6 +13,151 @@ $info-color: var(--info-color);
 $accept-color: var(--accept-color);
 
 
+@font-face {
+  font-family: "Butcherman-Regular";
+  src: url("./assets/fonts/Butcherman-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "CaesarDressing-Regular";
+  src: url("./assets/fonts/CaesarDressing-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Delius-Regular";
+  src: url("./assets/fonts/Delius-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Electrolize-Regular";
+  src: url("./assets/fonts/Electrolize-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Ewert-Regular";
+  src: url("./assets/fonts/Ewert-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Fascinate-Regular";
+  src: url("./assets/fonts/Fascinate-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "FrederickatheGreat-Regular";
+  src: url("./assets/fonts/FrederickatheGreat-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "HennyPenny-Regular";
+  src: url("./assets/fonts/HennyPenny-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Jacquard24Charted-Regular";
+  src: url("./assets/fonts/Jacquard24Charted-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "LondrinaShadow-Regular";
+  src: url("./assets/fonts/LondrinaShadow-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Megrim-Regular";
+  src: url("./assets/fonts/Megrim-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Monoton-Regular";
+  src: url("./assets/fonts/Monoton-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "MysteryQuest-Regular";
+  src: url("./assets/fonts/MysteryQuest-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Nosifer-Regular";
+  src: url("./assets/fonts/Nosifer-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Onest-VariableFont_wght";
+  src: url("./assets/fonts/Onest-VariableFont_wght.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Orbitron-VariableFont_wght";
+  src: url("./assets/fonts/Orbitron-VariableFont_wght.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Pacifico-Regular";
+  src: url("./assets/fonts/Pacifico-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "RibeyeMarrow-Regular";
+  src: url("./assets/fonts/RibeyeMarrow-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "RobotoMono-Italic-VariableFont_wght";
+  src: url("./assets/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "RobotoMono-VariableFont_wght";
+  src: url("./assets/fonts/RobotoMono-VariableFont_wght.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "RubikBeastly-Regular";
+  src: url("./assets/fonts/RubikBeastly-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "RubikVinyl-Regular";
+  src: url("./assets/fonts/RubikVinyl-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Rye-Regular";
+  src: url("./assets/fonts/Rye-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Sixtyfour-Regular-VariableFont_BLED,SCAN";
+  src: url("./assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Tangerine-Bold";
+  src: url("./assets/fonts/Tangerine-Bold.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "Tangerine-Regular";
+  src: url("./assets/fonts/Tangerine-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "UnifrakturMaguntia-Regular";
+  src: url("./assets/fonts/UnifrakturMaguntia-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "WalterTurncoat-Regular";
+  src: url("./assets/fonts/WalterTurncoat-Regular.ttf") format("trueType");
+}
+
+@font-face {
+  font-family: "ZenDots-Regular";
+  src: url("./assets/fonts/ZenDots-Regular.ttf") format("trueType");
+}
+
 html{
   background-color: $primary-color;
   scrollbar-color: $secondary-color $primary-color;
@@ -124,6 +269,7 @@ https://www.fusonic.net/en/blog/angular-material-customization
   cursor: pointer;
 }
 
+
 html, body { height: 100%; }
 body { border: 0; margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /*
@@ -140,3 +286,6 @@ https://stackblitz.com/edit/angular-material-notification-service?file=src%2Fapp
   border-radius: 32px;
 }
 */
+.red{
+  background-color: darkred;
+}

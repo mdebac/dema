@@ -7,4 +7,6 @@ export interface Panel extends Audit{
     panelUrl:string;
     icon:string;
     iso: PanelIso[];
+    image: File | null;
+    removeImage: boolean;
 }

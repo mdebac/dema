@@ -73,6 +73,19 @@ $secondary-color: var(--secondary-color);
   display: flex;
   flex-direction: row;
   flex-grow: 0.14;
-  margin-left: 6rem;
   justify-content: space-between;
+}
+.contentSpace{
+ width: 15rem;
+}
+.max{
+  width: 100%;
+}
+
+.input-group-append{
+  position: absolute;
+  right: 1.2rem;
+  top: 0.7rem;
+  scale: 1.5;
+  cursor: pointer;
 }

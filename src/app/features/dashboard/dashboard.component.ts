@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {filter, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
@@ -16,6 +16,7 @@ import {Roles} from "../../domain/roles";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {Hosts} from "../../domain/hosts";
 import {MatGridList, MatGridTile} from "@angular/material/grid-list";
+import {Colors} from "../../domain/colors";
 
 @Component({
     selector: 'dashboard',
@@ -47,8 +48,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     apartmentsCount$ = this.store.pageCount$;
     header$ = this.store.header$;
 
-   // loading$ = this.store.loading$;
-
     isManager = this.authStore.authorize(Roles.MANAGER);
     isAdmin = this.authStore.authorize(Roles.ADMIN);
     isUser = this.authStore.authorize(Roles.USER);
@@ -76,7 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe((detailProps) => {
               this.store.createMainEffect(detailProps);
-               window.location.reload();
+              // window.location.reload();
             }
         );
     }

@@ -8,10 +8,10 @@
                 </div>
 
                 <div class="contentSpace">
-                    <h3 class="text-center"><b>Create an account</b>></h3>
-                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
-                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>
-                    </div>
+                    <h3 class="text-center"><b>Create an account</b></h3>
+<!--                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">-->
+<!--                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>-->
+<!--                    </div>-->
                 </div>
 
                 <div class="gap2Space">
@@ -23,8 +23,7 @@
         <mat-card-content>
             <div class="loginSpace">
 
-                <div class="gap1Space">
-                </div>
+                <div class="gap1Space"></div>
 
                 <div class="contentSpace">
                     <div>
@@ -47,40 +46,41 @@
                     <br>
                     <div>
                         <label for="password" class="form-label">Password</label>
-                        <input [(ngModel)]="registerRequest.password" type="password" class="form-control" id="password"
-                               placeholder="Password">
+                        <div class="input-group">
+                            <input  [(ngModel)]="registerRequest.password" type="{{showPassword ? 'text' : 'password'}}" class="form-control myInput"
+                                   id="password"
+                                   placeholder="Password">
+
+                            <div class="input-group-append">
+                                <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true" *ngIf="!showPassword"></i>
+                                <i class="fa fa-eye-slash" (click)="showPassword = !showPassword" aria-hidden="true" *ngIf="showPassword"></i>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="contentSpaceActions">
+                        <div>
+                            <button class="max" mat-fab extended (click)="register()">
+                                Create an account
+                            </button>
+                        </div>
+
+                        <div>
+                            <button class="max" mat-fab extended (click)="login()">
+                                Login
+                            </button>
+                            <br>
+                            Already have an account?&nbsp;
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="gap2Space">
                 </div>
             </div>
         </mat-card-content>
-
-        <mat-card-footer>
-
-            <div class="loginSpace">
-
-                <div class="gap1Space">
-                </div>
-
-                <div class="contentSpaceActions">
-                    <div>
-                        <button mat-fab extended (click)="register()">
-                            Create an account
-                        </button>
-                    </div>
-                    <div>
-                        Already have an account?&nbsp;
-                        <button mat-fab extended (click)="login()">
-                            Login
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gap2Space">
-            </div>
-        </mat-card-footer>
     </mat-card>
+
+
 </ng-container>

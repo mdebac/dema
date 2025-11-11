@@ -5,14 +5,14 @@
             <div [ngClass]="menuSide === Side.RIGHT ? 'menu-icon-close-right' : 'menu-icon-close-left' ">
                 @if (menuSide === Side.RIGHT) {
                     <button mat-button (click)="closeSidenav()">
-                        <mat-icon iconPositionEnd class="icon-display" fontSet="material-symbols-outlined">
+                        <mat-icon iconPositionEnd class="icon-display-menu" fontSet="material-symbols-outlined">
                             arrow_menu_open
                         </mat-icon>
                     </button>
                 }
                 @if (menuSide === Side.LEFT) {
                     <button mat-button (click)="closeSidenav()">
-                        <mat-icon iconPositionEnd class="icon-display" fontSet="material-symbols-outlined">
+                        <mat-icon iconPositionEnd class="icon-display-menu" fontSet="material-symbols-outlined">
                             arrow_menu_close
                         </mat-icon>
                     </button>
@@ -23,9 +23,9 @@
             <div class="menu-icon-menu">
                 <button mat-button (click)="toggleCollapse()">
                     @if (menuSide === Side.RIGHT) {
-                        <mat-icon class="icon-display">menu</mat-icon>
+                        <mat-icon class="icon-display-menu">menu</mat-icon>
                     } @else {
-                        <mat-icon iconPositionEnd class="icon-display">menu</mat-icon>
+                        <mat-icon iconPositionEnd class="icon-display-menu">menu</mat-icon>
                     }
                 </button>
             </div>
@@ -33,100 +33,208 @@
     </div>
 
     <div>
-        @for (panel of activeDetail?.menu?.panels; track panel.id; let i = $index) {
+        @for (panel of activeDetail?.topMenu?.panels; track panel.id; let i = $index) {
             @for (iso of panel.iso; track iso.iso) {
                 @if (selectedIso === iso.iso) {
-                    @if (panel.panelUrl === activeDetail?.panel?.panelUrl) {
+                    @if (panel.panelUrl === activeDetail?.sideMenu?.panelUrl) {
 
-                        <button mat-button="outlined" class="{{resolveActiveClass(i)}}">
+                        <div class="{{'zajednicko ' + resolveActiveClass(i)}}">
 
                             <div class="menu-container">
 
                                 @if (menuSide === Side.LEFT) {
-                                    <div class="menu-icon">
+
+                                    @if (panel.image) {
+
+                                        <div class="image-desc">
+                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+                                            @if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    {{ iso.title }}
+                                                </div>
+                                            }
+                                        </div>
+                                    } @else {
+
                                         @if (panel.icon) {
-                                            <mat-icon class="icon-display icon-active"> {{ panel.icon }}
-                                            </mat-icon>
-                                        } @else {
-                                            <mat-icon class="icon-display icon-active">favorite</mat-icon>
+                                            <div class="menu-icon">
+                                                <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
+                                                @if (closedMenu) {
+                                                    <div class="menu-title-text-closed">
+                                                        {{ iso.title }}
+                                                    </div>
+                                                }
+                                            </div>
+                                        } @else if (closedMenu) {
+                                            <div class="menu-title-text-closed">
+                                                {{ iso.title }}
+                                            </div>
                                         }
-                                    </div>
+
+                                    }
+
 
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-                                        @if (!closedMenu) {
-                                            {{ iso.title }}
-                                        }
+
+                                            @if (!closedMenu) {
+                                                <div class="menu-title-text">
+                                                        {{ iso.title }}
+                                                </div>
+                                                <div class="menu-description-text">
+                                                        {{ iso.description }}
+                                                </div>
+                                            }
+
                                     </div>
                                 }
 
                                 @if (menuSide === Side.RIGHT) {
+
+                                    @if (panel.image) {
+                                        <div class="image-desc">
+                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                            @if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    {{ iso.title }}
+                                                </div>
+                                            }
+
+                                        </div>
+
+                                    } @else {
+
+                                        @if (panel.icon) {
+                                            <div class="menu-icon">
+                                                <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
+                                                @if (closedMenu) {
+                                                    <div class="menu-title-text-closed">
+                                                        {{ iso.title }}
+                                                    </div>
+                                                }
+                                            </div>
+                                        } @else if (closedMenu) {
+                                            <div class="menu-title-text-closed">
+                                                {{ iso.title }}xxx
+                                            </div>
+                                        }
+
+                                    }
+
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            {{ iso.title }}
-                                        }
-                                    </div>
-                                    <div class="menu-icon">
-                                        @if (panel.icon) {
-                                            <mat-icon class="icon-display icon-active">
-                                                {{ panel.icon }}
-                                            </mat-icon>
-                                        } @else {
-                                            <mat-icon class="icon-display icon-active">favorite</mat-icon>
+                                            <div class="menu-title-text">
+                                                {{ iso.title }}
+                                            </div>
+                                            <div class="menu-description-text">
+                                                {{ iso.description }}
+                                            </div>
                                         }
                                     </div>
                                 }
                             </div>
-                        </button>
+                        </div>
 
 
                     } @else {
 
-                        <button mat-button="outlined" class="{{resolveClass(i)}}"
-                                (click)="goTo(activeDetail?.menu?.menuUrl, panel.panelUrl)">
+                        <div class="{{'zajednicko ' + resolveClass(i)}}"
+                                (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
 
                             <div class="menu-container">
 
                                 @if (menuSide === Side.LEFT) {
-                                    <div class="menu-icon">
-                                        @if (panel.icon) {
-                                            <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
-                                        } @else {
-                                            <mat-icon class="icon-display">favorite</mat-icon>
-                                        }
-                                    </div>
+
+                                    @if (panel.image) {
+                                        <div class="image-desc">
+                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                            @if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    {{ iso.title }}
+                                                </div>
+                                            }
+                                        </div>
+                                    } @else {
+
+                                            @if (panel.icon) {
+                                                <div class="menu-icon">
+                                                  <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                    @if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            {{ iso.title }}
+                                                        </div>
+                                                    }
+                                                </div>
+                                            } @else if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    {{ iso.title }}
+                                                </div>
+                                            }
+
+                                    }
+
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            {{ iso.title }}
+                                            <div class="menu-title-text">
+                                                {{ iso.title }}
+                                            </div>
+                                            <div class="menu-description-text">
+                                                {{ iso.description }}
+                                            </div>
                                         }
                                     </div>
                                 }
 
                                 @if (menuSide === Side.RIGHT) {
 
+                                    @if (panel.image) {
+                                        <div class="image-desc">
+                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                            @if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    {{ iso.title }}
+                                                </div>
+                                            }
+                                        </div>
+                                    } @else {
+
+                                        @if (panel.icon) {
+                                            <div class="menu-icon">
+                                                <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                @if (closedMenu) {
+                                                    <div class="menu-title-text-closed">
+                                                        {{ iso.title }}
+                                                    </div>
+                                                }
+                                            </div>
+                                        } @else if (closedMenu) {
+                                            <div class="menu-title-text-closed">
+                                                {{ iso.title }}
+                                            </div>
+                                        }
+                                    }
+
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            {{ iso.title }}
-                                        }
-                                    </div>
-                                    <div class="menu-icon">
-                                        @if (panel.icon) {
-                                            <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
-                                        } @else {
-                                            <mat-icon class="icon-display">favorite</mat-icon>
+                                            <div class="menu-title-text">
+                                                {{ iso.title }}
+                                            </div>
+                                            <div class="menu-description-text">
+                                                {{ iso.description }}
+                                            </div>
                                         }
                                     </div>
                                 }
-
                             </div>
-
-                        </button>
-
+                        </div>
                     }
                 }
             }
         }
 
-        @if (header?.id
+        @if (header?.main?.id
         && (roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase()))) {
             @if (disableAddingNewPanels) {
                 <button mat-icon-button (click)="createPanelDetail(header, activeDetail)">

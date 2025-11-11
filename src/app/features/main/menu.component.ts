@@ -76,6 +76,7 @@ export class MenuComponent implements OnDestroy {
     @HostBinding("style.--corner-radius")
     cssCornerRadius: string = "16px";
 
+    @Input()
     @HostBinding("style.--justify-menu")
     justifyMenu: string = "left";
 
@@ -93,6 +94,18 @@ export class MenuComponent implements OnDestroy {
 
     @HostBinding("style.--mim-padding-left")
     mimPaddingLeft: any = "mim-padding-left";
+
+    @Input()
+    @HostBinding("style.--padding-top")
+    paddingTop: any = "0";
+
+    @Input()
+    @HostBinding("style.--fontFamilySideMenuTitle")
+    fontFamilySideMenuTitle: string = "Butcherman-Regular";
+
+    @Input()
+    @HostBinding("style.--fontFamilySideMenuDescription")
+    fontFamilySideMenuDescription: string = "Rye-Regular";
 
     @HostBinding("style.--active-menu-link-border-radius")
     activeMenuLinkBorderRadius: any = "active-menu-link-border-radius";
@@ -113,23 +126,23 @@ export class MenuComponent implements OnDestroy {
     @Input() set activeDetailInput(activeDetail: ApartmentDetail | null) {
         if (activeDetail) {
             this.activeDetail = {...activeDetail};
-            if(this.activeDetail?.menu?.side){
+            if(this.activeDetail?.topMenu?.side){
 
 
-                if(this.activeDetail.menu.side === Side.RIGHT){
+                if(this.activeDetail.topMenu.side === Side.RIGHT){
                     this.activeMenuLinkBorderRadius = "0 15px 15px 0";
                 }else{
                     this.activeMenuLinkBorderRadius = "15px 0 0 15px";
                 }
 
-                this.justifyMenu = this.activeDetail?.menu?.side;
+              //  this.justifyMenu = this.activeDetail?.topMenu?.side;
 
              //   console.log("this.activeDetail2?.menu?.side", this.activeDetail?.menu?.side);
                 //TODO
-                this.justifyIconClose = this.activeDetail?.menu?.side === Side.RIGHT ? Side.LEFT.toLowerCase() : Side.RIGHT.toLowerCase();
+                this.justifyIconClose = this.activeDetail?.topMenu?.side === Side.RIGHT ? Side.LEFT.toLowerCase() : Side.RIGHT.toLowerCase();
 
-                this.sidenavMarginLeft  = this.activeDetail?.menu?.side === Side.RIGHT ? "5px" : 0;
-                this.sidenavMarginRight = this.activeDetail?.menu?.side === Side.RIGHT ? 0 : "5px";
+                this.sidenavMarginLeft  = this.activeDetail?.topMenu?.side === Side.RIGHT ? "5px" : 0;
+                this.sidenavMarginRight = this.activeDetail?.topMenu?.side === Side.RIGHT ? 0 : "5px";
                   //
                   // this.sidenavMarginLeft  = this.activeDetail2?.menu?.side === Side.RIGHT ? "5px" : 0;
                   //  this.sidenavMarginRight = this.activeDetail2?.menu?.side === Side.RIGHT ? 0 : "5px";
@@ -138,8 +151,8 @@ export class MenuComponent implements OnDestroy {
                 // this.mimPaddingLeft = this.activeDetail2?.menu?.side === Side.RIGHT ? "1rem" : 0;
                 // this.mimPaddingRight = this.activeDetail2?.menu?.side === Side.RIGHT ? 0 : "0.5rem";
                 //
-                this.mimPaddingLeft = this.activeDetail?.menu?.side === Side.RIGHT ? 0 : "1rem";
-                this.mimPaddingRight = this.activeDetail?.menu?.side === Side.RIGHT ? "0.5rem" : 0;
+                this.mimPaddingLeft = this.activeDetail?.topMenu?.side === Side.RIGHT ? 0 : "1rem";
+                this.mimPaddingRight = this.activeDetail?.topMenu?.side === Side.RIGHT ? "0.5rem" : 0;
             }
         }
     }
@@ -148,7 +161,7 @@ export class MenuComponent implements OnDestroy {
     loggedIn: boolean = false;
 
     @Input()
-    selectedIso: string = defaultIso;
+    selectedIso: string | null = defaultIso;
 
     constructor() {
         console.log("Menu load");
@@ -161,22 +174,21 @@ export class MenuComponent implements OnDestroy {
     ];
 
     goTo(menuUrl: string | undefined, panelUrl: string) {
-        // console.log("goTo", menuUrl, panelUrl);
         this.router.navigate([menuUrl, panelUrl]);
     }
 
     get menuSide(){
-        return this.activeDetail?.menu.side;
+        return this.activeDetail?.topMenu.side;
     }
     createPanelDetail(header: Header | null, detail: ApartmentDetail | null) {
         if (header) {
 
-            const max = detail?.menu?.panels?.reduce((acc, val) => {
+            const max = detail?.topMenu?.panels?.reduce((acc, val) => {
                 return acc.orderNum > val.orderNum ? acc : val;
             });
             if (max) {
-                const panel: Partial<Panel> = {menuId: detail?.menu?.id, orderNum: max.orderNum + 1};
-                const newDetail: Partial<ApartmentDetail> = {menu: detail?.menu, panel: panel};
+                const panel: Partial<Panel> = {menuId: detail?.topMenu?.id, orderNum: max.orderNum + 1};
+                const newDetail: Partial<ApartmentDetail> = {topMenu: detail?.topMenu, sideMenu: panel};
 
                 const color: Partial<Colors> = {
                     primaryColor: header.colors.primaryColor,

@@ -43,8 +43,8 @@ public class MainMapper extends AbstractMapper {
                 .dangerColor(entity.getDangerColor())
                 .dangerColorLight(entity.getDangerColorLight())
                 .secondaryColor(entity.getSecondaryColor())
-                .image(entity.getContent())
-                .imageBackground(entity.getContentBackground())
+                .iconImage(entity.getContent())
+                .backgroundImage(entity.getContentBackground())
                 .host(entity.getHost())
                 .price(entity.getPrice())
                 .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
@@ -100,7 +100,5 @@ public class MainMapper extends AbstractMapper {
                 .title(domain.getTitle())
                 .build();
     }
-
-
 
 }
