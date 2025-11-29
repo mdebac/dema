@@ -1,17 +1,7 @@
 export enum Layout {
   CENTER="CENTER",
   FULL="FULL",
-  // PANEL_RIGHT="PANEL_RIGHT",
-  // PANEL_LEFT="PANEL_LEFT",
-  // NO_PANEL="NO_PANEL",
 }
-
-export const defaultLayout: string = "CENTER";
-export function getValueByKeyForStringEnum(value: string) {
-  return Object.entries(Layout).find(([key, val]) => key === value)?.[1];
-}
-
-//https://www.technicalfeeder.com/2021/07/mastering-enum-in-typescript/
 
 export const layoutMap = new Map([
   ["0,0,0,0,0", {gapL: 1, panelL: 0, menuL: 5, center: 13, menuR: 0, panelR: 0, gapR: 1}],

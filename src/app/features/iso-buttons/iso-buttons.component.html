@@ -1,6 +1,6 @@
 <div>
     @if (!isMobile){
-        {{ getValueByKeyForStringEnum(selectedIso) }}
+        {{ getIsoByKey(selectedIso) }}
     }
     <button mat-button [matMenuTriggerFor]="iso">
         <div [ngClass]="flag(selectedIso)"></div>
@@ -10,13 +10,13 @@
     <mat-menu #iso="matMenu">
         @for (country of countriesIso; track $index) {
 
-            @if (country === selectedIso) {
+            @if (country.iso === selectedIso) {
                 <button mat-raised-button>
-                    <div [ngClass]="flag(country)"></div>
+                    <div [ngClass]="flag(country?.iso)"></div>
                 </button>
             } @else {
-                <button mat-button (click)="selectIso(country)">
-                    <div [ngClass]="flag(country)"></div>
+                <button mat-button (click)="selectIso(country?.iso)">
+                    <div [ngClass]="flag(country?.iso)"></div>
                 </button>
             }
         }

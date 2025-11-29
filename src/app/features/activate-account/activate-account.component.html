@@ -1,28 +1,30 @@
-<div class="container" *ngIf="submitted else codeForm">
-  <div class="activation-message text" *ngIf="isOkay; else activationError">
-      <h2>{{ "activation.successful" | translate }}</h2>
-      <p>{{ "your.account.has.been.successfully.activated" | translate }}</p>
-      <button class="btn btn-primary" (click)="redirectToLogin()">{{ "go.to.login" | translate }}</button>
+@if (submitted) {
+  <div class="container">
+    @if (isOkay) {
+      <div class="activation-message text">
+        <h2>{{ "activation.successful" | translate }}</h2>
+        <p>{{ "your.account.has.been.successfully.activated" | translate }}</p>
+        <button class="btn btn-primary" (click)="redirectToLogin()">{{ "go.to.login" | translate }}</button>
+      </div>
+    } @else {
+      <div class="activation-error text">
+        <h2>{{ "activation.failed" | translate }}</h2>
+        <p>{{ message }}</p>
+        <button class="btn btn-primary" (click)="submitted = false">{{ "try.again" | translate }}</button>
+      </div>
+    }
   </div>
-    <ng-template #activationError>
-        <div class="activation-error text">
-            <h2>{{ "activation.failed" | translate }}</h2>
-            <p>{{ message }}</p>
-            <button class="btn btn-primary" (click)="submitted = false">{{ "try.again" | translate }}</button>
-        </div>
-    </ng-template>
-</div>
-<ng-template #codeForm>
-    <div class="container">
-        <div class="text-center" style="width: 25rem;">
-            <h2 class="text"> {{ "type.your.activation.code" | translate }}</h2>
-            <code-input class="code-input" [isCodeHidden]="false"
-                        [codeLength]="6"
-                        [code]="'number'"
-                        (codeCompleted)="onCodeCompleted($event)">
-            </code-input>
-            <br>
-            <button mat-fab extended (click)="redirectToLogin()">{{ "go.to.login" | translate }}</button>
-        </div>
-  </div>
-</ng-template>
+} @else {
+  <div class="container">
+    <div class="text-center" style="width: 25rem;">
+      <h2 class="text"> {{ "type.your.activation.code" | translate }}</h2>
+      <code-input class="code-input" [isCodeHidden]="false"
+        [codeLength]="6"
+        [code]="'number'"
+        (codeCompleted)="onCodeCompleted($event)">
+      </code-input>
+      <br>
+        <button mat-fab extended (click)="redirectToLogin()">{{ "go.to.login" | translate }}</button>
+      </div>
+    </div>
+  }

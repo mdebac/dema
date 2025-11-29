@@ -1,1 +1,11 @@
-<img width="100%" height="100%" [src]=" 'data:image/jpg;base64,' + item?.image" alt="">
+<div class="pic-container2">
+    <div class="pic-image2">
+        <img width="100%" [src]=" 'data:image/jpg;base64,' + item?.image" alt="">
+    </div>
+    <div class="pic-content2">
+        <text
+                [item]="item?.iso"
+                [selectedIso]="selectedIso"
+        ></text>
+    </div>
+</div>

@@ -59,7 +59,9 @@ export class ApartmentsHttpService extends BaseService {
                     }
 
                 } else {
-                    const menu = header?.menus.find(a => a.menuUrl === detailUrl);
+                    const menu = header?.menus[0];
+                    detail = menu.menuUrl;
+                    panel = menu.panels[0].panelUrl;
                 }
 
             } else {
@@ -273,7 +275,7 @@ export class ApartmentsHttpService extends BaseService {
 
     createMain(apartment: Partial<Apartment>): Observable<Header> {
         const url = this.url;
-        console.log('(http request) create-update Web page', apartment);
+        console.log('(http request) create-update Web page', url, apartment);
         const fetchHeader = this.fetchHeader();
         let formData = new FormData();
         if (apartment.iconImage) {

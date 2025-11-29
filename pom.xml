@@ -109,7 +109,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${build.directory}/classes/static/</outputDirectory>
+              <outputDirectory>${build.directory}/classes/static/browser/</outputDirectory>
               <resources>
                 <resource>
                   <directory>src/main/resources/static</directory>

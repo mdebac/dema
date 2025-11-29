@@ -9,97 +9,108 @@
                         <div class="image-desc">
                             <img src="{{'data:image/jpg;base64,' + activeDetail?.sideMenu?.image}}" alt=""/>
                         </div>
-                    } @else {
+                    } @else if (activeDetail?.sideMenu?.icon) {
                         <div class="menu-icon">
                             @if (activeDetail?.sideMenu?.icon) {
                                 <mat-icon class="icon-display icon-active"> {{ activeDetail?.sideMenu?.icon }}
                                 </mat-icon>
-                            } @else {
-                                <mat-icon class="icon-display icon-active">favorite</mat-icon>
                             }
                         </div>
                     }
-
-                    <div class="menu-text">
-                        <div class="menu-title-text">
-
-                            @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
-                                @if (selectedIso === iso.iso) {
-                                    {{ iso.title }}
-                                }
-                            }
-
-                        </div>
-                        <div class="menu-description-text">
-                            @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
-                                @if (selectedIso === iso.iso) {
-                                    {{ iso.description }}
-                                }
-                            }
-
-                        </div>
-                    </div>
+                    @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
+                        @if (selectedIso === iso.iso) {
+                            <quill-view [content]="getMobileMenuLabel(iso.title, iso.description)" format="html"
+                                        theme="snow"></quill-view>
+                        }
+                    }
                 </div>
+                @if (!hideContent) {
+
+                    @if (isAdmin() || isManager()) {
+
+                        <div class="header-actions">
+                            <div>
+                                <button mat-flat-button [matMenuTriggerFor]="pageActions">
+                                    <i class="fa-solid fa-gears fa-xl"></i>
+                                    {{ "page.actions" | translate }}
+                                </button>
+                            </div>
+                            <mat-menu #pageActions="matMenu">
+                                <div class="actionButtons">
+                                    <ng-container>
+                                        <page-actions (click)="$event.stopPropagation()"
+                                                      [activeDetail]="activeDetail"
+                                                      [header]="header"
+                                                      [direction]="'column'"
+                                                      [activeBgColor]="activeDetail?.backgroundColor"
+                                        ></page-actions>
+                                    </ng-container>
+                                </div>
+                            </mat-menu>
+
+                            <div>
+                                <button mat-flat-button [matMenuTriggerFor]="headerActions">
+                                    <i class="fa-solid fa-chess-rook"></i>
+                                    {{ "header.actions" | translate }}
+                                </button>
+                            </div>
+                            <mat-menu #headerActions="matMenu">
+                                <div class="actionButtons">
+                                    <ng-container>
+                                        <header-actions (click)="$event.stopPropagation()"
+                                                        [header]="header"
+                                        ></header-actions>
+                                    </ng-container>
+                                </div>
+                            </mat-menu>
+                        </div>
+                    }
+
+
+                }
+            } @else {
+                @if (isAdmin() || isManager()) {
+
+                    <div class="header-actions">
+                        <div>
+                            <button mat-flat-button [matMenuTriggerFor]="pageActions">
+                                <i class="fa-solid fa-gears fa-xl"></i>
+                                {{ "page.actions" | translate }}
+                            </button>
+                        </div>
+                        <mat-menu #pageActions="matMenu">
+                            <div class="actionButtons">
+                                <ng-container>
+                                    <page-actions (click)="$event.stopPropagation()"
+                                                  [activeDetail]="activeDetail"
+                                                  [header]="header"
+                                                  [direction]="'column'"
+                                                  [activeBgColor]="activeDetail?.backgroundColor"
+                                    ></page-actions>
+                                </ng-container>
+                            </div>
+                        </mat-menu>
+
+                        <div>
+                            <button mat-flat-button [matMenuTriggerFor]="headerActions">
+                                <i class="fa-solid fa-chess-rook"></i>
+                                {{ "header.actions" | translate }}
+                            </button>
+                        </div>
+                        <mat-menu #headerActions="matMenu">
+                            <div class="actionButtons">
+                                <ng-container>
+                                    <header-actions (click)="$event.stopPropagation()"
+                                                    [header]="header"
+                                    ></header-actions>
+                                </ng-container>
+                            </div>
+                        </mat-menu>
+                    </div>
+                }
             }
 
             <!--   <breadcrumbs [breadcrumbs]="breadcrumbs"></breadcrumbs>-->
-            @if (isAdmin() || isManager()) {
-
-                <div class="header-actions">
-
-                    <div>
-                        <button mat-flat-button [matMenuTriggerFor]="pageActions">
-                            <i class="fa-solid fa-gears fa-xl"></i>
-                            {{ "page.actions" | translate }}
-                        </button>
-                    </div>
-                    <mat-menu #pageActions="matMenu">
-                        <div class="actionButtons">
-                            <ng-container>
-                                <page-actions (click)="$event.stopPropagation()"
-                                              [activeDetail]="activeDetail"
-                                              [header]="header"
-                                              [direction]="'column'"
-                                ></page-actions>
-                            </ng-container>
-                        </div>
-                    </mat-menu>
-
-                    <div>
-                        <button mat-flat-button [matMenuTriggerFor]="headerActions">
-                            <i class="fa-solid fa-chess-rook"></i>
-                            {{ "header.actions" | translate }}
-                        </button>
-                    </div>
-                    <mat-menu #headerActions="matMenu">
-                        <div class="actionButtons">
-                            <ng-container>
-                                <header-actions (click)="$event.stopPropagation()"
-                                                [header]="header"
-                                ></header-actions>
-                            </ng-container>
-                        </div>
-                    </mat-menu>
-
-                </div>
-
-            }
-            @if (!hideContent) {
-                <div class="header-title">
-                    <div class="container">
-                        <div class="content">
-                            <div class="editor">
-                                <ngx-editor [editor]="editor"
-                                            [ngModel]="getTitle(selectedIso, activeDetail?.iso)"
-                                            [disabled]="true"
-                                            [placeholder]="''"
-                                >
-                                </ngx-editor>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
 
         </mat-card-header>
 
@@ -112,11 +123,11 @@
             >
                 @for (data of activeDetail?.items; track data.id) {
 
-                    @if (activeDetail && activeDetail?.iso) {
+                    @if (activeDetail) {
                         <widget [loggedIn]="loggedIn" [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso"
                                 [columns]="activeDetail.columns"
-                                cdkDrag
-                                [data]="transformItemToWidget(activeDetail, data, header?.colors, header?.main?.host, isMobile)"></widget>
+                                cdkDrag [cdkDragDisabled]="!(isAdmin() || isManager())"
+                                [data]="transformItemToWidget(activeDetail, data, header?.main?.colors, header?.main?.host, isMobile)"></widget>
                     }
                 }
             </mat-card-content>
@@ -131,28 +142,22 @@
 
                             <div class="menu-container-list"
                                  (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
+
                                 @if (panel.image) {
                                     <div class="image-desc">
                                         <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
                                     </div>
-                                } @else {
+                                } @else if (panel.icon) {
                                     <div class="menu-icon">
-                                        @if (panel.icon) {
-                                            <mat-icon class="icon-display icon-active"> {{ panel.icon }}
-                                            </mat-icon>
-                                        } @else {
-                                            <mat-icon class="icon-display icon-active">favorite</mat-icon>
-                                        }
+                                        <mat-icon class="icon-display icon-active">{{ panel.icon }}
+                                        </mat-icon>
                                     </div>
                                 }
                                 <div class="menu-text">
-                                    <div class="menu-title-text">
-                                        {{ iso.title }}
-                                    </div>
-                                    <div class="menu-description-text">
-                                        {{ iso.description }}
-                                    </div>
+                                    <quill-view [content]="getMobileMenuLabel(iso.title, iso.description)" format="html"
+                                                theme="snow"></quill-view>
                                 </div>
+
                             </div>
 
                         }

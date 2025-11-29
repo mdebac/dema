@@ -1,7 +1,6 @@
 import {Component, HostBinding, inject, Input, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {MatButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
-import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
 import {Side} from "../../../domain/side";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -20,16 +19,14 @@ import {MatDialog} from "@angular/material/dialog";
 import {AuthStore} from "../../../services/authentication/auth-store";
 import {Subject} from "rxjs";
 import {Menu} from "../../../domain/menu";
-import {Apartment} from "../../../domain/apartment";
-import {ApartmentDialogComponent} from "../../dialogs/apartment-dialog/apartment-dialog.component";
 import {
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle
 } from "@angular/material/expansion";
-import {MatCheckbox} from "@angular/material/checkbox";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatError} from "@angular/material/form-field";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Language} from "../../../domain/language";
+
 
 @Component({
   selector: 'page-actions',
@@ -43,8 +40,6 @@ import {MatError} from "@angular/material/form-field";
         MatIcon,
         TranslatePipe,
         MatIcon,
-        MatCheckbox,
-        MatError,
     ],
   templateUrl: './page-actions.component.html',
   styleUrl: './page-actions.component.scss'
@@ -59,6 +54,9 @@ export class PageActionsComponent implements OnDestroy, OnInit {
 
     @Input() activeDetail: ApartmentDetail | null = null;
     @Input() header: Header | null = null;
+
+    @HostBinding("style.--active-bg-color")
+    @Input() activeBgColor: string | undefined = "";
 
     @HostBinding("style.--direction")
     @Input() direction: string = "";
@@ -116,8 +114,9 @@ export class PageActionsComponent implements OnDestroy, OnInit {
         if (detail) {
             const item: Partial<ApartmentItem> = {detailId: detail.id};
             const data: ApartmentItemDialogData = {
-                languages: detail.iso.map(iso => iso.iso),
+                languages: this.header?.main.languages,
                 item: item,
+                fonts: this.header?.main.fonts,
                 colors: colors,
                 roles: this.authStore.userRoles,
                 host: host
@@ -132,7 +131,6 @@ export class PageActionsComponent implements OnDestroy, OnInit {
                     } else {
                         this.store.createItemEffect(detailProps)
                     }
-
                 }
             );
         }
@@ -141,7 +139,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
     openDialogItem(item?: ApartmentItemDialogData) {
 
         const dialogRef = this.dialog.open(ItemDialogComponent, {
-            width: '500px',
+            width: '31rem',
             data: {
                 ...item
             },
@@ -157,12 +155,14 @@ export class PageActionsComponent implements OnDestroy, OnInit {
            this.updateTitlesAndIconsPanel.toggle();
        }
 
-        const selectedLanguages: string[] | undefined = header?.languages;
+        const selectedLanguages: Language[] | undefined = header?.main?.languages;
         const partial: Partial<ApartmentDetail> = {...detail}
         const data: Partial<ApartmentDetailDialogData> = {
             languages: selectedLanguages,
             detail: partial,
-            colors: header?.colors
+            fonts: header?.main.fonts,
+            colors: header?.main.colors,
+            host: header?.main.host,
         }
 
         this.openApartmentDetailDialog(data).pipe(
@@ -179,7 +179,8 @@ export class PageActionsComponent implements OnDestroy, OnInit {
 
     openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
         const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '420px',
+            maxWidth: '29rem',
+            maxHeight: '30rem',
             data: {
                 ...data
             },
@@ -191,7 +192,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
         const detailUpdate: Partial<ApartmentDetail> = {
             ...detail,
             items: undefined,
-            iso: undefined,
+          //  iso: undefined,
             columns: $event.value
         }
         this.store.updateDetailEffect(detailUpdate);
@@ -215,7 +216,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
         const detailUpdate: Partial<ApartmentDetail> = {
             ...detail,
             items: undefined,
-            iso: undefined,
+           // iso: undefined,
             backgroundColor: $event.value,
         }
         this.store.updateDetailEffect(detailUpdate);
@@ -264,105 +265,14 @@ export class PageActionsComponent implements OnDestroy, OnInit {
         this.store.updateMenuEffect(menuUpdate);
     }
 
-
-    openApartmentDialog(apartment?: Partial<Apartment>) {
-        const dialogRef = this.dialog.open(ApartmentDialogComponent, {
-            width: '50rem',
-            data: {
-                ...apartment
-            },
-        });
-        return dialogRef.afterClosed();
+    sideMenuOn(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: true}
+        this.store.updateMenuEffect(menuUpdate);
     }
 
-    // changeHeader(main: Apartment | undefined) {
-    //     console.log("changeHeader dialog enter", main);
-    //     this.openApartmentDialog(main).pipe(
-    //         filter(val => !!val),
-    //         takeUntil(this.unsubscribe$)
-    //     ).subscribe(detailProps => {
-    //             console.log("changeHeader dialog finish", detailProps);
-    //             this.store.createMainEffect(detailProps);
-    //         }
-    //     );
-    // }
-
-    get showTopMenuImage(): string | undefined {
-        if (this.selectedPictureTopMenu) {
-            return this.selectedPictureTopMenu;
-        } else if (this.activeDetail?.topMenu?.image) {
-            return 'data:image/jpg;base64,' + this.activeDetail?.topMenu?.image
-        }
-        return;
-    }
-
-    get showSideMenuImage(): string | undefined {
-        if (this.selectedPictureSideMenu) {
-            return this.selectedPictureSideMenu;
-        } else if (this.activeDetail?.sideMenu?.image) {
-            return 'data:image/jpg;base64,' + this.activeDetail?.sideMenu?.image
-        }
-        return;
-    }
-
-    selectTopMenuImage(event: any) {
-        if (event.target.files[0].size < 589000) {
-            this.selectedTopMenuImage = event.target.files[0];
-            if (this.selectedTopMenuImage) {
-                const apartmentProps = {
-                    ...this.header?.main,
-                    topMenuImage: this.selectedTopMenuImage,
-                } as Partial<Apartment>;
-                this.store.createMainEffect(apartmentProps);
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.selectedPictureTopMenu = reader.result as string;
-                };
-                reader.readAsDataURL(this.selectedTopMenuImage);
-            }
-            this.toBigTopMenuImage = "";
-        } else {
-            this.toBigTopMenuImage = "< 0.5 Mb";
-        }
-    }
-
-    selectSideMenuImage(event: any) {
-        if (event.target.files[0].size < 589000) {
-            this.selectedSideMenuImage = event.target.files[0];
-            if (this.selectedSideMenuImage) {
-                const apartmentProps = {
-                    ...this.header?.main,
-                    sideMenuImage: this.selectedSideMenuImage,
-                } as Partial<Apartment>;
-                this.store.createMainEffect(apartmentProps);
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.selectedPictureSideMenu = reader.result as string;
-                };
-                reader.readAsDataURL(this.selectedSideMenuImage);
-            }
-            this.toBigSideMenuImage = "";
-        } else {
-            this.toBigSideMenuImage = "< 0.5 Mb";
-        }
-    }
-
-    onRemoveSideMenuPicture(event: any) {
-        this.selectedPictureSideMenu = null;
-        const apartmentProps = {
-            ...this.header?.main,
-            removePictureSideMenu: event.checked,
-        } as Partial<Apartment>;
-        this.store.createMainEffect(apartmentProps);
-    }
-
-    onRemoveTopMenuPicture(event: any) {
-        this.selectedPictureTopMenu = null;
-        const apartmentProps = {
-            ...this.header?.main,
-            removePictureTopMenu: event.checked,
-        } as Partial<Apartment>;
-        this.store.createMainEffect(apartmentProps);
+    sideMenuOff(detail: ApartmentDetail | null) {
+        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: false}
+        this.store.updateMenuEffect(menuUpdate);
     }
 
     protected readonly Side = Side;

@@ -10,21 +10,37 @@ $shadow-color: var(--shadow-color);
   grid-row: span var(--rowSpan);
   grid-column: span var(--colSpan);
   min-height: var(--minHeight);
-  @include mat.icon-overrides((
-          color: $primary-color,
-  ));
 }
 
-.mat-mdc-mini-fab{
+.icon-display-menu {
+  transform: scale(1);
+  color: $primary-color !important;
   background-color: $secondary-color;
+  .my-icon{
+    color: $primary-color;
+  }
 }
+
+.icon-display-menu:hover {
+  transform: scale(1);
+  background-color: $primary-color;
+
+  .my-icon{
+    color: $secondary-color;
+  }
+}
+
+
+//.mat-mdc-mini-fab{
+//  background-color: $secondary-color;
+//}
 
 .containery{
   box-sizing: border-box;
   border-radius: inherit;
   background-color: var(--backgroundColor);
   box-shadow: 0 0 15px 3px $shadow-color;
- height: 100%;
+  height: 100%;
 }
 
 .settings-button{

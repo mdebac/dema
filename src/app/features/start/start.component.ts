@@ -1,39 +1,32 @@
-import {Component, HostBinding, HostListener, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostBinding, HostListener, inject, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Observable, Subject} from "rxjs";
-import {filter, map, takeUntil} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {defaultIso} from "../../domain/countries-iso";
 import {ApartmentIso} from "../../domain/apartment-iso";
-import {ActivatedRoute, Data, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {ActivatedRoute, Data, Router, RouterOutlet} from "@angular/router";
 import {LetDirective} from '@ngrx/component';
-import {NgIf} from '@angular/common';
-import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {IsoButtonsComponent} from "../iso-buttons/iso-buttons.component";
 import {Roles} from "../../domain/roles";
 import {Hosts} from "../../domain/hosts";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {UserButtonsComponent} from "../user-buttons/user-buttons.component";
-import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
-import {Colors} from "../../domain/colors";
-import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
-import {Header} from "../../domain/header";
 import {Title} from "@angular/platform-browser";
-import {Menu} from "../../domain/menu";
-import {Panel} from "../../domain/panel";
 import {Link} from "../../domain/link";
 import {TranslateService} from "@ngx-translate/core";
 import {MainConfComponent} from "./main-conf/main-conf.component";
 import {MobileTopMenuComponent} from "../mobile-menu/mobile-top-menu.component";
 import {TopMenuComponent} from "../top-menu/top-menu.component";
-import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
+import {QuillViewComponent} from "ngx-quill";
+import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'start',
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss'],
-    imports: [UserButtonsComponent, LetDirective, NgIf, MatFabButton, RouterLinkActive, RouterLink, MatIcon, IsoButtonsComponent, RouterOutlet, MatIconButton, MainConfComponent, MatButton, MobileTopMenuComponent, TopMenuComponent, MatMenu, MatMenuTrigger],
+    encapsulation: ViewEncapsulation.None,
+    imports: [UserButtonsComponent, LetDirective, IsoButtonsComponent, RouterOutlet, MainConfComponent, MobileTopMenuComponent, TopMenuComponent, QuillViewComponent, NgClass],
 })
 export class StartComponent implements OnInit, OnDestroy {
 
@@ -69,6 +62,7 @@ export class StartComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize')
     onResize(){
+       // console.log("resize", window.innerWidth);
         if(window.innerWidth < 600){
             this.titleSize = "1.2rem";
             this.store.setMobileView(true);
@@ -79,26 +73,34 @@ export class StartComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log("StartComponent ngOnInit")
+        console.log("StartComponent ngOnInit");
+      //  console.log("ngOnInit size", window.innerWidth);
+        if(window.innerWidth < 600){
+            this.titleSize = "1.2rem";
+            this.store.setMobileView(true);
+        }else{
+            this.store.setMobileView(false);
+            this.titleSize = "4.2rem";
+        }
         this.user$ = this.authStore.user$;
         this.isLoggedIn$ = this.authStore.isLoggedIn$;
-
         this.browserLang = this.translateService.getBrowserLang();
-
-        console.log("this.browserLang", this.browserLang);
-        if (this.browserLang) {
-            if (this.browserLang.includes('en')) {
-                this.store.selectIso(defaultIso);
-            } else {
-                this.store.selectIso(this.browserLang.toUpperCase());
-            }
-        } else {
-            this.store.selectIso(defaultIso);
-        }
-
         this.activatedRoute.data.pipe(map((data: Data) => data['myData'])).subscribe(
             data => {
-                const title = data.iso.find((s: { iso: string; }) => s.iso === defaultIso).title;
+                const title = data.menus[0].menuUrl.includes("_") ? data.menus[0].menuUrl.substring(0, data.menus[0].menuUrl.indexOf("_")) : data.menus[0].menuUrl;
+                if(this.browserLang) {
+                    if (this.browserLang.includes('en')) {
+                        this.store.selectIso(defaultIso);
+                    }else{
+                        const isHave = data?.main.languages.filter((l: { iso: string | undefined; })=>l.iso === this.browserLang?.toUpperCase());
+                        if(isHave.length === 1){
+                            this.store.selectIso(this.browserLang.toUpperCase());
+                        }else{
+                            this.store.selectIso(defaultIso);
+                        }
+                    }
+                }
+
                 this.titleService.setTitle(title);
                 this.store.setHeader(data);
                 this.store.loadDetailByRouteLabelsEffect(this.store.activeMenu$);
@@ -127,45 +129,35 @@ export class StartComponent implements OnInit, OnDestroy {
         } else return "";
     }
 
-    getIconTitle(country: string | null, iso: ApartmentIso[] | undefined) {
+    getTitle(country: string | null, iso: ApartmentIso[] | undefined) {
         if (country && iso) {
             return iso.find(iso => iso.iso === country)?.title;
         } else return "";
     }
 
-    getDescriptionText(country: string | null, iso: ApartmentIso[] | undefined) {
+    getDescription(country: string | null, iso: ApartmentIso[] | undefined) {
         if (country && iso) {
             return iso.find(iso => iso.iso === country)?.description;
         } else return "";
     }
 
 
+    getTitleAndDescription(country: string | null, iso: ApartmentIso[] | undefined) {
+
+        const title = this.getTitle(country,iso);
+        const description = this.getDescription(country,iso);
+
+        let output: string = "";
+        if (title) {
+            output = output + title;
+        }
+        if (description) {
+            output = output + description;
+        }
+        return output;
+    }
+
+
     protected readonly Roles = Roles;
 }
-
-
-/*
-
-isTokenValid() {
-  const token = this.token;
-  if (!token) {
-    return false;
-  }
-  // decode the token
-  const jwtHelper = new JwtHelperService();
-  // check expiry date
-  const isTokenExpired = jwtHelper.isTokenExpired(token);
-  if (isTokenExpired) {
-    localStorage.clear();
-    return false;
-  }
-  return true;
-}
-
-isTokenNotValid() {
-  return !this.isTokenValid();
-}
-
-get userRoles(): string[] {
- */
 

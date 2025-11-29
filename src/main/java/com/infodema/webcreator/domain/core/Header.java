@@ -16,13 +16,11 @@ import java.util.Set;
 public class Header {
     private Long id;
     private List<Menu> menus;
-    private List<String> languages;
     private Integer linearPercentage;
     private String name;
     private String activeTopMenuUrl;
     private String activeSideMenuUrl;
     private String host;
-    private Colors colors;
     private Set<MainIso> iso;
     private Main main;
 }

@@ -45,4 +45,7 @@ public class Main extends AbstractAuditModel {
     private Boolean removePictureBackground;
     private Integer linearPercentage;
     private List<Customer> customers;
+    private Set<MainFont> fonts;
+    private Set<MainLanguage> languages;
+    private Colors colors;
 }

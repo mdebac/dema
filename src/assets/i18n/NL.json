@@ -14,7 +14,7 @@
   "delete.page": "Pagina verwijderen",
   "create.page": "Nieuwe pagina aanmaken",
   "new.page": "Nieuwe pagina",
-  "title.and.icons": "Titels en pictogrammen",
+  "title.and.icons": "Menu's",
   "create.item": "Nieuw item aanmaken",
   "update.item": "Item bijwerken",
   "item.dialog.description": "Omschrijving",
@@ -46,6 +46,8 @@
   "summer.center": "Centrum",
   "summer.panel.off": "Paneel uit",
   "summer.panel.on": "Paneel aan",
+  "summer.side.menu.off": "Zijmenu verbergen",
+  "summer.side.menu.on": "Zijmenu tonen",
   "summer.columns": "Kolommen",
   "summer.new.item": "Nieuw item",
   "activation.successful": "Activering geslaagd!",
@@ -63,5 +65,7 @@
   "send.me.email": "Stuur me een e-mail",
   "set.new.password": "Stel een nieuw wachtwoord in",
   "forgot.your.password": "Wachtwoord vergeten?",
-  "nothing.remembered": "Niets, ik weet het nog."
+  "nothing.remembered": "Niets, ik weet het nog.",
+  "header.actions": "Kopacties",
+  "page.actions": "Pagina-acties"
 }

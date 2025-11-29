@@ -14,7 +14,7 @@
   "delete.page": "Oldal törlése",
   "create.page": "Új oldal létrehozása",
   "new.page": "Új oldal",
-  "title.and.icons": "Címek és ikonok",
+  "title.and.icons": "Menük",
   "create.item": "Új elem létrehozása",
   "update.item": "Elem frissítése",
   "item.dialog.description": "Leírás",
@@ -46,6 +46,8 @@
   "summer.center": "Középre",
   "summer.panel.off": "Panel kikapcsolva",
   "summer.panel.on": "Panel bekapcsolva",
+  "summer.side.menu.off": "Oldalsó menü elrejtése",
+  "summer.side.menu.on": "Oldalmenü megjelenítése",
   "summer.columns": "Oszlopok",
   "summer.new.item": "Új elem",
   "activation.successful": "Aktiválás sikeres!",
@@ -63,5 +65,7 @@
   "send.me.email": "Küldj nekem egy e-mailt",
   "set.new.password": "Új jelszó beállítása",
   "forgot.your.password": "Elfelejtette a jelszavát?",
-  "nothing.remembered": "Semmi, csak eszembe jutott."
+  "nothing.remembered": "Semmi, csak eszembe jutott.",
+  "header.actions": "Fejléc-műveletek",
+  "page.actions": "Oldalműveletek"
 }

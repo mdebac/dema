@@ -1,7 +1,15 @@
-import {Component, ElementRef, HostBinding, inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostBinding,
+    inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {Subject} from "rxjs";
-import {Editor, NgxEditorComponent} from "ngx-editor";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {WidgetComponent} from "../widget/widget.component";
@@ -11,7 +19,6 @@ import {ApartmentItem} from "../../domain/apartment-item";
 import {Header} from "../../domain/header";
 import {Widget} from "../widget/widget";
 import {ChipMap} from "../../domain/chip-map";
-import {ApartmentDetailIso} from "../../domain/apartment-detail-iso";
 import {defaultIso} from "../../domain/countries-iso";
 import {Side} from "../../domain/side";
 import {Layout} from "../../domain/layout";
@@ -26,6 +33,7 @@ import {PageActionsComponent} from "../menus/page-actions/page-actions.component
 import {TranslatePipe} from "@ngx-translate/core";
 import {HeaderActionsComponent} from "../menus/header-actions/header-actions.component";
 import {Router, RouterLink} from "@angular/router";
+import {QuillViewComponent} from "ngx-quill";
 
 @Component({
     selector: 'summer',
@@ -34,7 +42,6 @@ import {Router, RouterLink} from "@angular/router";
     imports: [
         MatCard,
         MatCardHeader,
-        NgxEditorComponent,
         FormsModule,
         MatCardContent,
         CdkDropList,
@@ -48,7 +55,7 @@ import {Router, RouterLink} from "@angular/router";
         TranslatePipe,
         HeaderActionsComponent,
         ReactiveFormsModule,
-        RouterLink,
+        QuillViewComponent,
     ],
 })
 export class SummerComponent implements OnInit, OnDestroy {
@@ -133,15 +140,13 @@ export class SummerComponent implements OnInit, OnDestroy {
     @Input()
     loggedIn: boolean = false;
 
-    //canEditItems
+    //canEditItems TODO
 
     @Input()
     selectedIso: string | null = defaultIso;
 
     unsubscribe$ = new Subject<void>();
-    local: boolean = true;
     apartment: string = "";
-    editor: Editor = new Editor();
     hideContent: boolean = false;
 
     constructor() {
@@ -149,14 +154,13 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.colorMenu = this.header?.colors.primaryColor ? this.header?.colors.primaryColor : "";
-        this.bgColorMenu = this.header?.colors.secondaryColor ? this.header?.colors.secondaryColor : "";
+        this.colorMenu = this.header?.main?.colors?.secondaryColor ? this.header?.main?.colors?.secondaryColor : "";
+        this.bgColorMenu = this.header?.main?.colors?.primaryColor ? this.header?.main?.colors?.primaryColor : "";
     }
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.unsubscribe();
-        this.editor.destroy();
     }
 
     drop(event: CdkDragDrop<ApartmentItem[]>): void {
@@ -178,27 +182,42 @@ export class SummerComponent implements OnInit, OnDestroy {
 
         return {
             item: item,
-            languages: detail.iso.map(iso => iso.iso),
+            languages: this.header?.main.languages,
             component: ChipMap.get(item.chip),
+            fonts: this.header?.main.fonts,
             colors: colors,
             host: host
         };
     }
 
-    getTitle(country: string | null, iso: ApartmentDetailIso[] | undefined) {
-        return iso?.find(iso => iso.iso === country)?.title;
-    }
+    // getTitle(country: string | null, iso: ApartmentDetailIso[] | undefined) {
+    //     return iso?.find(iso => iso.iso === country)?.title;
+    // }
 
     menuContainerClick(){
         this.hideContent = !this.hideContent;
         if(this.hideContent){
-            this.colorMenu = this.header?.colors.secondaryColor ? this.header?.colors.secondaryColor : "";
-            this.bgColorMenu = this.header?.colors.primaryColor ? this.header?.colors.primaryColor : "";
+            this.bgColorMenu = this.header?.main?.colors.secondaryColor ? this.header?.main?.colors.secondaryColor : "";
+            this.colorMenu = this.header?.main?.colors.primaryColor ? this.header?.main?.colors.primaryColor : "";
         }
         if(!this.hideContent){
-            this.bgColorMenu = this.header?.colors.secondaryColor ? this.header?.colors.secondaryColor : "";
-            this.colorMenu = this.header?.colors.primaryColor ? this.header?.colors.primaryColor : "";
+            this.colorMenu = this.header?.main?.colors.secondaryColor ? this.header?.main?.colors.secondaryColor : "";
+            this.bgColorMenu = this.header?.main?.colors.primaryColor ? this.header?.main?.colors.primaryColor : "";
+
         }
+    }
+
+    getTopMenuLabel(title: string) {
+        let output: string = "";
+        if (title) {
+            output = output + title;
+        }
+        //    output = output.replace("ql-size-huge", "ql-size-large");
+        //    output = output.replace("ql-size-normal", "ql-size-large");
+        if(output.includes("<p>")){
+            output = output.replace("<p>","<p class=\"ql-align-center\">");
+        }
+        return output;
     }
 
 
@@ -206,11 +225,22 @@ export class SummerComponent implements OnInit, OnDestroy {
     goTo(menuUrl: string | undefined, panelUrl: string) {
         // console.log("goTo", menuUrl, panelUrl);
         this.hideContent = false;
-        this.bgColorMenu = this.header?.colors.secondaryColor ? this.header?.colors.secondaryColor : "";
-        this.colorMenu = this.header?.colors.primaryColor ? this.header?.colors.primaryColor : "";
+        this.colorMenu = this.header?.main?.colors.secondaryColor ? this.header?.main?.colors.secondaryColor : "";
+        this.bgColorMenu = this.header?.main?.colors.primaryColor ? this.header?.main?.colors.primaryColor : "";
 
         this.menuContainer?.nativeElement.scrollIntoView();
         this.router.navigate([menuUrl, panelUrl]);
+    }
+
+    getMobileMenuLabel(title: string, description: string) {
+        let output: string = "";
+        if (title) {
+            output = output + title;
+        }
+        if (description) {
+            output = output + description;
+        }
+        return output;
     }
 
     protected readonly Side = Side;

@@ -14,14 +14,14 @@ export class MainConfComponent {
     if (data) {
 
       const variables = [
-        '--primary-color: ' + data.colors.primaryColor + ';',
-        '--secondary-color: ' + data.colors.secondaryColor + ';',
-        '--danger-color: ' + data.colors.dangerColor + ';',
-        '--warn-color: ' + data.colors.warnColor + ';',
-        '--info-color: ' + data.colors.infoColor + ';',
-        '--accept-color: ' + data.colors.acceptColor + ';',
+        '--primary-color: ' + data.main.primaryColor + ';',
+        '--secondary-color: ' + data.main.secondaryColor + ';',
+        '--danger-color: ' + data.main.dangerColor + ';',
+        '--warn-color: ' + data.main.warnColor + ';',
+        '--info-color: ' + data.main.infoColor + ';',
+        '--accept-color: ' + data.main.acceptColor + ';',
         '--myIconImage:url(data:image/jpg;base64,' + data.main.iconImage + ');',
-        '--myImageUrl: linear-gradient(to left, transparent, ' + data.colors.secondaryColor + ' ' + data.main.linearPercentage + '%),url(data:image/jpg;base64,' + data.main.backgroundImage + ');',
+        '--myImageUrl: linear-gradient(to left, transparent, ' + data.main.secondaryColor + ' ' + data.main.linearPercentage + '%),url(data:image/jpg;base64,' + data.main.backgroundImage + ');',
       ];
 
       if (data.main.iconImage) {

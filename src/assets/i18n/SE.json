@@ -14,7 +14,7 @@
   "delete.page": "Ta bort sida",
   "create.page": "Skapa ny sida",
   "new.page": "Ny sida",
-  "title.and.icons": "Titlar och ikoner",
+  "title.and.icons": "Menyer",
   "create.item": "Skapa nytt objekt",
   "update.item": "Uppdatera objekt",
   "item.dialog.description": "Beskrivning",
@@ -46,6 +46,8 @@
   "summer.center": "Centrera",
   "summer.panel.off": "Panel av",
   "summer.panel.on": "Panel på",
+  "summer.side.menu.off": "Dölj sidomenyn",
+  "summer.side.menu.on": "Visa sidomenyn",
   "summer.columns": "Kolumner",
   "summer.new.item": "Nytt objekt",
   "activation.successful": "Aktivering lyckades!",
@@ -63,5 +65,7 @@
   "send.me.email": "Skicka ett e-postmeddelande till mig",
   "set.new.password": "Ange nytt lösenord",
   "forgot.your.password": "Glömt ditt lösenord?",
-  "nothing.remembered": "Ingenting, jag kom ihåg."
+  "nothing.remembered": "Ingenting, jag kom ihåg.",
+  "header.actions": "Rubrikåtgärder",
+  "page.actions": "Sidåtgärder"
 }

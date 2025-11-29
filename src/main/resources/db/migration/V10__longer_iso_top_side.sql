@@ -1,0 +1,8 @@
+ALTER TABLE main_iso MODIFY title VARCHAR(255);
+ALTER TABLE main_iso MODIFY description VARCHAR(500);
+
+ALTER TABLE menu_iso MODIFY title VARCHAR(255);
+ALTER TABLE menu_iso MODIFY description VARCHAR(500);
+
+ALTER TABLE panel_iso MODIFY title VARCHAR(255);
+ALTER TABLE panel_iso MODIFY description VARCHAR(500);

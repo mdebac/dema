@@ -1,10 +1,14 @@
 package com.infodema.webcreator.domain.mappers;
 
 import com.infodema.webcreator.domain.core.Main;
+import com.infodema.webcreator.domain.core.MainFont;
+import com.infodema.webcreator.domain.core.MainLanguage;
 import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.domain.core.MainIso;
+import com.infodema.webcreator.persistance.entities.main.MainFontEntity;
 import com.infodema.webcreator.persistance.entities.main.MainIsoEntity;
+import com.infodema.webcreator.persistance.entities.main.MainLanguageEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +24,24 @@ public class MainMapper extends AbstractMapper {
         return convertCollection(entities, this::toDomainMainIso);
     }
 
+    public Set<MainFont> toDomainMainFonts(Set<MainFontEntity> entities) {
+        return convertCollection(entities, this::toDomainMainFonts);
+    }
+
+    public Set<MainLanguage> toDomainMainLanguages(Set<MainLanguageEntity> entities) {
+        return convertCollection(entities, this::toDomainMainLanguages);
+    }
+
     public Set<MainIsoEntity> toEntityMainIso(Set<MainIso> entities) {
         return convertCollection(entities, this::toEntityMainIso);
+    }
+
+    public Set<MainFontEntity> toEntityMainFont(Set<MainFont> entities) {
+        return convertCollection(entities, this::toEntityMainFont);
+    }
+
+    public Set<MainLanguageEntity> toEntityMainLanguage(Set<MainLanguage> entities) {
+        return convertCollection(entities, this::toEntityMainLanguage);
     }
 
     public Main toDomain(MainEntity entity) {
@@ -51,6 +71,8 @@ public class MainMapper extends AbstractMapper {
           //     .comments(ApartmentCommentMapper.toDomain(entity.getComments()))
                 .menus(menuMapper.toDomain(entity.getMenus()))
                 .iso(toDomainMainIso(entity.getIso()))
+                .fonts(toDomainMainFonts(entity.getFonts()))
+                .languages(toDomainMainLanguages(entity.getLanguages()))
                 .build();
     }
 
@@ -74,6 +96,8 @@ public class MainMapper extends AbstractMapper {
                 .owner(main.getOwner())
                 .linearPercentage(main.getLinearPercentage())
                 .iso(toEntityMainIso(main.getIso()))
+                .fonts(toEntityMainFont(main.getFonts()))
+                .languages(toEntityMainLanguage(main.getLanguages()))
                 .createdOn(main.getCreatedOn())
                 .createdBy(main.getCreatedBy())
                 .modifiedOn(main.getModifiedOn())
@@ -91,6 +115,28 @@ public class MainMapper extends AbstractMapper {
                 .build();
     }
 
+    private MainFont toDomainMainFonts(MainFontEntity entity) {
+        return MainFont.builder()
+                .family(entity.getFamily())
+                .build();
+    }
+    private MainLanguage toDomainMainLanguages(MainLanguageEntity entity) {
+        return MainLanguage.builder()
+                .iso(entity.getIso().getCountryCode())
+                .build();
+    }
+
+    private MainFontEntity toEntityMainFont(MainFont font) {
+        return MainFontEntity.builder()
+                .family(font.getFamily())
+                .build();
+    }
+
+    private MainLanguageEntity toEntityMainLanguage(MainLanguage language) {
+        return MainLanguageEntity.builder()
+                .iso(Country.fromCode(language.getIso()))
+                .build();
+    }
 
     private MainIsoEntity toEntityMainIso(MainIso domain) {
         return MainIsoEntity.builder()

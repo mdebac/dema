@@ -15,7 +15,7 @@ export enum CountryIso {
 }
 
 export const defaultIso: string = "GB-eng";
-export function getValueByKeyForStringEnum(value: string) {
+export function getIsoByKey(value: string) {
   return Object.entries(CountryIso).find(([key, val]) => key === value)?.[1];
 }
 

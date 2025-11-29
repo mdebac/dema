@@ -13,150 +13,6 @@ $info-color: var(--info-color);
 $accept-color: var(--accept-color);
 
 
-@font-face {
-  font-family: "Butcherman-Regular";
-  src: url("./assets/fonts/Butcherman-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "CaesarDressing-Regular";
-  src: url("./assets/fonts/CaesarDressing-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Delius-Regular";
-  src: url("./assets/fonts/Delius-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Electrolize-Regular";
-  src: url("./assets/fonts/Electrolize-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Ewert-Regular";
-  src: url("./assets/fonts/Ewert-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Fascinate-Regular";
-  src: url("./assets/fonts/Fascinate-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "FrederickatheGreat-Regular";
-  src: url("./assets/fonts/FrederickatheGreat-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "HennyPenny-Regular";
-  src: url("./assets/fonts/HennyPenny-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Jacquard24Charted-Regular";
-  src: url("./assets/fonts/Jacquard24Charted-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "LondrinaShadow-Regular";
-  src: url("./assets/fonts/LondrinaShadow-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Megrim-Regular";
-  src: url("./assets/fonts/Megrim-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Monoton-Regular";
-  src: url("./assets/fonts/Monoton-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "MysteryQuest-Regular";
-  src: url("./assets/fonts/MysteryQuest-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Nosifer-Regular";
-  src: url("./assets/fonts/Nosifer-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Onest-VariableFont_wght";
-  src: url("./assets/fonts/Onest-VariableFont_wght.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Orbitron-VariableFont_wght";
-  src: url("./assets/fonts/Orbitron-VariableFont_wght.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Pacifico-Regular";
-  src: url("./assets/fonts/Pacifico-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "RibeyeMarrow-Regular";
-  src: url("./assets/fonts/RibeyeMarrow-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "RobotoMono-Italic-VariableFont_wght";
-  src: url("./assets/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "RobotoMono-VariableFont_wght";
-  src: url("./assets/fonts/RobotoMono-VariableFont_wght.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "RubikBeastly-Regular";
-  src: url("./assets/fonts/RubikBeastly-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "RubikVinyl-Regular";
-  src: url("./assets/fonts/RubikVinyl-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Rye-Regular";
-  src: url("./assets/fonts/Rye-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Sixtyfour-Regular-VariableFont_BLED,SCAN";
-  src: url("./assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Tangerine-Bold";
-  src: url("./assets/fonts/Tangerine-Bold.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "Tangerine-Regular";
-  src: url("./assets/fonts/Tangerine-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "UnifrakturMaguntia-Regular";
-  src: url("./assets/fonts/UnifrakturMaguntia-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "WalterTurncoat-Regular";
-  src: url("./assets/fonts/WalterTurncoat-Regular.ttf") format("trueType");
-}
-
-@font-face {
-  font-family: "ZenDots-Regular";
-  src: url("./assets/fonts/ZenDots-Regular.ttf") format("trueType");
-}
 
 html{
   background-color: $primary-color;
@@ -277,15 +133,439 @@ https://stackblitz.com/edit/angular-material-notification-service?file=src%2Fapp
  */
 
 
-/*
-.dialog-panel
-.mat-mdc-dialog-container
-.mdc-dialog__container
-.mat-mdc-dialog-surface {
-  background-color: transparent;
-  border-radius: 32px;
+//---------------------------------------------------------
+@font-face {
+  font-family: "Butcherman";
+  src: url("./assets/fonts/Butcherman-Regular.ttf") format("trueType");
 }
-*/
-.red{
-  background-color: darkred;
+
+[quill-editor-toolbar] .ql-font span[data-label="Butcherman"]::before {
+  font-family: "Butcherman";
 }
+.ql-font-butcherman {
+  font-family: "Butcherman";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=butcherman]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=butcherman]::before {
+  content: 'Butcherman';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Electrolize";
+  src: url("./assets/fonts/Electrolize-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Electrolize"]::before {
+  font-family: "Electrolize";
+}
+.ql-font-electrolize {
+  font-family: "Electrolize";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=electrolize]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=electrolize]::before {
+  content: 'Electrolize';
+}
+//---------------------------------------------------------
+@font-face {
+  font-family: "CaesarDressing";
+  src: url("./assets/fonts/CaesarDressing-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="CaesarDressing"]::before {
+  font-family: "CaesarDressing";
+}
+.ql-font-caesarDressing {
+  font-family: "CaesarDressing";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=caesarDressing]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=caesarDressing]::before {
+  content: 'CaesarDressing';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Delius";
+  src: url("./assets/fonts/Delius-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Delius"]::before {
+  font-family: "Delius";
+}
+.ql-font-delius {
+  font-family: "Delius";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=delius]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=delius]::before {
+  content: 'Delius';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Ewert";
+  src: url("./assets/fonts/Ewert-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Ewert"]::before {
+  font-family: "Ewert";
+}
+.ql-font-ewert {
+  font-family: "Ewert";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=ewert]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=ewert]::before {
+  content: 'Ewert';
+}
+
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Fascinate";
+  src: url("./assets/fonts/Fascinate-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Fascinate"]::before {
+  font-family: "Fascinate";
+}
+.ql-font-fascinate {
+  font-family: "Fascinate";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=fascinate]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=fascinate]::before {
+  content: 'Fascinate';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "FrederickatheGreat";
+  src: url("./assets/fonts/FrederickatheGreat-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="FrederickatheGreat"]::before {
+  font-family: "FrederickatheGreat";
+}
+.ql-font-frederickatheGreat {
+  font-family: "FrederickatheGreat";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=frederickatheGreat]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=frederickatheGreat]::before {
+  content: 'FrederickatheGreat';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "HennyPenny";
+  src: url("./assets/fonts/HennyPenny-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="HennyPenny"]::before {
+  font-family: "HennyPenny";
+}
+.ql-font-hennyPenny {
+  font-family: "HennyPenny";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=hennyPenny]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=hennyPenny]::before {
+  content: 'HennyPenny';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Jacquard24Charted";
+  src: url("./assets/fonts/Jacquard24Charted-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Jacquard24Charted"]::before {
+  font-family: "Jacquard24Charted";
+}
+.ql-font-jacquard24Charted {
+  font-family: "Jacquard24Charted";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=jacquard24Charted]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=jacquard24Charted]::before {
+  content: 'Jacquard24Charted';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "LondrinaShadow";
+  src: url("./assets/fonts/LondrinaShadow-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="LondrinaShadow"]::before {
+  font-family: "LondrinaShadow";
+}
+.ql-font-londrinaShadow {
+  font-family: "LondrinaShadow";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=londrinaShadow]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=londrinaShadow]::before {
+  content: 'LondrinaShadow';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Megrim";
+  src: url("./assets/fonts/Megrim-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Megrim"]::before {
+  font-family: "Megrim";
+}
+.ql-font-megrim {
+  font-family: "Megrim";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=megrim]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=megrim]::before {
+  content: 'Megrim';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Monoton";
+  src: url("./assets/fonts/Monoton-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Monoton"]::before {
+  font-family: "Monoton";
+}
+.ql-font-monoton {
+  font-family: "Monoton";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=monoton]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=monoton]::before {
+  content: 'Monoton';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "MysteryQuest";
+  src: url("./assets/fonts/MysteryQuest-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="MysteryQuest"]::before {
+  font-family: "MysteryQuest";
+}
+.ql-font-mysteryQuest {
+  font-family: "MysteryQuest";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=mysteryQuest]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=mysteryQuest]::before {
+  content: 'MysteryQuest';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Nosifer";
+  src: url("./assets/fonts/Nosifer-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Nosifer"]::before {
+  font-family: "Nosifer";
+}
+.ql-font-nosifer {
+  font-family: "Nosifer";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=nosifer]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=nosifer]::before {
+  content: 'Nosifer';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Onest";
+  src: url("./assets/fonts/Onest-VariableFont_wght.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Onest"]::before {
+  font-family: "Onest";
+}
+.ql-font-onest {
+  font-family: "Onest";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=onest]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=onest]::before {
+  content: 'Onest';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Orbitron";
+  src: url("./assets/fonts/Orbitron-VariableFont_wght.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Orbitron"]::before {
+  font-family: "Orbitron";
+}
+.ql-font-orbitron {
+  font-family: "Orbitron";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=orbitron]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=orbitron]::before {
+  content: 'Orbitron';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Pacifico";
+  src: url("./assets/fonts/Pacifico-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Pacifico"]::before {
+  font-family: "Pacifico";
+}
+.ql-font-pacifico {
+  font-family: "Pacifico";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=pacifico]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=pacifico]::before {
+  content: 'Pacifico';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "RibeyeMarrow";
+  src: url("./assets/fonts/RibeyeMarrow-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="RibeyeMarrow"]::before {
+  font-family: "RibeyeMarrow";
+}
+.ql-font-ribeyeMarrow {
+  font-family: "RibeyeMarrow";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=ribeyeMarrow]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=ribeyeMarrow]::before {
+  content: 'RibeyeMarrow';
+}
+//---------------------------------------------------------
+
+//@font-face {
+//  font-family: "RobotoMono";
+//  src: url("./assets/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("trueType");
+//}
+//[quill-editor-toolbar] .ql-font span[data-label="RobotoMono"]::before {
+//  font-family: "RobotoMono";
+//}
+//.ql-font-electrolize {
+//  font-family: "RobotoMono";
+//}
+//.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=MysteryQuest]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=MysteryQuest]::before {
+//  content: 'MysteryQuest';
+//}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "RobotoMono";
+  src: url("./assets/fonts/RobotoMono-VariableFont_wght.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="RobotoMono"]::before {
+  font-family: "RobotoMono";
+}
+.ql-font-robotoMono {
+  font-family: "RobotoMono";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=robotoMono]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=robotoMono]::before {
+  content: 'RobotoMono';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "RubikBeastly";
+  src: url("./assets/fonts/RubikBeastly-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="RubikBeastly"]::before {
+  font-family: "RubikBeastly";
+}
+.ql-font-rubikBeastly {
+  font-family: "RubikBeastly";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=rubikBeastly]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=rubikBeastly]::before {
+  content: 'RubikBeastly';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "RubikVinyl";
+  src: url("./assets/fonts/RubikVinyl-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="RubikVinyl"]::before {
+  font-family: "RubikVinyl";
+}
+.ql-font-rubikVinyl {
+  font-family: "RubikVinyl";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=rubikVinyl]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=rubikVinyl]::before {
+  content: 'RubikVinyl';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Rye";
+  src: url("./assets/fonts/Rye-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Rye"]::before {
+  font-family: "Rye";
+}
+.ql-font-rye {
+  font-family: "Rye";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=rye]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=rye]::before {
+  content: 'Rye';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Sixtyfour";
+  src: url("./assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Sixtyfour"]::before {
+  font-family: "Sixtyfour";
+}
+.ql-font-sixtyfour {
+  font-family: "Sixtyfour";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=sixtyfour]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=sixtyfour]::before {
+  content: 'Sixtyfour';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "TangerineB";
+  src: url("./assets/fonts/Tangerine-Bold.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="TangerineB"]::before {
+  font-family: "TangerineB";
+}
+.ql-font-tangerineB {
+  font-family: "TangerineB";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=tangerineB]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=tangerineB]::before {
+  content: 'TangerineB';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "Tangerine";
+  src: url("./assets/fonts/Tangerine-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="Tangerine"]::before {
+  font-family: "Tangerine";
+}
+.ql-font-tangerine {
+  font-family: "Tangerine";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=tangerine]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=tangerine]::before {
+  content: 'Tangerine';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "UnifrakturMaguntia";
+  src: url("./assets/fonts/UnifrakturMaguntia-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="UnifrakturMaguntia"]::before {
+  font-family: "UnifrakturMaguntia";
+}
+.ql-font-unifrakturMaguntia {
+  font-family: "UnifrakturMaguntia";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=unifrakturMaguntia]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=unifrakturMaguntia]::before {
+  content: 'UnifrakturMaguntia';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "WalterTurncoat";
+  src: url("./assets/fonts/WalterTurncoat-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="WalterTurncoat"]::before {
+  font-family: "WalterTurncoat";
+}
+.ql-font-walterTurncoat {
+  font-family: "WalterTurncoat";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=walterTurncoat]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=walterTurncoat]::before {
+  content: 'WalterTurncoat';
+}
+//---------------------------------------------------------
+
+@font-face {
+  font-family: "ZenDots";
+  src: url("./assets/fonts/ZenDots-Regular.ttf") format("trueType");
+}
+[quill-editor-toolbar] .ql-font span[data-label="ZenDots"]::before {
+  font-family: "ZenDots";
+}
+.ql-font-zenDots {
+  font-family: "ZenDots";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=zenDots]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=zenDots]::before {
+  content: 'ZenDots';
+}
+//---------------------------------------------------------

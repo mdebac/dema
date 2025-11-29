@@ -2,42 +2,42 @@
 
     @if (canEdit){
         <div class="settings-button">
-            <button mat-mini-fab  (click)="updateItemSettings(data?.colors,data?.item, data?.host)"
+            <button class="icon-display-menu" mat-mini-fab  (click)="updateItemSettings(data.colors,data.item, data.host)"
                     aria-label="Settings">
-                <mat-icon>settings</mat-icon>
+                <mat-icon class="my-icon">settings</mat-icon>
             </button>
-            <button mat-mini-fab
-                    (click)="updateItem(data?.languages,data?.colors,data?.item, data?.host )">
-                <mat-icon>edit</mat-icon>
+            <button class="icon-display-menu" mat-mini-fab
+                    (click)="updateItem(data.languages,data.fonts,data.colors,data.item, data.host )">
+                <mat-icon class="my-icon">edit</mat-icon>
             </button>
-            <button mat-mini-fab (click)="deleteItem(data?.item)">
-                <mat-icon>delete</mat-icon>
+            <button class="icon-display-menu" mat-mini-fab (click)="deleteItem(data.item)">
+                <mat-icon class="my-icon" >delete</mat-icon>
             </button>
         </div>
     }
 
-    @if (data?.item?.chip === Chip.TEXT) {
-        @if (data?.component) {
+    @if (data.item?.chip === Chip.TEXT) {
+        @if (data.component) {
             <ng-container
-                    *ngComponentOutlet="data.component; inputs: { item: dataIso, selectedIso: selectedIso}">
+                    *ngComponentOutlet="data.component; inputs: { item: dataIso, selectedIso: selectedIso, columns: columns}">
             </ng-container>
         }
     }
-    @if (data?.item?.chip === Chip.JOB) {
-        @if (data?.component) {
+    @if (data.item?.chip === Chip.JOB) {
+        @if (data.component) {
             <ng-container
                     *ngComponentOutlet="data.component; inputs: {  itemId: dataId, item: dataIso, selectedIso: selectedIso, loggedIn: loggedIn}">
             </ng-container>
         }
     }
-    @if (data?.item?.chip === Chip.VIDEO || data?.item?.chip === Chip.PICTURE) {
-        @if (data?.component) {
-            <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, columns: columns}">
+    @if (data.item?.chip === Chip.VIDEO || data.item?.chip === Chip.PICTURE) {
+        @if (data.component) {
+            <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, columns: columns, selectedIso: selectedIso, cornerRadius: cornerRadius}">
             </ng-container>
         }
     }
-    @if (data?.item?.chip === Chip.DOMAINS) {
-        @if (data?.component) {
+    @if (data.item?.chip === Chip.DOMAINS) {
+        @if (data.component) {
             <ng-container
                     *ngComponentOutlet="data.component;">
             </ng-container>

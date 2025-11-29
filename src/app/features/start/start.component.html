@@ -8,77 +8,85 @@
         role: role$,
         user:user$
         } as vm"
->
+  >
 
-    <div class="grid-container">
+  <div class="grid-container">
 
-        <div class="header-container">
+    <div class="header-container">
 
-            <div class="iconSpace">
-                @if (vm.isMobile) {
-                    <!--                    <img width="50" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
-                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
-                } @else {
-                    <!--                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
-                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
-                    {{ getIconText(vm.selectedIso, vm.header?.iso) }}
-                }
-            </div>
+      <div class="iconSpace">
+        @if (vm.isMobile) {
 
-            <div class="rightSpace">
-                <div class="contentSpace">
-                    <div class="headerText">
-                        <div class="titleText">
-                            {{ getIconTitle(vm.selectedIso, vm.header?.iso) }}
-                            <!--                            <div class="grb">-->
-                            <!--                                <div class="grb-crveno"></div>-->
-                            <!--                                <div class="grb-bijelo"></div>-->
-                            <!--                                <div class="grb-bijelo"></div>-->
-                            <!--                                <div class="grb-crveno"></div>-->
-                            <!--                            </div>-->
-                        </div>
-                        @if (!vm.isMobile) {
-                        <div class="descriptionText">
-                            {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}
-                        </div>
-                        }
-                    </div>
-                    <div class="isoSpaceLanguage">
+          <!--                    <img width="50" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+          <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
+        } @else {
+          <!--                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+          <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
 
-                        <iso-buttons *ngIf="vm.header?.languages" [countries]="vm.header?.languages"
-                                     [selectedIn]="vm.selectedIso"
-                                     [isMobile]="vm.isMobile"
-                                     (selectedOut)="activeIso($event)">
-                        </iso-buttons>
 
-                        <user-buttons [user]="vm.user"
-                                      [isMobile]="vm.isMobile"
-                                      [isLoggedIn]="vm.isLoggedIn">
-                        </user-buttons>
+        }
+      </div>
 
-                        @if (vm.isMobile) {
-                          <mobile-top-menu
-                                  [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
-                                  [header]="vm.header"
-                                  [selectedIso]="vm.selectedIso">
-                          </mobile-top-menu>
-                        }
-                    </div>
-                </div>
+      <div class="rightSpace">
+        <div class="contentSpace">
+          <div [ngClass]="!vm.isMobile ? 'headerText' : 'headerTextMobile'">
+<!--            <div class="titleText">-->
+<!--              {{ getTitle(vm.selectedIso, vm.header?.iso) }}             -->
+<!--          </div>-->
+          @if (!vm.isMobile) {
 
-                @if (!vm.isMobile) {
-                    <top-menu
-                            [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
-                            [header]="vm.header"
-                            [selectedIso]="vm.selectedIso"
-                            [direction]="'row'"
-                    ></top-menu>
-                }
-            </div>
+            <quill-view class="my-quill-view" [content]="getTitleAndDescription(vm.selectedIso, vm.header?.main?.iso)" format="html" theme="snow"></quill-view>
+
+
+<!--xxx-->
+<!--            <div class="descriptionText">-->
+<!--              {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}-->
+<!--            </div>-->
+
+
+          }@else{
+              <quill-view class="my-quill-view-mobile" [content]="getTitle(vm.selectedIso, vm.header?.main?.iso)" format="html" theme="snow"></quill-view>
+
+          }
         </div>
+        <div class="isoSpaceLanguage">
 
-        <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
+          @if (vm.header?.main?.languages) {
+            <iso-buttons [countries]="vm.header?.main?.languages"
+              [selectedIn]="vm.selectedIso"
+              [isMobile]="vm.isMobile"
+              (selectedOut)="activeIso($event)">
+            </iso-buttons>
+          }
+
+          <user-buttons [user]="vm.user"
+            [isMobile]="vm.isMobile"
+            [isLoggedIn]="vm.isLoggedIn">
+          </user-buttons>
+
+          @if (vm.isMobile) {
+            <mobile-top-menu
+              [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+              [header]="vm.header"
+              [selectedIso]="vm.selectedIso">
+            </mobile-top-menu>
+          }
+        </div>
+      </div>
+
+      @if (!vm.isMobile) {
+        <top-menu
+          [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+          [header]="vm.header"
+          [selectedIso]="vm.selectedIso"
+          [direction]="'row'"
+        ></top-menu>
+      }
     </div>
+  </div>
 
-    <main-conf [header]="vm.header"></main-conf>
+  <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
+</div>
+
+<main-conf [header]="vm.header"></main-conf>
 </ng-container>

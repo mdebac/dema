@@ -12,26 +12,152 @@ $secondary-color: var(--secondary-color);
 .mat-mdc-fab.mat-accent {
   --mdc-fab-container-color: var(--secondary-color);
 }
+
 .dashboard-card {
   position: relative;
-  margin: 15px;
+  margin: 0.5rem;
   background-color: $primary-color;
   overflow-y: auto;
+  overflow-x: auto;
   color: $secondary-color;
   //scrollbar-color: $secondary-color $primary-color;
 }
 
 .mat-expansion-panel-header {
-  height: 50px;
+  // min-height: 50px;
+  padding: 0;
+  background-color: $secondary-color !important;
+
+
+}
+
+.mat-expansion-panel-header-title {
+  background-color: $secondary-color !important;
+}
+
+.text-text{
+  border-top: 2px solid $primary-color;
+  color: $primary-color;
+  font-weight: bolder;
+}
+
+.text-icon{
+  color: $primary-color;
+  font-weight: bolder;
+}
+.custom-panel {
+  .ql-editor {
+    // color: $primary-color;
+    border: 0;
+    // padding-right: 10px;
+    //  width: 12rem;
+  }
+}
+
+.naslov {
+  padding: 0 !important;
+}
+
+.mat-expansion-panel {
+  margin-top: 0.5rem;
+  margin-left: 0;
+}
+
+.mat-expansion-indicator {
+  color: $secondary-color;
+}
+
+.icon-display-menutop {
+  transform: scale(2);
+  color: $primary-color !important;
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0;
+  margin-left: 0.8rem;
+  padding-right: 1rem;
+  //padding-right: 1rem;
+  //padding-left: 1rem;
+}
+
+.icon-display-tooltip{
+  color: $primary-color;
+}
+
+.ql-picker-options{
+  background-color: $secondary-color !important;
+  color: $primary-color !important;
+}
+.ql-picker-options:hover{
+  background-color: $secondary-color !important;
+  color: $primary-color !important;
+}
+.ql-active{
+  font-weight: bolder !important;
+  color: $primary-color !important;
+}
+.ql-stroke{
+  color: $primary-color !important;
+}
+
+.ql-picker-label{
+  color: $primary-color !important;
+}
+.ql-toolbar .ql-snow{
+  color: $primary-color !important;
+}
+.ql-bold .ql-active{
+  color: $primary-color !important;
+  font-weight: bolder;
+}
+
+.actionButtons{
+  max-width: 21rem !important;
+  min-width: 21rem !important;
+  padding-right: 0.5rem !important;
+}
+
+.mat-expansion-panel .naslov {
+  background-color: $secondary-color;
+  color: $primary-color;
+  align-items: center;
+  width: 100%;
+  //direction: ltr;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header {
+
+  img {
+    max-height: 4rem;
+    min-height: 3rem;
+  }
+
+  height: 100px;
+  //
+  //min-height: 4rem;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header:hover {
+  background-color: $secondary-color;
+
+  height: 100px;
+
+  img {
+    max-height: 4rem;
+    min-height: 3rem;
+  }
+
 }
 
 
 .dashboard-card mat-card-content {
-  --ngx-editor-menubar-bg-color: $secondary-color;
   text-align: left;
   display: grid;
-  grid-template-columns: repeat(1,1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 16px;
+
+  //
+  //overflow-y: auto;
+  //overflow-x: auto;
 }
 
 .container {
@@ -40,35 +166,82 @@ $secondary-color: var(--secondary-color);
   position: relative;
   border: 2px solid $secondary-color;
   border-radius: 10px;
-  padding: .5rem 2rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 1rem;
+  max-width: 25rem;
 }
 
-.eyes{
+
+.eyes {
   align-content: center;
   padding-left: 1rem;
   margin: 0;
 }
 
-.mylabel{
+.mylabel {
   grid-column: span 2;
   padding-top: 10px;
- padding-right: 10px;
+  padding-right: 10px;
 }
-.myicon{
-  margin-top: 10px;
+
+.myicon {
+  transform: scale(1.6);
+}
+
+.iconAndFile{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: $secondary-color;
+  justify-content: space-between;
+}
+.mybutton {
+  margin-top: 2px;
   margin-left: 2px;
+  background-color: $secondary-color !important;
+}
+.mybutton:hover {
+  background-color: $primary-color !important;
+  color: $secondary-color !important;
 }
 
-.mat-mdc-form-field.full{
-  width: 100%;
+.iconAndFileDesc {
+  font-weight: bolder;
+  color: $primary-color !important;
+}
+.iconAndFileDesc:hover {
+  color: $primary-color !important;
+  font-weight: bolder;
 }
 
-.flexLayout{
+input[type=checkbox]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+
+.form-control{
+  line-height: 2 !important;
+  height: 3rem;
+}
+input[type=file]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+input[type=file]::file-selector-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+.flexLayout {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
+
 .title {
   position: absolute;
   top: -.75rem;
@@ -90,6 +263,9 @@ $secondary-color: var(--secondary-color);
   font-weight: bold;
 }
 
+.mat-expansion-panel-header-title {
+
+}
 
 .mat-mdc-card-header {
   display: flex;
@@ -99,6 +275,7 @@ $secondary-color: var(--secondary-color);
   align-items: center;
   padding-top: 30px;
   padding-bottom: 30px;
+
   .button-container-left {
     margin-right: auto;
   }
@@ -107,6 +284,7 @@ $secondary-color: var(--secondary-color);
 .row-container {
   display: flex;
   flex-direction: row;
+
   .button-container-left {
     padding-left: 10px;
   }
@@ -120,7 +298,8 @@ $secondary-color: var(--secondary-color);
   --mdc-filled-button-container-color: $primary-color;
   border: 2px solid $secondary-color;
 }
-.mat-mdc-extended-fab:hover{
+
+.mat-mdc-extended-fab:hover {
   background-color: $primary-color;
   color: $secondary-color;
 }

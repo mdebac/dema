@@ -14,7 +14,7 @@
   "delete.page": "Poista sivu",
   "create.page": "Luo uusi sivu",
   "new.page": "Uusi sivu",
-  "title.and.icons": "Otsikkoja ja kuvakkeita",
+  "title.and.icons": "Valikot",
   "create.item": "Luo uusi kohde",
   "update.item": "Päivitä kohde",
   "item.dialog.description": "Kuvaus",
@@ -46,6 +46,8 @@
   "summer.center": "Keskellä",
   "summer.panel.off": "Paneeli pois päältä",
   "summer.panel.on": "Paneeli päällä",
+  "summer.side.menu.off": "Piilota sivuvalikko",
+  "summer.side.menu.on": "Näytä sivuvalikko",
   "summer.columns": "Sarakkeet",
   "summer.new.item": "Uusi kohde",
   "activation.successful": "Aktivointi onnistui!",
@@ -63,5 +65,7 @@
   "send.me.email": "Lähetä minulle sähköpostia",
   "set.new.password": "Aseta uusi salasana",
   "forgot.your.password": "Unohditko salasanasi?",
-  "nothing.remembered": "Ei mitään, muistin sen."
+  "nothing.remembered": "Ei mitään, muistin sen.",
+  "header.actions": "Otsikkotoiminnot",
+  "page.actions": "Sivun toiminnot"
 }

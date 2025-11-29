@@ -22,6 +22,7 @@ import java.util.Set;
 public class PanelEntity extends BaseAuditEntity {
 
     private String icon;
+    private String panelUrl;
     private Integer orderNum;
     private String imageFileName;
     private String imageMimeType;
@@ -55,11 +56,6 @@ public class PanelEntity extends BaseAuditEntity {
             setImageMimeType(null);
             setImageFileName(null);
         }
-    }
-
-    @Transient
-    public String getPanelUrl() {
-        return this.iso.stream().filter(iso-> iso.getIso().equals(Country.EN)).findFirst().orElseThrow(() -> new RuntimeException("panel URL not found")).getTitle().toLowerCase().replace(" ","_");
     }
 
 }

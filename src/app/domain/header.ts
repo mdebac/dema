@@ -2,14 +2,14 @@ import {Menu} from "./menu";
 import {ApartmentIso} from "./apartment-iso";
 import {Colors} from "./colors";
 import {Apartment} from "./apartment";
+import {Font} from "./font";
+import {Language} from "./language";
 
 export interface Header{
-  languages: string[];
   menus: Menu[];
   activeTopMenuUrl:string;
   activeSideMenuUrl:string;
-  iso: ApartmentIso [];
-  colors: Colors;
+  //colors: Colors;
   main: Apartment;
 }
 

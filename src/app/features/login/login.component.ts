@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import {NgIf, NgFor} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {AuthenticationRequest} from "../../domain/authentication-request";
 import {AuthStore} from "../../services/authentication/auth-store";
@@ -17,17 +17,15 @@ import {ReCaptchaV3Service} from "ng-recaptcha-2";
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     imports: [
-        NgIf,
-        NgFor,
-        FormsModule,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatFabButton,
-        LetDirective,
-        TranslatePipe,
-        RouterLink,
-    ],
+    FormsModule,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatFabButton,
+    LetDirective,
+    TranslatePipe,
+    RouterLink
+],
 })
 export class LoginComponent {
 

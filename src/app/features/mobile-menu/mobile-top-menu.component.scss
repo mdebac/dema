@@ -11,9 +11,12 @@ $secondary-color: var(--secondary-color);
   margin: 0;
 }
 
+.mobile-top-icon{
+  scale: (2);
+}
 .close.mat-mdc-button-base {
   //margin: 0.5rem 0.5rem 0.5rem 0.5rem;
-  color: $secondary-color;
+  color: $primary-color;
   --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
   --mdc-protected-button-container-color: $secondary-color;
   // justify-content: left;
@@ -44,4 +47,15 @@ $secondary-color: var(--secondary-color);
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-items: left;
+  min-width: 25rem;
+}
+.my-class{
+  max-width: unset !important;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.mat-mdc-menu-panel {
+  max-width: 380px;
 }

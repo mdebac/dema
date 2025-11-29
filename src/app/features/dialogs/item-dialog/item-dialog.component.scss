@@ -8,28 +8,58 @@ $secondary-color: var(--secondary-color);
     elevated-container-shape: 16px
   ));
 }
-
-.dashboard-card {
-  margin: 10px;
+.max{
   background-color: $primary-color;
+  color: $secondary-color !important;
+}
+.max:hover{
+ font-weight: bolder;
+}
+.dashboard-card {
+  margin: 5px;
+  background-color: $secondary-color;
   max-height: 600px;
   position: relative;
   overflow-y: auto;
-  color: $secondary-color;
+  color: $primary-color;
   //scrollbar-color: $secondary-color $primary-color;
 }
-
+.text-label{
+  color: $primary-color;
+}
 .dashboard-card mat-card-content {
-  --ngx-editor-menubar-bg-color: $secondary-color;
   text-align: left;
   display: grid;
   grid-template-columns: repeat(1,1fr);
   gap: 16px;
 }
 
-.ngx-editor-menu{
-  color:red;
-}
+//.ql-picker-options{
+//  background-color: $secondary-color !important;
+//  color: firebrick !important;
+//}
+//.ql-picker-options:hover{
+//  background-color: $secondary-color !important;
+//  color: gray !important;
+//}
+//.ql-active{
+//  font-weight: bolder !important;
+//  color: salmon !important;
+//}
+//.ql-stroke{
+//  color: white !important;
+//}
+//
+//.ql-picker-label{
+//  color: red !important;
+//}
+//.ql-toolbar .ql-snow{
+//  color: green !important;
+//}
+//.ql-bold .ql-active{
+//  color: yellow !important;
+//  font-weight: bolder;
+//}
 
 input[type=file]::file-selector-button {
   cursor: pointer;
@@ -48,6 +78,7 @@ input{
 
 .mat-mdc-card-header {
   display: flex;
+  flex-direction: row;
   overflow: hidden;
   //margin-right: 30%;
   align-items: center;
@@ -55,6 +86,7 @@ input{
 
   .button-container-left {
     margin-right: auto;
+    color: $primary-color;
   }
   color: $secondary-color;
   .row-input-container-left {

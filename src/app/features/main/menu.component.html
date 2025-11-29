@@ -1,6 +1,6 @@
 
-<div class="sidenav">
-    <div class="logo-container">
+<div>
+    <div>
         @if (!closedMenu) {
             <div [ngClass]="menuSide === Side.RIGHT ? 'menu-icon-close-right' : 'menu-icon-close-left' ">
                 @if (menuSide === Side.RIGHT) {
@@ -50,7 +50,7 @@
                                             <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
                                             @if (closedMenu) {
                                                 <div class="menu-title-text-closed">
-                                                    {{ iso.title }}
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                 </div>
                                             }
                                         </div>
@@ -61,30 +61,24 @@
                                                 <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
                                                 @if (closedMenu) {
                                                     <div class="menu-title-text-closed">
-                                                        {{ iso.title }}
+                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                     </div>
                                                 }
                                             </div>
                                         } @else if (closedMenu) {
                                             <div class="menu-title-text-closed">
-                                                {{ iso.title }}
+                                                <quill-view [content]="iso.title" format="html"
+                                                            theme="snow"></quill-view>
                                             </div>
                                         }
 
                                     }
 
-
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-
                                             @if (!closedMenu) {
-                                                <div class="menu-title-text">
-                                                        {{ iso.title }}
-                                                </div>
-                                                <div class="menu-description-text">
-                                                        {{ iso.description }}
-                                                </div>
+                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
+                                                            theme="snow"></quill-view>
                                             }
-
                                     </div>
                                 }
 
@@ -96,7 +90,7 @@
 
                                             @if (closedMenu) {
                                                 <div class="menu-title-text-closed">
-                                                    {{ iso.title }}
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                 </div>
                                             }
 
@@ -109,13 +103,13 @@
                                                 <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
                                                 @if (closedMenu) {
                                                     <div class="menu-title-text-closed">
-                                                        {{ iso.title }}
+                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                     </div>
                                                 }
                                             </div>
                                         } @else if (closedMenu) {
                                             <div class="menu-title-text-closed">
-                                                {{ iso.title }}xxx
+                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                             </div>
                                         }
 
@@ -123,12 +117,8 @@
 
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            <div class="menu-title-text">
-                                                {{ iso.title }}
-                                            </div>
-                                            <div class="menu-description-text">
-                                                {{ iso.description }}
-                                            </div>
+                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
+                                                        theme="snow"></quill-view>
                                         }
                                     </div>
                                 }
@@ -151,7 +141,7 @@
 
                                             @if (closedMenu) {
                                                 <div class="menu-title-text-closed">
-                                                    {{ iso.title }}
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                 </div>
                                             }
                                         </div>
@@ -162,13 +152,13 @@
                                                   <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
                                                     @if (closedMenu) {
                                                         <div class="menu-title-text-closed">
-                                                            {{ iso.title }}
+                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                         </div>
                                                     }
                                                 </div>
                                             } @else if (closedMenu) {
                                                 <div class="menu-title-text-closed">
-                                                    {{ iso.title }}
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                 </div>
                                             }
 
@@ -176,12 +166,8 @@
 
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            <div class="menu-title-text">
-                                                {{ iso.title }}
-                                            </div>
-                                            <div class="menu-description-text">
-                                                {{ iso.description }}
-                                            </div>
+                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
+                                                        theme="snow"></quill-view>
                                         }
                                     </div>
                                 }
@@ -193,9 +179,7 @@
                                             <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
 
                                             @if (closedMenu) {
-                                                <div class="menu-title-text-closed">
-                                                    {{ iso.title }}
-                                                </div>
+                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                             }
                                         </div>
                                     } @else {
@@ -205,25 +189,21 @@
                                                 <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
                                                 @if (closedMenu) {
                                                     <div class="menu-title-text-closed">
-                                                        {{ iso.title }}
+                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                                     </div>
                                                 }
                                             </div>
                                         } @else if (closedMenu) {
                                             <div class="menu-title-text-closed">
-                                                {{ iso.title }}
+                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
                                             </div>
                                         }
                                     }
 
                                     <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
                                         @if (!closedMenu) {
-                                            <div class="menu-title-text">
-                                                {{ iso.title }}
-                                            </div>
-                                            <div class="menu-description-text">
-                                                {{ iso.description }}
-                                            </div>
+                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
+                                                        theme="snow"></quill-view>
                                         }
                                     </div>
                                 }
@@ -238,7 +218,7 @@
         && (roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase()))) {
             @if (disableAddingNewPanels) {
                 <button mat-icon-button (click)="createPanelDetail(header, activeDetail)">
-                    <mat-icon>add</mat-icon>
+                    <mat-icon class="text-text">add</mat-icon>
                 </button>
             }
         }

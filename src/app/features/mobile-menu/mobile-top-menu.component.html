@@ -1,12 +1,12 @@
 <div>
     <button class="close" mat-button [matMenuTriggerFor]="iso">
-        <mat-icon>menu</mat-icon>
+        <mat-icon class="mobile-top-icon">menu</mat-icon>
     </button>
 </div>
-<mat-menu #iso="matMenu">
+<mat-menu class="my-class" #iso="matMenu">
     <div class="actionButtons">
         <ng-container>
-            <top-menu
+            <top-menu class="top-menu"
                     [canEdit]="canEdit"
                     [header]="header"
                     [selectedIso]="selectedIso"

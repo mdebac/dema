@@ -1,4 +1,4 @@
-import {Component, HostBinding, inject, Input, OnDestroy} from '@angular/core';
+import {Component, HostBinding, inject, Input, OnDestroy, ViewEncapsulation} from '@angular/core';
 import {SlideInterface} from "../imageSlider/types/slide.interface";
 import {filter, takeUntil} from "rxjs/operators";
 import {defaultIso} from "../../domain/countries-iso";
@@ -18,17 +18,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Layout} from "../../domain/layout";
 import {Side} from "../../domain/side";
 import {NgClass} from "@angular/common";
+import {QuillViewComponent} from "ngx-quill";
 
-// const fadeInOut = trigger('crossFade', [
-//     state(
-//         'in',
-//         style({
-//             opacity: 1,
-//         })
-//     ),
-//     transition('void => *', [style({ opacity: 0 }), animate('1s ease-out')]),
-//     transition('* => void', [animate('1s ease-out'), style({ opacity: 0 })]),
-// ]);
 
 const fadeInOut = trigger('fadeInOut', [
     state(
@@ -53,11 +44,13 @@ const fadeInOut = trigger('fadeInOut', [
     selector: 'menu',
     templateUrl: './menu.component.html',
     styleUrl: './menu.component.scss',
+    encapsulation: ViewEncapsulation.None,
     imports: [
         MatIcon,
         MatButton,
         MatIconButton,
-        NgClass
+        NgClass,
+        QuillViewComponent
     ],
     animations: [fadeInOut],
 })
@@ -98,14 +91,6 @@ export class MenuComponent implements OnDestroy {
     @Input()
     @HostBinding("style.--padding-top")
     paddingTop: any = "0";
-
-    @Input()
-    @HostBinding("style.--fontFamilySideMenuTitle")
-    fontFamilySideMenuTitle: string = "Butcherman-Regular";
-
-    @Input()
-    @HostBinding("style.--fontFamilySideMenuDescription")
-    fontFamilySideMenuDescription: string = "Rye-Regular";
 
     @HostBinding("style.--active-menu-link-border-radius")
     activeMenuLinkBorderRadius: any = "active-menu-link-border-radius";
@@ -191,14 +176,16 @@ export class MenuComponent implements OnDestroy {
                 const newDetail: Partial<ApartmentDetail> = {topMenu: detail?.topMenu, sideMenu: panel};
 
                 const color: Partial<Colors> = {
-                    primaryColor: header.colors.primaryColor,
-                    secondaryColor: header.colors.secondaryColor,
+                    primaryColor: header.main.colors.primaryColor,
+                    secondaryColor: header.main.colors.secondaryColor,
                 };
 
                 const data: Partial<ApartmentDetailDialogData> = {
-                    languages: header.iso.map(iso => iso.iso),
+                    languages: header.main.languages,
+                    fonts: header.main.fonts,
                     detail: newDetail,
                     colors: color,
+                    host: header.main.host,
                 };
 
                 this.openApartmentDetailDialog(data).pipe(
@@ -214,7 +201,8 @@ export class MenuComponent implements OnDestroy {
 
     openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
         const dialogRef = this.dialog.open(DetailDialogComponent, {
-            width: '420px',
+            maxWidth: '29rem',
+            maxHeight: '30rem',
             data: {
                 ...data
             },
@@ -252,6 +240,29 @@ export class MenuComponent implements OnDestroy {
         this.store.shrinkMenu(true);
     }
 
+    getSideMenuLabel(title: string, description: string) {
+        let output: string = "";
+        if (title) {
+            output = output + title;
+        }
+        if (description) {
+            output = output + description;
+        }
+        return output;
+    }
+
+    getSideMenuLabelWhenClosed(title: string) {
+        let output: string = "";
+        if (title) {
+            output = output + title;
+        }
+        output = output.replace("ql-size-huge", "ql-size-large");
+        output = output.replace("ql-size-normal", "ql-size-large");
+        if(output.includes("<p>")){
+            output = output.replace("<p>","<p class=\"ql-align-center\">");
+        }
+        return output;
+    }
 
     protected readonly Roles = Roles;
     protected readonly Layout = Layout;

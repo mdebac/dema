@@ -11,40 +11,10 @@ $mim-padding-right: var(--mim-padding-right);
 $mim-padding-left: var(--mim-padding-left);
 $activeMenuLinkBorderRadius: var(--active-menu-link-border-radius);
 $paddingTop: var(--padding-top);
-$fontFamilySideMenuTitle: var(--fontFamilySideMenuTitle);
-$fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
-
-.dashboard-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  overflow-y: auto;
-  //scrollbar-color: $secondary-color $primary-color;
-  @include mat.card-overrides((
-          elevated-container-shape: $corner-radius,
-  ));
-}
-
-.dashboard-card-header {
-  //padding: 10px;
-}
-
-.dashboard-card-content {
-  //text-align: center;
-  overflow: hidden;
-  height: 100%;
-  padding: 0;
-  margin-bottom: 5px;
-  overflow-y: auto;
-}
 
 :host {
   width: 100%;
   height: inherit;
-  // background-color: $primary-color;
   padding: 0;
   @include mat.icon-overrides((
           color: $secondary-color,
@@ -52,9 +22,24 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
   overflow-y: auto;
 }
 
+menu {
+  display: block;
+  list-style-type: disc;
+  padding-inline-start: 0;
+  unicode-bidi: isolate;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.mat-grid-tile-content{
+  padding: 0;
+  margin: 0;
+  align-items: start;
+}
 .icon-display {
   margin-top: 0.5rem;
-  transform: scale(4);
+  transform: scale(3.5);
   margin-bottom: 1.5rem;
   margin-right: 1.5rem;
   margin-left: 1.5rem;
@@ -62,6 +47,7 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
 
 .icon-display-menu {
   transform: scale(2);
+  color: $secondary-color !important;
 }
 
 .icon-display:hover {
@@ -79,6 +65,7 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
   justify-items: center;
   justify-content: center;
   align-content: center;
+
   // padding: 1.5rem;
   //  padding-right: 1.5rem
   //padding-right: $mim-padding-right;
@@ -116,20 +103,25 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
 .menu-text {
   display: flex;
   flex-direction: column;
-
+  //align-self: center;
+  //padding: 0.5rem;
+}
+.menu-text:hover {
+ scale: (1.1);
+  transition: all 300ms ease;
   //align-self: center;
   //padding: 0.5rem;
 }
 
 
-.menu-title-text {
-  // font-weight: bolder;
-  // transition: all 300ms;
-  font-family: $fontFamilySideMenuTitle;
-  text-align: left;
-  padding-left: 0.5rem;
-  font-size: 2rem;
-}
+//.menu-title-text {
+//  // font-weight: bolder;
+//  // transition: all 300ms;
+//  font-family: $fontFamilySideMenuTitle;
+//  text-align: left;
+//  padding-left: 0.5rem;
+//  font-size: 2rem;
+//}
 
 .menu-title-text-closed {
   //  padding-bottom: 1rem;
@@ -141,18 +133,20 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
   justify-items: center;
   justify-self: center;
   //margin-bottom: 0.3rem;
-  font-size: 1.2rem;
+  //font-size: 1.2rem;
   // width: 7.5rem;
-  font-family: $fontFamilySideMenuTitle;
+  .ql-editor{
+    padding: 5px;
+  }
 }
 
-.menu-description-text {
-  margin: 1rem;
-  font-size: 1.2rem;
-  text-align: left;
-  padding-left: 0.5rem;
-  font-family: $fontFamilySideMenuDescription;
-}
+//.menu-description-text {
+//  margin: 1rem;
+//  font-size: 1.2rem;
+//  text-align: left;
+//  padding-left: 0.5rem;
+//  font-family: $fontFamilySideMenuDescription;
+//}
 
 .image-desc {
   display: flex;
@@ -162,6 +156,18 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
   justify-items: center;
   justify-self: center;
   max-width: 7.5rem;
+
+  img {
+    display: block;
+    // max-height: 10rem;
+    // min-height: 6rem;
+    max-width: 7.5rem;
+    //min-height: 6rem;
+    //width: 9rem;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+  }
 }
 
 .menu-icon {
@@ -173,37 +179,25 @@ $fontFamilySideMenuDescription: var(--fontFamilySideMenuDescription);
   justify-self: center;
   align-items: center;
   width: 7.5rem;
+  margin-top:1rem;
 }
 
-.linkic-first.mat-mdc-button-base:hover {
-  // font-size: 2.1rem;
+.linkic-first:hover {
+    cursor: pointer;
 }
 
-.linkic.mat-mdc-button-base:hover {
-  // font-size: 2.1rem;
+.linkic:hover {
+    cursor: pointer;
 }
 
-.linkic-active-first.mat-mdc-button-base:hover {
-  // font-size: 2.1rem;
+.linkic-active-first:hover {
+    cursor: pointer;
 }
 
-.linkic-active.mat-mdc-button-base:hover {
-  //font-size: 2.1rem;
+.linkic-active:hover {
+    cursor: pointer;
 }
 
-
-img {
-  display: block;
-  // max-height: 10rem;
-  // min-height: 6rem;
-  max-width: 7.5rem;
-  //min-height: 6rem;
-  //width: 9rem;
-  justify-content: center;
-  justify-items: center;
-  justify-self: center;
-
-}
 
 .zajednicko {
   width: 100%;
@@ -220,19 +214,23 @@ img {
 .linkic-first {
   background-color: $primary-color;
   color: $secondary-color;
+  cursor: pointer;
 }
 
 .linkic-active-first {
   background-color: $secondary-color;
   color: $primary-color;
+  cursor: pointer;
 }
 
 .linkic-active {
   background-color: $secondary-color;
   color: $primary-color;
+  cursor: pointer;
 }
 
 .linkic {
   background-color: $primary-color;
   color: $secondary-color;
+  cursor: pointer;
 }

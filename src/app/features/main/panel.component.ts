@@ -4,7 +4,6 @@ import {filter, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {TranslateService} from "@ngx-translate/core";
-import {Editor} from "ngx-editor";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
@@ -20,15 +19,14 @@ import {Header} from "../../domain/header";
 import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
 import {Widget} from "../widget/widget";
 import {ChipMap} from "../../domain/chip-map";
-import {ApartmentDetailIso} from "../../domain/apartment-detail-iso";
 import {defaultIso} from "../../domain/countries-iso";
 import {Menu} from "../../domain/menu";
 import {Side} from "../../domain/side";
 import {Layout} from "../../domain/layout";
 import {LayoutState} from "../../domain/layout-state";
-import {MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {Hosts} from "../../domain/hosts";
 import {AuthStore} from "../../services/authentication/auth-store";
+import {Language} from "../../domain/language";
 
 @Component({
   selector: 'panel',
@@ -134,9 +132,7 @@ export class PanelComponent implements OnDestroy {
   selectedIso: string | null = defaultIso;
 
   unsubscribe$ = new Subject<void>();
-  local: boolean = true;
   apartment: string = "";
-  editor: Editor = new Editor();
 
   constructor() {
     console.log("PANEL load");
@@ -145,7 +141,6 @@ export class PanelComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.unsubscribe();
-    this.editor.destroy();
   }
 
   deleteDetail(detail: ApartmentDetail | null) {
@@ -172,13 +167,13 @@ export class PanelComponent implements OnDestroy {
   }
 
   createNewItem(detail: ApartmentDetail | null, colors: Colors | null | undefined, host: Hosts | undefined | null) {
-    console.log("(click) createItem detail", detail);
 
     if (detail && host) {
       const item: Partial<ApartmentItem> = {detailId: detail.id};
       const data: ApartmentItemDialogData = {
-        languages: detail.iso.map(iso => iso.iso),
+        languages: this.header?.main?.languages,
         item: item,
+        fonts: this.header?.main?.fonts,
         colors: colors,
         roles: this.authStore.userRoles,
         host: host
@@ -188,7 +183,6 @@ export class PanelComponent implements OnDestroy {
           filter(val => !!val),
           takeUntil(this.unsubscribe$)
       ).subscribe(detailProps => {
-            console.log("props", detailProps);
             if (detailProps.id) {
               this.store.updateItemEffect(detailProps)
             } else {
@@ -204,55 +198,13 @@ export class PanelComponent implements OnDestroy {
   openDialogItem(item?: ApartmentItemDialogData) {
 
     const dialogRef = this.dialog.open(ItemDialogComponent, {
-      width: '500px',
+      width: '31rem',
       data: {
         ...item
       },
     });
 
     return dialogRef.afterClosed();
-  }
-
-
-  updateDetail(header: Header | null, detail: ApartmentDetail | null) {
-    const selectedLanguages: string[] | undefined = header?.languages;
-    const partial: Partial<ApartmentDetail> = {...detail}
-    const data: Partial<ApartmentDetailDialogData> = {
-      languages: selectedLanguages,
-      detail: partial,
-      colors: header?.colors
-    }
-
-    this.openApartmentDetailDialog(data).pipe(
-        filter(val => !!val),
-        takeUntil(this.unsubscribe$)
-    ).subscribe(detailProps => {
-          if (detailProps.id) {
-            this.store.updateDetailEffect(detailProps)
-          }
-        }
-    );
-
-  }
-
-  openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
-    const dialogRef = this.dialog.open(DetailDialogComponent, {
-      width: '420px',
-      data: {
-        ...data
-      },
-    });
-    return dialogRef.afterClosed();
-  }
-
-  onChangeColumns($event: any, detail: ApartmentDetail | null) {
-    const detailUpdate: Partial<ApartmentDetail> = {
-      ...detail,
-      items: undefined,
-      iso: undefined,
-      columns: $event.value
-    }
-    this.store.updateDetailEffect(detailUpdate);
   }
 
   drop(event: CdkDragDrop<ApartmentItem[]>): void {
@@ -270,16 +222,17 @@ export class PanelComponent implements OnDestroy {
 
     return {
       item: item,
-      languages: detail.iso.map(iso => iso.iso),
+      languages: this.header?.main.languages,
       component: ChipMap.get(item.chip),
+      fonts: this.header?.main.fonts,
       colors: colors,
       host: host
     };
   }
 
-  getTitle(country: string | null, iso: ApartmentDetailIso[] | undefined) {
-    return iso?.find(iso => iso.iso === country)?.title;
-  }
+  // getTitle(country: string | null, iso: ApartmentDetailIso[] | undefined) {
+  //   return iso?.find(iso => iso.iso === country)?.title;
+  // }
 
   onlyOne(menus: Menu[] | undefined) {
     if (menus) {

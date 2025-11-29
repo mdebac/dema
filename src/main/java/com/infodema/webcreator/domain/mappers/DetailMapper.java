@@ -3,7 +3,6 @@ package com.infodema.webcreator.domain.mappers;
 import com.infodema.webcreator.domain.core.Detail;
 import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
 import com.infodema.webcreator.domain.core.DetailIso;
-import com.infodema.webcreator.persistance.entities.detail.DetailIsoEntity;
 import com.infodema.webcreator.domain.enums.Country;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,14 +21,6 @@ public class DetailMapper extends AbstractMapper {
         return convertCollection(entities, this::toDomain);
     }
 
-    public Set<DetailIso> toDomainDetailIso(Set<DetailIsoEntity> entities) {
-        return convertCollection(entities, this::toDomainDetailIso);
-    }
-
-    public Set<DetailIsoEntity> toEntityDetailIso(Set<DetailIso> entities) {
-        return convertCollection(entities, this::toEntityDetailIso);
-    }
-
     public Detail toDomain(DetailEntity entity) {
         return Detail.builder()
                 .id(entity.getId())
@@ -38,7 +29,6 @@ public class DetailMapper extends AbstractMapper {
                 .backgroundColor(entity.getBackgroundColor())
                 .cornerRadius(entity.getCornerRadius())
                 .items(itemMapper.toDomain(entity.getItems()))
-                .iso(toDomainDetailIso(entity.getIso()))
                 .createdOn(entity.getCreatedOn())
                 .createdBy(entity.getCreatedBy())
                 .modifiedOn(entity.getModifiedOn())
@@ -55,7 +45,6 @@ public class DetailMapper extends AbstractMapper {
     public DetailEntity toEntity(Detail detail) {
         return DetailEntity.builder()
                 .id(detail.getId())
-                .iso(toEntityDetailIso(detail.getIso()))
                 .showProgram(detail.isShow())
                 .columns(detail.getColumns())
                 .backgroundColor(detail.getBackgroundColor())
@@ -71,15 +60,12 @@ public class DetailMapper extends AbstractMapper {
     //no id, and apartmentId
     public void updateEntityByModel(DetailEntity entity, Detail detail) {
 
-       if(detail.getIso() != null) {
-           entity.setIso(toEntityDetailIso(detail.getIso()));
-        }
         entity.setShowProgram(detail.isShow());
         entity.setColumns(detail.getColumns());
         entity.setBackgroundColor(detail.getBackgroundColor());
         entity.setCornerRadius(detail.getCornerRadius());
 
-        if(detail.getItems() != null) {
+        if (detail.getItems() != null) {
             entity.setItems(itemMapper.toEntity(detail.getItems()));
         }
         entity.setCreatedBy(entity.getCreatedBy());
@@ -88,20 +74,6 @@ public class DetailMapper extends AbstractMapper {
         entity.setModifiedBy(entity.getModifiedBy());
     }
 
-    public DetailIso toDomainDetailIso(DetailIsoEntity entity) {
-        return DetailIso.builder()
-                .iso(entity.getIso().getCountryCode())
-                .label(entity.getLabel())
-                .title(entity.getTitle())
-                .build();
-    }
-
-    public DetailIsoEntity toEntityDetailIso(DetailIso domain) {
-        return DetailIsoEntity.builder()
-                .iso(Country.fromCode(domain.getIso()))
-                .label(domain.getLabel())
-                .title(domain.getTitle())
-                .build();
-    }
 }
+
 

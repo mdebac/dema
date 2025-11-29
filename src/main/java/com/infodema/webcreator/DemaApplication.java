@@ -4,6 +4,7 @@ import com.infodema.webcreator.domain.core.Message;
 import com.infodema.webcreator.domain.enums.Hosts;
 import com.infodema.webcreator.persistance.entities.security.Role;
 import com.infodema.webcreator.persistance.entities.security.User;
+import com.infodema.webcreator.persistance.repositories.MainRepository;
 import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
 import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +36,7 @@ public class DemaApplication {
 
 
     @Bean
-    public CommandLineRunner runner(RoleRepository roleRepository, UserRepository userRepository) {
+    public CommandLineRunner runner(RoleRepository roleRepository, UserRepository userRepository, MainRepository mainRepository) {
         return args -> {
             if (roleRepository.findByName("USER").isEmpty()) {
                 roleRepository.save(

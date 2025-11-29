@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {first, skipUntil} from 'rxjs';
-import {NgIf} from '@angular/common';
+
 import {CodeInputModule} from 'angular-code-input';
 import {AuthenticationService} from "../../services/authentication.service";
 import {MatFabButton} from "@angular/material/button";
@@ -14,7 +14,7 @@ import {ReCaptchaV3Service} from "ng-recaptcha-2";
     selector: 'app-activate-account',
     templateUrl: './activate-account.component.html',
     styleUrls: ['./activate-account.component.scss'],
-    imports: [NgIf, CodeInputModule, MatFabButton, TranslatePipe],
+    imports: [CodeInputModule, MatFabButton, TranslatePipe],
 })
 export class ActivateAccountComponent {
 

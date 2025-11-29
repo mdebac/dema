@@ -1,34 +1,23 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 
 import {ApartmentItemIso} from "../../../../domain/apartment-item-iso";
-import { Editor, NgxEditorComponent } from "ngx-editor";
+
 import { FormsModule } from '@angular/forms';
+import {QuillViewComponent} from "ngx-quill";
 
 @Component({
     selector: 'text',
     templateUrl: './text.component.html',
     styleUrl: './text.component.scss',
-    imports: [NgxEditorComponent, FormsModule]
+    encapsulation: ViewEncapsulation.None,
+    imports: [FormsModule, QuillViewComponent]
 })
-export class TextComponent implements OnInit, OnDestroy {
-  @Input() item:ApartmentItemIso[] = [];
+export class TextComponent{
+  @Input() item:ApartmentItemIso[] | null | undefined = [];
   @Input() selectedIso:string = "";
   @Input() columns:number = 1;
 
-  editor: Editor = new Editor();
-
-  ngOnInit(): void {
-    //this.editor = new Editor();
-  }
-
-  ngOnDestroy(): void {
-    this.editor.destroy();
-  }
-
-  getDescription(country: string | null, iso: ApartmentItemIso[] | undefined) {
+  getDescription(country: string | null, iso: ApartmentItemIso[] | undefined | null) {
     return iso?.find(iso => iso.iso === country)?.description;
-  }
-  getTitle(country: string | null, iso: ApartmentItemIso[] | undefined) {
-    return iso?.find(iso => iso.iso === country)?.title;
   }
 }

@@ -55,6 +55,7 @@ public class MenuMapper extends AbstractMapper {
                 .id(menu.getId())
                 .iso(toEntityMenuIso(menu.getIso()))
                 .icon(menu.getIcon())
+                .menuUrl(menu.getMenuUrl())
                 .side(menu.getSide())
                 .layout(menu.getLayout())
                 .panelOn(menu.getPanelOn())
@@ -70,6 +71,7 @@ public class MenuMapper extends AbstractMapper {
            entity.setIso(toEntityMenuIso(menu.getIso()));
        }
 
+        entity.setMenuUrl(menu.getMenuUrl());
         entity.setSide(menu.getSide());
         entity.setLayout(menu.getLayout());
         entity.setPanelOn(menu.getPanelOn());

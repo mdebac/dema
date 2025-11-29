@@ -14,7 +14,7 @@
   "delete.page": "Usuń stronę",
   "create.page": "Utwórz nową stronę",
   "new.page": "Nowa strona",
-  "title.and.icons": "Tytuły i ikony",
+  "title.and.icons": "Menu",
   "create.item": "Utwórz nowy element",
   "update.item": "Aktualizuj element",
   "item.dialog.description": "Opis",
@@ -46,6 +46,8 @@
   "summer.center": "Wyśrodkuj",
   "summer.panel.off": "Wyłącz panel",
   "summer.panel.on": "Włącz panel",
+  "summer.side.menu.off": "Ukryj menu boczne",
+  "summer.side.menu.on": "Pokaż menu boczne",
   "summer.columns": "Kolumny",
   "summer.new.item": "Nowy element",
   "activation.successful": "Aktywacja pomyślna!",
@@ -63,5 +65,7 @@
   "send.me.email": "Wyślij mi e-mail",
   "set.new.password": "Ustaw nowe hasło",
   "forgot.your.password": "Zapomniałeś hasła?",
-  "nothing.remembered": "Nic, przypomniałem sobie."
+  "nothing.remembered": "Nic, przypomniałem sobie.",
+  "header.actions": "Działania nagłówkowe",
+  "page.actions": "Działania strony"
 }

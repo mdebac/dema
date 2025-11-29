@@ -32,7 +32,7 @@ img{
   display: flex;
   flex-direction: column;
   width: 15%;
-  padding-top: 1rem;
+ // padding-top: 1rem;
   align-items: center;
   align-content: center;
   justify-content: flex-end;
@@ -44,6 +44,7 @@ img{
   object-fit: cover;
   background-image: $myIconImage;
   min-width: 3rem;
+  margin: 1rem;
 }
 
 .header-left {
@@ -118,18 +119,80 @@ img{
   flex-grow: 0.9;
 }
 
-.headerText {
- // position: absolute;
-  padding-top:  1rem;
+.headerTextMobile{
+  // position: absolute;
+  padding-top:  2px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  align-content: flex-start;
-  //color: $primary-color;
+  //align-items: flex-start;
+  //align-content: flex-start;
+  color: $primary-color;
   //font-weight: bold;
   //font-family: "Lucida Bright";
   //font-size: 1rem;
   flex-grow: 0.8;
+  min-height: 3.25rem;
+  // background-color: darkred;
+
+  .ql-size-huge{
+    font-size: 2.25em !important;
+    padding-left: 0.1rem !important;
+    line-height: 1.3 !important;
+  }
+  .ql-size-large{
+    font-size: 5px !important;
+  }
+
+
+  .my-quill-view{
+    height: 180px;
+    margin: 0;
+    padding: 0;
+  }
+  .ql-editor{
+    //   height: 180px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.headerText {
+ // position: absolute;
+  padding-top:  2px;
+  display: flex;
+  flex-direction: column;
+  //align-items: flex-start;
+  //align-content: flex-start;
+  color: $primary-color;
+  //font-weight: bold;
+  //font-family: "Lucida Bright";
+  //font-size: 1rem;
+  flex-grow: 0.8;
+  min-height: 11.25rem;
+ // background-color: darkred;
+
+  .ql-size-huge{
+    font-size: 6.25em !important;
+    padding-left: 1rem !important;
+    line-height: 1.3 !important;
+  }
+  .ql-size-large{
+    font-size: 25px !important;
+  }
+
+
+  .my-quill-view{
+    height: 180px;
+    margin: 0;
+    padding: 0;
+  }
+  .ql-editor{
+ //   height: 180px;
+    margin: 0;
+    padding: 0;
+  }
+
+
 }
 
 

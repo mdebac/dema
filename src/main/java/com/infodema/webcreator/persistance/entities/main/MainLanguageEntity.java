@@ -1,4 +1,4 @@
-package com.infodema.webcreator.persistance.entities.detail;
+package com.infodema.webcreator.persistance.entities.main;
 
 import com.infodema.webcreator.domain.enums.Country;
 import jakarta.persistence.Column;
@@ -14,17 +14,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
 @EqualsAndHashCode
+@Embeddable
 @Data
-public class DetailIsoEntity {
-
-    @EqualsAndHashCode.Exclude
-    private String label;
-
-    @EqualsAndHashCode.Exclude
-    private String title;
-
+public class MainLanguageEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Country iso;

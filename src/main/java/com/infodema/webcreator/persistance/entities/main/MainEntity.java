@@ -1,8 +1,6 @@
 package com.infodema.webcreator.persistance.entities.main;
 
-import com.infodema.webcreator.domain.enums.Country;
 import com.infodema.webcreator.persistance.entities.BaseAuditEntity;
-import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import com.infodema.webcreator.persistance.entities.security.User;
 import jakarta.persistence.*;
@@ -14,11 +12,11 @@ import lombok.SneakyThrows;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.io.IOUtils;
-import org.hibernate.type.TrueFalseConverter;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -110,6 +108,23 @@ public class MainEntity extends BaseAuditEntity {
     )
     @Builder.Default
     private Set<MainIsoEntity> iso = new HashSet<>();
+
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "main_fonts",
+            joinColumns = @JoinColumn(name = "main_id", nullable = false)
+    )
+    @Builder.Default
+    private Set<MainFontEntity> fonts = new HashSet<>();
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "main_languages",
+            joinColumns = @JoinColumn(name = "main_id", nullable = false)
+    )
+    @Builder.Default
+    private Set<MainLanguageEntity> languages = new HashSet<>();
 
     @Transient
     public double getRate() {

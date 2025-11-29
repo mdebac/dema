@@ -6,6 +6,9 @@ import {ApartmentIso} from "./apartment-iso";
 import {Customer} from "./customer";
 import {MatTableDataSource} from "@angular/material/table";
 import {Hosts} from "./hosts";
+import {Font} from "./font";
+import {Language} from "./language";
+import {Colors} from "./colors";
 
 export interface Apartment extends Audit {
 
@@ -29,14 +32,15 @@ export interface Apartment extends Audit {
   removePicture: boolean;
   removePictureBackground: boolean;
   linearPercentage: number;
-
+  colors: Colors;
   file: Blob | null;
   comments: ApartmentComment[];
   details: ApartmentDetail[];
   iconImage: File | null;
   backgroundImage: File | null;
   iso: ApartmentIso[];
-
+  fonts: Font[];
+  languages: Language[];
   customers: Customer[];
   customersDS?: MatTableDataSource<Customer>;
 }

@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,8 +112,12 @@ public class MainService {
     public void saveMain(Main main, MultipartFile file, MultipartFile fileBg) {
         main.setOwner(auditorAware.getCurrentAuditor().orElseThrow());
 
+        if (main.getId() == null) {
+            Set<MainLanguage> l = new HashSet<>();
+            l.add(MainLanguage.builder().iso("GB-eng").build());
+            main.setLanguages(l);
+        }
         MainEntity entity = mainMapper.toEntity(main);
-
 
         if (main.getRemovePicture() != null && main.getRemovePicture() == Boolean.TRUE) {
             entity.setImage(null);
@@ -175,6 +179,7 @@ public class MainService {
                     MenuEntity.builder()
                             .iso(menuIso)
                             .icon("favorite")
+                            .menuUrl("title")
                             .orderNum(1)
                             .side(Side.RIGHT)
                             .layout(Layout.FULL)
@@ -188,6 +193,7 @@ public class MainService {
                     PanelEntity.builder()
                             .iso(menuPanelIso)
                             .menu(menuEntity)
+                            .panelUrl("title2")
                             .orderNum(1)
                             .build()
             );
@@ -216,7 +222,7 @@ public class MainService {
     public Header findHeaderByHost(String host) {
         MainEntity entity = mainRepository.findByHost(host).isPresent() ? mainRepository.findByHost(host).get() : null;
         if (entity == null) {
-            return Header.builder().colors(Colors.builder().primaryColor("green").secondaryColor("white").build()).build();
+            return Header.builder().build();
         }
 
         List<MenuEntity> menus = entity.getMenus();
@@ -224,11 +230,6 @@ public class MainService {
         return Header.builder()
                 .main(mainWithoutChildrenMapper.toDomain(entity))
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))
-                .languages(
-                        entity.getIso().stream()
-                                .map(a->a.getIso().getCountryCode())
-                                .collect(Collectors.toList())
-                )
                 .menus(
                         menus.stream()
                                 .sorted(Comparator.comparing(MenuEntity::getOrderNum))
@@ -238,6 +239,7 @@ public class MainService {
                                         .side(menu.getSide())
                                         .layout(menu.getLayout())
                                         .panelOn(menu.getPanelOn())
+                                        .image(menu.getImageContent())
                                         .searchOn(menu.getSearchOn())
                                         .hideMenuPanelIfOne(menu.getHideMenuPanelIfOne())
                                         .mainId(menu.getMain().getId())
@@ -252,20 +254,20 @@ public class MainService {
                 .activeSideMenuUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getPanels().stream().min(Comparator.comparing(PanelEntity::getOrderNum)).orElseThrow().getPanelUrl())
 //                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
 //                .host(entity.getHost())
-                .colors(Colors.builder()
-                        .primaryColor(entity.getPrimaryColor())
-                        .secondaryColor(entity.getSecondaryColor())
-                        .primaryColorLight(entity.getPrimaryColorLight())
-                        .secondaryColorLight(entity.getSecondaryColorLight())
-                        .warnColor(entity.getWarnColor())
-                        .warnColorLight(entity.getWarnColorLight())
-                        .infoColor(entity.getInfoColor())
-                        .infoColorLight(entity.getInfoColorLight())
-                        .acceptColor(entity.getAcceptColor())
-                        .acceptColorLight(entity.getAcceptColorLight())
-                        .dangerColor(entity.getDangerColor())
-                        .dangerColorLight(entity.getDangerColorLight())
-                        .build())
+//                .colors(Colors.builder()
+//                        .primaryColor(entity.getPrimaryColor())
+//                        .secondaryColor(entity.getSecondaryColor())
+//                        .primaryColorLight(entity.getPrimaryColorLight())
+//                        .secondaryColorLight(entity.getSecondaryColorLight())
+//                        .warnColor(entity.getWarnColor())
+//                        .warnColorLight(entity.getWarnColorLight())
+//                        .infoColor(entity.getInfoColor())
+//                        .infoColorLight(entity.getInfoColorLight())
+//                        .acceptColor(entity.getAcceptColor())
+//                        .acceptColorLight(entity.getAcceptColorLight())
+//                        .dangerColor(entity.getDangerColor())
+//                        .dangerColorLight(entity.getDangerColorLight())
+//                        .build())
 //                .backgroundImage(entity.getContentBackground())
 //                .iconImage(entity.getContent())
                 .build();

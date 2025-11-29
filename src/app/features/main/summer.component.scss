@@ -65,7 +65,9 @@ mat-slide-toggle {
 
 .header-actions{
   display: flex;
+  justify-content: stretch;
   flex-direction: row;
+  padding-left: 1.5rem;
   border-bottom: solid 2px $actions-border-color;
   width: 100%;
 }
@@ -87,8 +89,6 @@ mat-slide-toggle {
   flex-direction: column;
   // align-items: start;
   // justify-content: left;
-  --ngx-editor-background-color: $primary-color;
-  --ngx-editor-border-color: $primary-color;
   font-size: large;
 }
 
@@ -183,6 +183,16 @@ mat-slide-toggle {
   color: $secondary-color;
 }
 
+.menu-container-list {
+  background-color: $secondary-color;
+  //color: $secondary-color;
+  margin-top: 0.5rem;
+  //.ql-editor {
+  //  color: $primary-color;
+  //  border: $primary-color 1px solid;
+  //}
+}
+
 .mat-mdc-extended-fab {
   background-color: $secondary-color;
   color: $primary-color;
@@ -234,6 +244,7 @@ mat-slide-toggle {
   border-top: solid 2px $primary-color;
   border-right: solid 2px $primary-color;
   border-bottom: solid 2px $primary-color;
+  border-left: solid 2px $primary-color;
   width: 100%;
 
   background-color: $bgColorMenu;
@@ -247,21 +258,33 @@ mat-slide-toggle {
     //max-width: 3rem;
   }
 
-  .menu-title-text{
-    font-weight: bolder;
-    // transition: all 300ms;
-    font-family: "Lato";
-    text-align: left;
-    font-size: 1.4rem;
-    padding-left: 0.3rem;
+
+  .menu-icon{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+    width: 7.5rem;
+    margin-top:1rem;
   }
 
-  .menu-description-text{
-    margin: 0.5rem;
-    font-size: 1rem;
-    text-align: left;
-    padding-left: 0.2rem;
+  .icon-display {
+    transform: scale(2.6);
+    //margin-top: 0.8rem;
+    margin-bottom: 0.7rem;
+    //margin-right: 0.8rem;
+    //margin-left: 0.8rem;
+    color: $colorMenu;
   }
+
+  .icon-display:hover {
+    transform: scale(2.5);
+    transition: all 300ms;
+  }
+
 }
 
 .menu-container-list{
@@ -278,30 +301,45 @@ mat-slide-toggle {
   border-top: solid 2px $primary-color;
   border-right: solid 2px $primary-color;
   border-bottom: solid 2px $primary-color;
+  border-left: solid 2px $primary-color;
 
   img{
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     display: block;
     max-height: 6rem;
-    //max-width: 3rem;
   }
 
-  .menu-title-text{
-    font-weight: bolder;
-    // transition: all 300ms;
-    font-family: "Lato";
-    text-align: left;
-    font-size: 1.4rem;
-    padding-left: 0.3rem;
+  .menu-text{
+    color: $primary-color;
+    height: 6rem;
+    align-content: center;
+  }
+
+  .menu-icon {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+    min-width: 6rem;
+    margin-top:1rem;
+    height: 6rem;
+  }
+
+  .icon-display {
+    transform: scale(2.6);
+    //margin-top: 0.8rem;
+    margin-bottom: 0.7rem;
+    //margin-right: 0.8rem;
+    //margin-left: 0.8rem;
     color: $primary-color;
   }
 
-  .menu-description-text{
-    margin: 0.5rem;
-    font-size: 1rem;
-    text-align: left;
-    padding-left: 0.2rem;
-    color: $primary-color;
+  .icon-display:hover {
+    transform: scale(2.5);
+    transition: all 300ms;
   }
 }

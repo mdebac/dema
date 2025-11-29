@@ -23,6 +23,7 @@ import {Subject} from "rxjs";
 import {Menu} from "../../domain/menu";
 import {Apartment} from "../../domain/apartment";
 import {ApartmentDialogComponent} from "../dialogs/apartment-dialog/apartment-dialog.component";
+import {Language} from "../../domain/language";
 
 @Component({
   selector: 'actions',
@@ -53,27 +54,12 @@ export class ActionsComponent implements OnDestroy {
 
   unsubscribe$ = new Subject<void>();
 
-  panelOpenState:boolean = false;
-  isOpened: boolean = true;
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.unsubscribe();
   }
 
-  openClose() {
-  //  this.isOpened = !this.isOpened;
-  }
-
-  setPanelOpenState(state:boolean){
-    this.panelOpenState = state;
-  }
-
-  posts = [
-    { title: 'First Post', content: 'This is the First post' },
-    { title: 'Second Post', content: 'This is the Second post' },
-    { title: 'Third Post', content: 'This is the Third post' },
-  ];
 
   conformationDialog() {
     const dialogRef = this.dialog.open(ConformationDialogComponent, {
@@ -87,7 +73,7 @@ export class ActionsComponent implements OnDestroy {
     if (detail) {
       const item: Partial<ApartmentItem> = {detailId: detail.id};
       const data: ApartmentItemDialogData = {
-        languages: detail.iso.map(iso => iso.iso),
+        languages: this.header?.main.languages,
         item: item,
         colors: colors,
         roles: this.authStore.userRoles,
@@ -112,7 +98,7 @@ export class ActionsComponent implements OnDestroy {
   openDialogItem(item?: ApartmentItemDialogData) {
 
     const dialogRef = this.dialog.open(ItemDialogComponent, {
-      width: '500px',
+      width: '31rem',
       data: {
         ...item
       },
@@ -123,12 +109,14 @@ export class ActionsComponent implements OnDestroy {
 
 
   updateTitlesAndIcons(header: Header | null, detail: ApartmentDetail | null) {
-    const selectedLanguages: string[] | undefined = header?.languages;
+    const selectedLanguages: Language[] | undefined = header?.main.languages;
     const partial: Partial<ApartmentDetail> = {...detail}
     const data: Partial<ApartmentDetailDialogData> = {
       languages: selectedLanguages,
+      fonts: header?.main.fonts,
       detail: partial,
-      colors: header?.colors
+      colors: header?.colors,
+      host: header?.main.host,
     }
 
     this.openApartmentDetailDialog(data).pipe(
@@ -145,7 +133,8 @@ export class ActionsComponent implements OnDestroy {
 
   openApartmentDetailDialog(data?: Partial<ApartmentDetailDialogData>) {
     const dialogRef = this.dialog.open(DetailDialogComponent, {
-      width: '420px',
+      maxWidth: '29rem',
+      maxHeight: '30rem',
       data: {
         ...data
       },
@@ -157,7 +146,7 @@ export class ActionsComponent implements OnDestroy {
     const detailUpdate: Partial<ApartmentDetail> = {
       ...detail,
       items: undefined,
-      iso: undefined,
+     // iso: undefined,
       columns: $event.value
     }
     this.store.updateDetailEffect(detailUpdate);
@@ -181,7 +170,7 @@ export class ActionsComponent implements OnDestroy {
     const detailUpdate: Partial<ApartmentDetail> = {
       ...detail,
       items: undefined,
-      iso: undefined,
+     // iso: undefined,
       backgroundColor: $event.value,
     }
     this.store.updateDetailEffect(detailUpdate);
@@ -242,12 +231,12 @@ export class ActionsComponent implements OnDestroy {
   }
 
   changeHeader(main: Apartment | undefined) {
-    console.log("changeHeader dialog enter", main);
+  //  console.log("changeHeader dialog enter", main);
     this.openApartmentDialog(main).pipe(
         filter(val => !!val),
         takeUntil(this.unsubscribe$)
     ).subscribe(detailProps => {
-          console.log("changeHeader dialog finish", detailProps);
+          //console.log("changeHeader dialog finish", detailProps);
           this.store.createMainEffect(detailProps);
         }
     );

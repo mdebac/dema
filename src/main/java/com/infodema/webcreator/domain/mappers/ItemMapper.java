@@ -97,6 +97,7 @@ public class ItemMapper extends AbstractMapper {
 
         if(item.getChip().equals(Chip.PICTURE)){
             entity.setImage(file);
+            entity.setIso(toEntityItemIso(item.getIso()));
         }
 
         if(item.getChip().equals(Chip.TEXT) || item.getChip().equals(Chip.JOB)){

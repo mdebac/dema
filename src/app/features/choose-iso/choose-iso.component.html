@@ -1,0 +1,39 @@
+<mat-card class="dashboard-card-iso">
+    <mat-card-content>
+        <div class="example-list-iso"
+             cdkDropList
+             cdkDropListOrientation="horizontal"
+             #todoList="cdkDropList"
+             [cdkDropListData]="chosen"
+             [cdkDropListConnectedTo]="[doneList]"
+             (cdkDropListDropped)="drop($event)"
+        >
+            @for (item of chosen; track item) {
+                <div class="example-box"  cdkDrag [ngClass]="flag(item)"></div>
+            }
+        </div>
+
+        <div class="example-list-iso"
+             cdkDropList
+             #doneList="cdkDropList"
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="toChoose"
+             [cdkDropListConnectedTo]="[todoList]"
+             (cdkDropListDropped)="drop($event)"
+        >
+            @for (item of toChoose; track item) {
+                <div class="example-box"  cdkDrag [ngClass]="flag(item)">
+                </div>
+            }
+        </div>
+        <button
+                routerLinkActive="activebutton"
+                mat-fab extended (click)="saveIso()">
+            {{ "save.languages" | translate }}
+        </button>
+
+    </mat-card-content>
+</mat-card>
+
+
+

@@ -14,26 +14,210 @@ $direction: var(--direction);
   //width: 100%;
 }
 
-.mat-mdc-extended-fab:hover{
+
+.image-desc {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
+  justify-content: center;
+  justify-items: center;
+  justify-self: center;
+  max-width: 7.5rem;
+}
+
+
+span {
+  margin: 0;
+  padding: 0;
+}
+
+
+.buttonWidth {
+
+  cursor: pointer;
+  max-width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  margin-right: 0.5rem;
+  border-radius: 1rem;
+  border: 3px solid $primary-color;
+  padding: 2px;
+  min-width: 2.5rem;
+  height: 4rem;
+  // align-items: center;
+  background-color: $secondary-color;
+  color: $primary-color;
+  opacity: 0.9;
+
+  .ql-editor {
+    margin-top: 4px;
+    padding: 0;
+  }
+
+  .ql-size-huge {
+    font-size: 25px !important;
+  }
+
+  .ql-size-large {
+    font-size: 25px !important;
+  }
+
+  img {
+    display: block;
+    min-width: 2.5rem;
+    max-width: 5.5rem;
+    border-radius: 0.5rem;
+  }
+
+  img:hover {
+    transform: scale(1.05);
+    transition: all 300ms;
+  }
+
+  .icon-display-top{
+
+  }
+  .icon-display {
+    transform: scale(2);
+    display: block;
+    padding-top: 3px;
+
+    min-width: 1.5rem;
+    max-width: 1.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .icon-display:hover {
+    transform: scale(2.1);
+    transition: all 300ms;
+  }
+
+  .menu-icon {
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+    margin-top: 0;
+    display: block;
+    width: 3rem;
+  }
+
+
+}
+
+.buttonMaxWidth {
+  width: 100%;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: row;
+  margin-right: 0.5rem;
+  border-radius: 1rem;
+  border: 3px solid $primary-color;
+  padding: 2px;
+  min-width: 2.5rem;
+  height: 5.5rem;
+  // align-items: center;
+  background-color: $secondary-color;
+  color: $primary-color;
+  opacity: 0.9;
+
+  img {
+    display: block;
+    // max-height: 10rem;
+    // min-height: 6rem;
+    min-width: 2.5rem;
+    max-width: 5.5rem;
+    //min-height: 6rem;
+    //width: 9rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+
+  }
+
+  img:hover {
+    transform: scale(1.05);
+    transition: all 300ms;
+  }
+
+}
+
+
+//.buttonMenu {
+//  display: inline-flex;
+//  flex-direction: row;
+//  margin-right: 0.5rem;
+//  border-radius: 1rem;
+//  border: 3px solid $primary-color;
+//  padding: 2px;
+//
+//
+//  min-width: 2.5rem;
+//  height: 5.5rem;
+//  // align-items: center;
+//  background-color: $secondary-color;
+//  color: $primary-color;
+//  opacity: 0.9;
+//
+//  width: 100%;
+//  //max-width: 100%;
+//  //.button-width{
+//  //  width: 100%;
+//  //}
+//  //
+//  //.button-max-width{
+//  //  max-width: 100%;
+//  //}
+//}
+
+.button-text {
+  padding: 4px;
+}
+
+.buttonMenu:hover {
+  cursor: pointer;
   background-color: $primary-color;
   color: $secondary-color;
 }
-.mat-mdc-extended-fab{
+
+.mat-mdc-extended-fab:hover {
+  background-color: $primary-color;
+  color: $secondary-color;
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.mat-mdc-extended-fab {
   background-color: $secondary-color;
   color: $primary-color;
+  width: 10rem;
+  height: 3.5rem;
+  display: inline-flex;
+  flex-direction: row;
 }
 
 
 .activebutton {
   background-color: $primary-color;
   color: $secondary-color;
-  --mdc-protected-button-container-color: $secondary-color;
-  --mdc-extended-fab-container-elevation-shadow: 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color, 1px 1px 0px 0px $secondary-color;
+  opacity: 1 !important;
 }
 
 .buttonSpace {
   display: flex;
   flex-direction: $direction;
-  align-items: flex-end;
+
+  align-items: flex-start;
   justify-content: center;
 }
+
+//.imageSpace{
+//  background-size: contain;
+//  background-repeat: no-repeat;
+//  background-position: right;
+//  object-fit: cover;
+//
+//  display: inline-flex;
+//  flex-direction: row;
+//}
+

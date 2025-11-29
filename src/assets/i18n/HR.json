@@ -14,7 +14,7 @@
   "delete.page": "Obriši stranicu",
   "create.page": "Kreiraj stranicu",
   "new.page": "Nova stranica",
-  "title.and.icons": "Naslovi i Ikone",
+  "title.and.icons": "Izbornici",
   "create.item": "Kreiraj novi element",
   "update.item": "Ažuriraj element",
   "item.dialog.description": "Opis",
@@ -46,6 +46,8 @@
   "summer.center": "Centar",
   "summer.panel.off": "Ugasi panel",
   "summer.panel.on": "Prikaži panel",
+  "summer.side.menu.off": "Sakrij bočni izbornik",
+  "summer.side.menu.on": "Prikaži bočni izbornik",
   "summer.columns": "Kolone",
   "summer.new.item": "Novi element",
   "activation.successful": "Aktivacija uspješna!",
@@ -63,5 +65,7 @@
   "send.me.email": "Pošaljite mi email",
   "set.new.password": "Postavite novu lozinku",
   "forgot.your.password": "Zaboravili ste lozinku?",
-  "nothing.remembered": "Ništa, sjetih se."
+  "nothing.remembered": "Ništa, sjetih se.",
+  "header.actions": "Akcije zaglavlja",
+  "page.actions": "Akcije na stranici"
 }

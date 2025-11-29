@@ -14,6 +14,7 @@ import {provideAnimationsAsync} from "@angular/platform-browser/animations/async
 import {RECAPTCHA_V3_SITE_KEY, RecaptchaModule, RecaptchaV3Module} from "ng-recaptcha-2";
 import {environment} from "../environments/environment";
 import {provideQuillConfig} from 'ngx-quill';
+import {allFonts, font_families} from "./domain/font";
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideQuillConfig({customOptions: [{
         import: 'formats/font',
-        whitelist: ['roboto', 'firacode','serif', 'monospace','butcherman','electrolize']
+        whitelist: allFonts()
       }]}),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

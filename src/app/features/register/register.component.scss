@@ -12,7 +12,7 @@ $secondary-color: var(--secondary-color);
 .mat-mdc-fab.mat-accent {
   --mdc-fab-container-color: var(--secondary-color);
 }
-.dashboard-card {
+.dashboard-card3 {
   background-color: $primary-color;
   color: $secondary-color;
 
@@ -20,18 +20,29 @@ $secondary-color: var(--secondary-color);
   //scrollbar-color: $secondary-color $primary-color;
 }
 
-.dashboard-card mat-card-content {
+.max{
+  width: 100%;
+  color: $primary-color;
+  background-color: $secondary-color;
+}
+.max:hover{
+  width: 100%;
+  color: $secondary-color;
+  background-color: $primary-color;
+}
+
+.dashboard-card3 mat-card-content {
   display: grid;
   grid-template-columns: repeat(1,1fr);
   gap: 16px;
 }
 
-.dashboard-card mat-card-header {
+.dashboard-card3 mat-card-header {
   display: grid;
   grid-template-columns: repeat(1,1fr);
   gap: 16px;
 }
-.dashboard-card mat-card-footer {
+.dashboard-card3 mat-card-footer {
   display: grid;
   grid-template-columns: repeat(1,1fr);
 }
@@ -67,6 +78,8 @@ $secondary-color: var(--secondary-color);
 
 .contentSpace {
   flex-grow: 0.2;
+  display: flex;
+  flex-direction: column;
 }
 .contentSpaceActions{
   padding-top: 2rem;

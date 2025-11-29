@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import {NgIf, NgFor} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {RegistrationRequest} from "../../domain/registration-request";
 import {AuthenticationService} from "../../services/authentication.service";
@@ -14,14 +14,12 @@ import {ReCaptchaV3Service} from "ng-recaptcha-2";
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
     imports: [
-        NgIf,
-        NgFor,
-        FormsModule,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatFabButton,
-    ],
+    FormsModule,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatFabButton
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent {

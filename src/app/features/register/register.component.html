@@ -1,86 +1,90 @@
 <ng-container>
-    <mat-card class="dashboard-card">
-        <mat-card-header>
+  <mat-card class="dashboard-card3">
+    <mat-card-header>
 
-            <div class="loginSpace">
+      <div class="loginSpace">
 
-                <div class="gap1Space">
-                </div>
+        <div class="gap1Space">
+        </div>
 
-                <div class="contentSpace">
-                    <h3 class="text-center"><b>Create an account</b></h3>
-<!--                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">-->
-<!--                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>-->
-<!--                    </div>-->
-                </div>
+        <div class="contentSpace">
+          <h3 class="text-center"><b>Create an account</b></h3>
+          <!--                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">-->
+          <!--                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>-->
+        <!--                    </div>-->
+      </div>
 
-                <div class="gap2Space">
-                </div>
-            </div>
+      <div class="gap2Space">
+      </div>
+    </div>
 
-        </mat-card-header>
+  </mat-card-header>
 
-        <mat-card-content>
-            <div class="loginSpace">
+  <mat-card-content>
+    <div class="loginSpace">
 
-                <div class="gap1Space"></div>
+      <div class="gap1Space"></div>
 
-                <div class="contentSpace">
+      <div class="contentSpace">
+        <div>
+          <label for="firstname" class="form-label">Firstname</label>
+          <input [(ngModel)]="registerRequest.firstname" type="text" class="form-control" id="firstname"
+            placeholder="Firstname">
+          </div>
+          <br>
+            <div>
+              <label for="lastname" class="form-label">Lastname</label>
+              <input [(ngModel)]="registerRequest.lastname" type="text" class="form-control" id="lastname"
+                placeholder="Lastname">
+              </div>
+              <br>
+                <div>
+                  <label for="login" class="form-label">Email address</label>
+                  <input [(ngModel)]="registerRequest.email" type="email" class="form-control" id="login"
+                    placeholder="name@example.com">
+                  </div>
+                  <br>
                     <div>
-                        <label for="firstname" class="form-label">Firstname</label>
-                        <input [(ngModel)]="registerRequest.firstname" type="text" class="form-control" id="firstname"
-                               placeholder="Firstname">
-                    </div>
-                    <br>
-                    <div>
-                        <label for="lastname" class="form-label">Lastname</label>
-                        <input [(ngModel)]="registerRequest.lastname" type="text" class="form-control" id="lastname"
-                               placeholder="Lastname">
-                    </div>
-                    <br>
-                    <div>
-                        <label for="login" class="form-label">Email address</label>
-                        <input [(ngModel)]="registerRequest.email" type="email" class="form-control" id="login"
-                               placeholder="name@example.com">
-                    </div>
-                    <br>
-                    <div>
-                        <label for="password" class="form-label">Password</label>
-                        <div class="input-group">
-                            <input  [(ngModel)]="registerRequest.password" type="{{showPassword ? 'text' : 'password'}}" class="form-control myInput"
-                                   id="password"
-                                   placeholder="Password">
+                      <label for="password" class="form-label">Password</label>
+                      <div class="input-group">
+                        <input  [(ngModel)]="registerRequest.password" type="{{showPassword ? 'text' : 'password'}}" class="form-control myInput"
+                          id="password"
+                          placeholder="Password">
 
-                            <div class="input-group-append">
-                                <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true" *ngIf="!showPassword"></i>
-                                <i class="fa fa-eye-slash" (click)="showPassword = !showPassword" aria-hidden="true" *ngIf="showPassword"></i>
-                            </div>
+                          <div class="input-group-append">
+                            @if (!showPassword) {
+                              <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true"></i>
+                            }
+                            @if (showPassword) {
+                              <i class="fa fa-eye-slash" (click)="showPassword = !showPassword" aria-hidden="true"></i>
+                            }
+                          </div>
                         </div>
-                    </div>
+                      </div>
 
-                    <div class="contentSpaceActions">
+                      <div class="contentSpaceActions">
                         <div>
-                            <button class="max" mat-fab extended (click)="register()">
-                                Create an account
-                            </button>
+                          <button class="max" mat-fab extended (click)="register()">
+                            Create an account
+                          </button>
                         </div>
 
                         <div>
-                            <button class="max" mat-fab extended (click)="login()">
-                                Login
-                            </button>
-                            <br>
+                          <button class="max" mat-fab extended (click)="login()">
+                            Login
+                          </button>
+                          <br>
                             Already have an account?&nbsp;
+                          </div>
                         </div>
+
+                      </div>
+
+                      <div class="gap2Space">
+                      </div>
                     </div>
-
-                </div>
-
-                <div class="gap2Space">
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+                  </mat-card-content>
+                </mat-card>
 
 
-</ng-container>
+              </ng-container>

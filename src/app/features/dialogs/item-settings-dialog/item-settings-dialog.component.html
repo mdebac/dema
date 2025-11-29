@@ -1,89 +1,87 @@
 <mat-card class="dashboard-card">
-  <mat-card-header>
-    <h2 class="button-container-left">
-      Settings
-    </h2>
 
-  </mat-card-header>
+    <mat-card-content [formGroup]="form">
+        <div>
+            <mat-label><p>Row span</p></mat-label>
+            <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                     [value]="rowSpan"
+                                     (change)="onChangeRowSpan($event)">
+                <mat-button-toggle [ngClass]="selected(rowSpan, 1)" [value]="1">1</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(rowSpan, 2)" [value]="2">2</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(rowSpan, 3)" [value]="3">3</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(rowSpan, 4)" [value]="4">4</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
 
-  <mat-card-content [formGroup]="form">
-    <div>
-      <mat-label><p>Row span</p></mat-label>
-      <mat-button-toggle-group hideSingleSelectionIndicator="true"
-                               [value]="rowSpan"
-                               (change)="onChangeRowSpan($event)">
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
-        <mat-button-toggle [value]="2">2</mat-button-toggle>
-        <mat-button-toggle [value]="3">3</mat-button-toggle>
-        <mat-button-toggle [value]="4">4</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+        <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
+        <div>
+            <mat-label><p>Column span</p></mat-label>
+            <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                     [value]="colSpan"
+                                     (change)="onChangeColSpan($event)">
+                <mat-button-toggle [ngClass]="selected(colSpan, 1)" [value]="1">1</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(colSpan, 2)" [value]="2">2</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(colSpan, 3)" [value]="3">3</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(colSpan, 4)" [value]="4">4</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(colSpan, 5)" [value]="5">5</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
 
-    <div>
-      <mat-label><p>Column span</p></mat-label>
-      <mat-button-toggle-group hideSingleSelectionIndicator="true"
-                               [value]="colSpan"
-                               (change)="onChangeColSpan($event)">
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
-        <mat-button-toggle [value]="2">2</mat-button-toggle>
-        <mat-button-toggle [value]="3">3</mat-button-toggle>
-        <mat-button-toggle [value]="4">4</mat-button-toggle>
-        <mat-button-toggle [value]="5">5</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+        <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
+        <div>
+            <mat-label><p>Corner radius (px)</p></mat-label>
+            <mat-button-toggle-group hideSingleSelectionIndicator="true"
+                                     [value]="cornerRadius"
+                                     (change)="onChangeCornerRadius($event)">
+                <mat-button-toggle [ngClass]="selected(cornerRadius, 1)" [value]="1">1</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(cornerRadius, 10)" [value]="10">10</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(cornerRadius, 20)" [value]="20">20</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(cornerRadius, 30)" [value]="30">30</mat-button-toggle>
+                <mat-button-toggle [ngClass]="selected(cornerRadius, 40)" [value]="40">40</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
 
-    <div>
-      <mat-label><p>Corner radius (px)</p></mat-label>
-      <mat-button-toggle-group hideSingleSelectionIndicator="true"
-                               [value]="cornerRadius"
-                               (change)="onChangeCornerRadius($event)">
-        <mat-button-toggle [value]="1">1</mat-button-toggle>
-        <mat-button-toggle [value]="10">10</mat-button-toggle>
-        <mat-button-toggle [value]="20">20</mat-button-toggle>
-        <mat-button-toggle [value]="30">30</mat-button-toggle>
-        <mat-button-toggle [value]="40">40</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+        <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
+        <div>
+            <mat-label><p>Shadow Color </p></mat-label>
+            <mat-button-toggle-group [value]="shadowColor"
+                                     (change)="onChangeShadowColor($event)">
+                <mat-button-toggle class="primaryColor" [value]=colors?.primaryColor></mat-button-toggle>
+                <mat-button-toggle class="secondaryColor" [value]=colors?.secondaryColor></mat-button-toggle>
+                <mat-button-toggle class="dangerColor" [value]=colors?.dangerColor></mat-button-toggle>
+                <mat-button-toggle class="warnColor" [value]=colors?.warnColor></mat-button-toggle>
+                <mat-button-toggle class="infoColor" [value]=colors?.infoColor></mat-button-toggle>
+                <mat-button-toggle class="acceptColor" [value]=colors?.acceptColor></mat-button-toggle>
+                <mat-button-toggle class="whiteColor" [value]="'#FFFFFF'"></mat-button-toggle>
+                <mat-button-toggle class="blackColor" [value]="'#000000'"></mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
 
-      <div>
-          <mat-label><p>Shadow Color </p></mat-label>
-          <mat-button-toggle-group [value]="shadowColor"
-                                   (change)="onChangeShadowColor($event)">
-              <mat-button-toggle class="primaryColor" [value]=colors?.primaryColor></mat-button-toggle>
-              <mat-button-toggle class="secondaryColor" [value]=colors?.secondaryColor></mat-button-toggle>
-              <mat-button-toggle class="dangerColor" [value]=colors?.dangerColor></mat-button-toggle>
-              <mat-button-toggle class="warnColor" [value]=colors?.warnColor></mat-button-toggle>
-              <mat-button-toggle class="infoColor" [value]=colors?.infoColor></mat-button-toggle>
-              <mat-button-toggle class="acceptColor" [value]=colors?.acceptColor></mat-button-toggle>
-          </mat-button-toggle-group>
-      </div>
+        <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
-
-    <div>
-      <mat-label><p>Background Color </p></mat-label>
-      <mat-button-toggle-group [value]="backgroundColor"
-                               (change)="onChangeBackgroundColor($event)">
-        <mat-button-toggle class="primaryColor" [value]=colors?.primaryColor></mat-button-toggle>
-        <mat-button-toggle class="secondaryColor" [value]=colors?.secondaryColor></mat-button-toggle>
-        <mat-button-toggle class="dangerColor" [value]=colors?.dangerColor></mat-button-toggle>
-        <mat-button-toggle class="warnColor" [value]=colors?.warnColor></mat-button-toggle>
-        <mat-button-toggle class="infoColor" [value]=colors?.infoColor></mat-button-toggle>
-        <mat-button-toggle class="acceptColor" [value]=colors?.acceptColor></mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+        <div>
+            <mat-label><p>Background Color </p></mat-label>
+            <mat-button-toggle-group [value]="backgroundColor"
+                                     (change)="onChangeBackgroundColor($event)">
+                <mat-button-toggle class="primaryColor" [value]=colors?.primaryColor></mat-button-toggle>
+                <mat-button-toggle class="secondaryColor" [value]=colors?.secondaryColor></mat-button-toggle>
+                <mat-button-toggle class="dangerColor" [value]=colors?.dangerColor></mat-button-toggle>
+                <mat-button-toggle class="warnColor" [value]=colors?.warnColor></mat-button-toggle>
+                <mat-button-toggle class="infoColor" [value]=colors?.infoColor></mat-button-toggle>
+                <mat-button-toggle class="acceptColor" [value]=colors?.acceptColor></mat-button-toggle>
+                <mat-button-toggle class="whiteColor" [value]="'#FFFFFF'"></mat-button-toggle>
+                <mat-button-toggle class="blackColor" [value]="'#000000'"></mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
 
 
-    <mat-divider></mat-divider>
-    <button [disabled]="!form.valid" (click)="onCreateItemSettings()" mat-flat-button color="primary">
-      Save
-    </button>
+        <mat-divider></mat-divider>
+        <button class="mybutton" [disabled]="!form.valid" (click)="onCreateItemSettings()" mat-flat-button>
+            Save
+        </button>
 
-  </mat-card-content>
+    </mat-card-content>
 </mat-card>

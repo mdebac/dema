@@ -7,12 +7,12 @@ import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.type.TrueFalseConverter;
-import java.util.*;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -42,13 +42,6 @@ public class DetailEntity extends BaseAuditEntity {
 
    @OneToMany(mappedBy = "detail")
    //@Fetch(FetchMode.SUBSELECT)
-   private List<ItemEntity>  items;
+   private List<ItemEntity> items;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-            name = "detail_iso",
-            joinColumns = @JoinColumn(name = "detail_id", nullable = false)
-    )
-    @Builder.Default
-    private Set<DetailIsoEntity> iso = new HashSet<>();
 }

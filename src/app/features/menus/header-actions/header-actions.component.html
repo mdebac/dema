@@ -2,8 +2,58 @@
 
     <mat-expansion-panel-header>
         <mat-panel-title>
-            <mat-icon>format_color_fill</mat-icon>
-            <div class="naslov">Change Colors</div>
+            <i class="fa-notdog fa-solid fa-t fa-xl text"></i>
+            <div class="naslov">Title and Description</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons" [formGroup]="form">
+        <div formArrayName="iso">
+            @for (iso of header?.main?.languages; track iso.iso; let i = $index) {
+                <mat-expansion-panel class="custom-panel-flags" (opened)="isOpened = !isOpened"
+                                     (closed)="isOpened = !isOpened">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div [ngClass]="flag(iso.iso)"></div>
+                            <div class="text isoText">{{ getIsoByKey(iso.iso) }}</div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="actionButtons">
+                        <div [formGroupName]="i">
+                            <div class="text-text">Title</div>
+                            <quill-editor  class="myEditor"
+                                          format="html"
+                                          [modules]="quillConfiguration"
+                                          [placeholder]="''"
+                                          formControlName="title"
+                            ></quill-editor>
+                            <mat-divider></mat-divider>
+                            <div class="text-text">Description</div>
+                            <quill-editor class="myEditor"
+                                          format="html"
+                                          [modules]="quillConfiguration"
+                                          [placeholder]="''"
+                                          formControlName="description"
+                            ></quill-editor>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            }
+        </div>
+
+        <button class="mybutton" [disabled]="!form.valid" (click)="onUpdateIso()" mat-fab extended>
+            Update
+        </button>
+
+    </div>
+</mat-expansion-panel>
+
+
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-solid fa-palette fa-xl text"></i>
+            <div class="naslov">Colors</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="actionButtons" [formGroup]="form">
@@ -27,6 +77,48 @@
     </div>
 </mat-expansion-panel>
 
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-solid fa-f fa-xl text"></i>
+            <div class="naslov">Fonts</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons">
+
+        @for (font_types of font_families.keys(); track $index) {
+
+            <mat-expansion-panel class="custom-panel-flags" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <div class="naslov">{{font_types}}</div>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="actionButtons">
+                    @for (font_family of font_families.get(font_types); track $index) {
+                        <p class="checkbox-item">
+                        <mat-checkbox [style.color]="primaryColor" [checked]="getChecked(font_family)" [value]="font_family" (change)="onChange($event)">
+                           <div [style.font-family]="font_family"
+                                [style.color]="primaryColor"
+                                [style.transform]="'scale(1.3)'">
+                               {{ font_family }}
+                           </div>
+                        </mat-checkbox>
+                        </p>
+                    }
+
+                </div>
+            </mat-expansion-panel>
+
+        }
+
+
+        <button class="mybutton" [disabled]="!form.valid" (click)="reload()" mat-fab extended>
+            Update
+        </button>
+    </div>
+</mat-expansion-panel>
 
 <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
@@ -38,10 +130,10 @@
     </mat-expansion-panel-header>
     <div class="actionButtons" [formGroup]="form">
         <input #logoImageInput
-                (change)="selectLogo($event)"
-                class="form-control"
-                type="file"
-                accept="image/*"
+               (change)="selectLogo($event)"
+               class="form-control"
+               type="file"
+               accept="image/*"
         >
         <mat-error></mat-error>
 
@@ -68,10 +160,10 @@
     </mat-expansion-panel-header>
     <div class="actionButtons text" [formGroup]="form">
         <input #backgroundImageInput
-                (change)="selectBackgroundImage($event)"
-                class="form-control"
-                type="file"
-                accept="image/*"
+               (change)="selectBackgroundImage($event)"
+               class="form-control"
+               type="file"
+               accept="image/*"
         >
         <mat-error></mat-error>
 
@@ -91,89 +183,30 @@
 
     <mat-expansion-panel-header>
         <mat-panel-title>
-            <mat-icon><span class="material-symbols-outlined">transition_fade</span></mat-icon>
+            <i class="fa-solid fa-circle-half-stroke fa-xl text"></i>
             <div class="naslov">Gradient Background</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="actionButtons" [formGroup]="form">
 
-        {{rate}}
+        {{ rate }}
         <mat-slider class="my-slider" min="0" max="100" step="1" showTickMarks discrete [displayWith]="formatLabel">
             <input matSliderThumb value="{{rate}}" (valueChange)="changeSlider($event)">
         </mat-slider>
     </div>
 </mat-expansion-panel>
 
-<!--<mat-expansion-panel class="custom-panel"-->
-<!--                     (click)="changeText(activeDetail, header?.colors, header?.main?.host)" hideToggle>-->
-<!--    <mat-expansion-panel-header>-->
-<!--        <mat-panel-title>-->
-<!--            <mat-icon>add_circle</mat-icon>-->
-<!--            <div class="naslov">{{ "summer.new.item" | translate }}</div>-->
-<!--        </mat-panel-title>-->
-<!--    </mat-expansion-panel-header>-->
-<!--</mat-expansion-panel>-->
+<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
-<!--<mat-expansion-panel #createNewItemPanel class="custom-panel"-->
-<!--                     (click)="createNewItem(activeDetail, header?.colors, header?.main?.host)" hideToggle>-->
-<!--    <mat-expansion-panel-header>-->
-<!--        <mat-panel-title>-->
-<!--            <mat-icon>add_circle</mat-icon>-->
-<!--            <div class="naslov">{{ "summer.new.item" | translate }}</div>-->
-<!--        </mat-panel-title>-->
-<!--    </mat-expansion-panel-header>-->
-<!--</mat-expansion-panel>-->
-
-<!--    <mat-expansion-panel class="custom-panel" (click)="deleteDetail(activeDetail)" hideToggle>-->
-<!--        <mat-expansion-panel-header>-->
-<!--            <mat-panel-title>-->
-<!--                <mat-icon>delete</mat-icon>-->
-<!--                <div class="naslov">{{ "delete.page" | translate }}</div>-->
-<!--            </mat-panel-title>-->
-<!--        </mat-expansion-panel-header>-->
-<!--    </mat-expansion-panel>-->
-
-
-<!--    <div class="button-container">-->
-<!--        <button mat-flat-button-->
-<!--                (click)="changeHeader(header?.main)">-->
-<!--            <i class="fa-solid fa-chess-rook"></i>-->
-<!--            {{ "change.header" | translate }}-->
-<!--        </button>-->
-<!--    </div>-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--<mat-expansion-panel-->
-<!--        [expanded]="false"-->
-<!--        (opened)="panelOpenState = true"-->
-<!--        (closed)="panelOpenState = false"-->
-<!--        hideToggle-->
-<!--&gt;-->
-<!--    <mat-expansion-panel-header>-->
-<!--        <div class="panel-header">-->
-<!--            <div class="panel-arrow">-->
-<!--                @if (!panelOpenState) {-->
-<!--                    <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>-->
-<!--                }-->
-<!--                @if (panelOpenState) {-->
-<!--                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>-->
-<!--                }-->
-<!--            </div>-->
-<!--            <div class="panel-title">-->
-<!--              uiuiuiui-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--    </mat-expansion-panel-header>-->
-<!--    <mat-panel-description>-->
-<!--        <mat-expansion-panel-->
-<!--                [expanded]="false"-->
-<!--                (opened)="subpanel = true"-->
-<!--                (closed)="subpanel = false"-->
-<!--                hideToggle-->
-<!--        >-->
-<!--            <mat-expansion-panel-header>-->
-<!--                sdddddd-->
-<!--            </mat-expansion-panel-header>-->
-<!--        </mat-expansion-panel>-->
-<!--    </mat-panel-description>-->
-<!--</mat-expansion-panel>-->
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <i class="fa-solid fa-earth-americas fa-xl text"></i>
+            <div class="naslov">Languages</div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="actionButtons">
+        <choose-iso [chosenLanguages]="header?.main?.languages"
+                    (selectedIso)="onSelectedIso($event)" >
+        </choose-iso>
+    </div>
+</mat-expansion-panel>

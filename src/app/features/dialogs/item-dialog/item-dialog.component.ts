@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, inject, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, inject, OnDestroy, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ApartmentItem, ApartmentItemDialogData} from "../../../domain/apartment-item";
@@ -6,36 +6,29 @@ import {defaultIso} from "../../../domain/countries-iso";
 import {ApartmentItemIso} from "../../../domain/apartment-item-iso";
 import {ValidateImageSize} from "../../../validators/image-size.validator";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
-import {Editor, NgxEditorComponent, NgxEditorMenuComponent, TBItems, Toolbar} from "ngx-editor";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {IsoButtonsComponent} from '../../iso-buttons/iso-buttons.component';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption} from '@angular/material/core';
-import {NgFor, NgIf} from '@angular/common';
+
 import {MatInput} from '@angular/material/input';
 import {MatFabButton} from '@angular/material/button';
 import {Chip} from "../../../domain/chip.enum";
 import {Hosts} from "../../../domain/hosts";
 import {Roles} from "../../../domain/roles";
-
-
-
-export const TEXT_FORMATTING_TYPE: { [key: string]: TBItems } = {
-  BOLD: 'bold',
-  ITALIC: 'italic',
-  BULLET_LIST: 'bullet_list',
-  ORDERED_LIST: 'ordered_list',
-};
+import {QuillEditorComponent} from "ngx-quill";
+import {Language} from "../../../domain/language";
 
 
 @Component({
     selector: 'item-dialog',
     templateUrl: './item-dialog.component.html',
     styleUrl: './item-dialog.component.scss',
-  imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, NgIf, MatError, NgFor, MatInput, NgxEditorMenuComponent, NgxEditorComponent, TranslatePipe, MatFabButton]
+  encapsulation: ViewEncapsulation.None,
+    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, MatOption, MatError, MatInput, TranslatePipe, MatFabButton, QuillEditorComponent]
 })
-export class ItemDialogComponent implements OnDestroy {
+export class ItemDialogComponent {
 
   fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<ItemDialogComponent>)
@@ -44,36 +37,14 @@ export class ItemDialogComponent implements OnDestroy {
   title: string = "";
   @ViewChild('fileUploader') fileUploader: ElementRef | undefined;
   form: FormGroup;
-  languages: string[] | undefined | null = [];
+  languages: Language[] | undefined | null = [];
   selectedIsoTitle: string = defaultIso;
   selectedType: Chip | null;
   selectedPicture: string | undefined;
-  editorMap: Map<string, Editor>;
-  toolbar: Toolbar = [
-    ['bold', 'italic'],
-    ['underline', 'strike'],
-    ['code', 'blockquote'],
-    ['ordered_list', 'bullet_list'],
-    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-    ['link'],
-    [TEXT_FORMATTING_TYPE],
-    ['align_left', 'align_center', 'align_right', 'align_justify','text_color', 'background_color'],
-  ];
-  colorPresets = [""];
-
+  quillConfiguration: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: ApartmentItemDialogData) {
-     this.colorPresets = [
-      data?.colors?.primaryColor ? data.colors.primaryColor : "",
-      data?.colors?.secondaryColor ? data.colors.secondaryColor : "",
-      data?.colors?.acceptColor ? data.colors.acceptColor : "",
-      data?.colors?.warnColor ? data.colors.warnColor : "",
-      data?.colors?.dangerColor ? data.colors.dangerColor : "",
-      data?.colors?.infoColor ? data.colors.infoColor : "",
-      "black",
-      "white"
-    ]
-    this.editorMap = new Map<string, Editor>();
+
     this.form = this.fb.group({
       id: [this.data.item.id],
       detailId: [this.data.item.detailId, Validators.required],
@@ -96,9 +67,9 @@ export class ItemDialogComponent implements OnDestroy {
         l => {
           this.data?.item.iso?.forEach(
             iso => {
-              if (l === iso.iso) {
+              if (l.iso === iso.iso) {
                 this.addExisting(iso.title, iso.description, iso.iso);
-                dodani.push(l);
+                dodani.push(l.iso);
               }
             }
           )
@@ -106,16 +77,59 @@ export class ItemDialogComponent implements OnDestroy {
       )
       this.data?.languages.forEach(
         l => {
-          if (!dodani.includes(l)) {
-            this.addItem(l);
+          if (!dodani.includes(l.iso)) {
+            this.addItem(l.iso);
           }
         }
       )
     } else {
-      this.data?.languages?.map(iso => this.addItem(iso));
+      this.data?.languages?.map(iso => this.addItem(iso.iso));
     }
     this.languages = this.data?.languages;
 
+
+
+    const fonts = this.data?.fonts?.map(font=>font.family);
+    this.quillConfiguration = {
+      toolbar: [
+        ['bold', 'italic',{align: ''}, {align: 'center'}, {align: 'right'}, {align: 'justify'},{
+          'color': [
+            this.data?.colors?.primaryColor ? this.data?.colors?.primaryColor : "",
+            this.data?.colors?.secondaryColor ? this.data?.colors?.secondaryColor : "",
+            this.data?.colors?.acceptColor ? this.data?.colors?.acceptColor : "",
+            this.data?.colors?.warnColor ? this.data?.colors?.warnColor : "",
+            this.data?.colors?.dangerColor ? this.data?.colors?.dangerColor : "",
+            this.data?.colors?.infoColor ? this.data?.colors?.infoColor : "",
+            "black",
+            "white"
+          ]
+        }, {
+          'background': [
+            this.data?.colors?.primaryColor ? this.data?.colors?.primaryColor : "",
+            this.data?.colors?.secondaryColor ? this.data?.colors?.secondaryColor : "",
+            this.data?.colors?.acceptColor ? this.data?.colors?.acceptColor : "",
+            this.data?.colors?.warnColor ? this.data?.colors?.warnColor : "",
+            this.data?.colors?.dangerColor ? this.data?.colors?.dangerColor : "",
+            this.data?.colors?.infoColor ? this.data?.colors?.infoColor : "",
+            "black",
+            "white"
+          ]
+        }],
+        // ['blockquote', 'code-block'],
+        //[{'header': 1}, {'header': 2}],                                      // custom button values
+        // [{'list': 'ordered'}, {'list': 'bullet'}],
+        // [{'script': 'sub'}, {'script': 'super'}],                            // superscript/subscript
+        // [{'indent': '-1'}, {'indent': '+1'}],
+        [{'size': ['small', false, 'large', 'huge']}],                       // custom dropdown
+        // [{'header': [1, 2, 3, 4, 5, 6, false]}],
+        // dropdown with defaults from theme
+        [{'font': fonts}],                     // whitelist of fonts
+        // [{'align': []}],
+        // ['clean'],
+        // ['link']                                          // link and image, video
+      ]
+    };
+     
   }
 
   isJobsEnabled(){
@@ -126,12 +140,6 @@ export class ItemDialogComponent implements OnDestroy {
     return this.data.roles.includes(Roles.ADMIN.toUpperCase());
   }
 
-  ngOnDestroy(): void {
-    this.editorMap.forEach((editor: Editor, key: string) => {
-      editor.destroy();
-    });
-    this.editorMap.clear();
-  }
 
   get isoArray(): FormArray {
     return this.form.get('iso') as FormArray;
@@ -140,15 +148,6 @@ export class ItemDialogComponent implements OnDestroy {
   activeIso(active: any) {
     this.selectedIsoTitle = active;
   }
-
-
-  editor = (iso: string): Editor => {
-    const editor = this.editorMap.get(iso);
-    if(editor){
-      return editor;
-    }
-    return new Editor();
-  };
 
   isIsoSelected(iso: ApartmentItemIso) {
 
@@ -171,10 +170,9 @@ export class ItemDialogComponent implements OnDestroy {
   }
 
   createItemIso(iso: ApartmentItemIso) {
-    this.editorMap.set(iso.iso, new Editor());
     return this.fb.group({
       title: [iso.title, (iso.iso===defaultIso && this.selectedType === Chip.JOB) ? [Validators.maxLength(255),Validators.required] : [Validators.maxLength(255)]],
-      description: [iso.description, [Validators.maxLength(2500)]],
+      description: [iso.description, [Validators.maxLength(2000)]],
       iso: [iso.iso],
     })
   }

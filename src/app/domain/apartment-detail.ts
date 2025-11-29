@@ -1,10 +1,12 @@
 
 import {Audit} from "./audit";
 import {ApartmentItem} from "./apartment-item";
-import {ApartmentDetailIso} from "./apartment-detail-iso";
 import {Colors} from "./colors";
 import {Menu} from "./menu";
 import {Panel} from "./panel";
+import {Hosts} from "./hosts";
+import {Language} from "./language";
+import {Font} from "./font";
 
 export interface ApartmentDetail extends Audit{
 
@@ -18,15 +20,17 @@ export interface ApartmentDetail extends Audit{
 
 
   items: ApartmentItem[];
-  iso: ApartmentDetailIso[];
+ // iso: ApartmentDetailIso[];
 
   topMenu: Partial<Menu>;
   sideMenu: Partial<Panel>;
 }
 
 export interface ApartmentDetailDialogData {
-  languages: string[] | undefined;
+  languages: Language[] | undefined;
+  fonts: Font[] | undefined;
   detail: Partial<ApartmentDetail>;
   colors: Partial<Colors> | undefined;
   newMenuOrderNum: number;
+  host: Hosts;
 }

@@ -9,12 +9,13 @@ import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-
 import { MatDivider } from '@angular/material/divider';
 import { MatButton } from '@angular/material/button';
 import {Chip} from "../../../domain/chip.enum";
+import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'item-settings-dialog',
     templateUrl: './item-settings-dialog.component.html',
     styleUrl: './item-settings-dialog.component.scss',
-    imports: [MatCard, MatCardHeader, MatCardContent, FormsModule, ReactiveFormsModule, MatLabel, MatButtonToggleGroup, MatButtonToggle, MatDivider, MatButton]
+  imports: [MatCard, MatCardContent, FormsModule, ReactiveFormsModule, MatLabel, MatButtonToggleGroup, MatButtonToggle, MatDivider, MatButton, NgClass]
 })
 export class ItemSettingsDialogComponent {
   fb = inject(FormBuilder);
@@ -62,6 +63,10 @@ export class ItemSettingsDialogComponent {
 
   onChangeCornerRadius($event: any) {
     this.form.patchValue({cornerRadius: $event.value});
+  }
+
+  selected(selected:number, col:number){
+    return selected === col ? "primaryColor columns-text" : "primaryColor columns-text selected";
   }
 
   get backgroundColor(): string {

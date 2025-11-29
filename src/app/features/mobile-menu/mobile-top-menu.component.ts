@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {MatButton} from "@angular/material/button";
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {MatIcon} from "@angular/material/icon";
@@ -15,7 +15,8 @@ import {TopMenuComponent} from "../top-menu/top-menu.component";
         TopMenuComponent,
     ],
   templateUrl: './mobile-top-menu.component.html',
-  styleUrl: './mobile-top-menu.component.scss'
+  styleUrl: './mobile-top-menu.component.scss',
+    encapsulation: ViewEncapsulation.None,
 })
 export class MobileTopMenuComponent {
 

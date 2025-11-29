@@ -14,7 +14,7 @@
   "delete.page": "Seite löschen",
   "create.page": "Neue Seite erstellen",
   "new.page": "Neue Seite",
-  "title.and.icons": "Titel und Symbole",
+  "title.and.icons": "Menüs",
   "create.item": "Neuen Eintrag erstellen",
   "update.item": "Eintrag aktualisieren",
   "item.dialog.description": "Beschreibung",
@@ -46,6 +46,8 @@
   "summer.center": "Mitte",
   "summer.panel.off": "Panel aus",
   "summer.panel.on": "Panel an",
+  "summer.side.menu.off": "Seitenmenü ausblenden",
+  "summer.side.menu.on": "Seitenmenü anzeigen",
   "summer.columns": "Spalten",
   "summer.new.item": "Neues Element",
   "activation.successful": "Aktivierung erfolgreich!",
@@ -63,5 +65,7 @@
   "send.me.email": "E-Mail senden",
   "set.new.password": "Neues Passwort festlegen",
   "forgot.your.password": "Passwort vergessen?",
-  "nothing.remembered": "Nichts, ich habe es mir gemerkt."
+  "nothing.remembered": "Nichts, ich habe es mir gemerkt.",
+  "header.actions": "Header-Aktionen",
+  "page.actions": "Seitenaktionen"
 }

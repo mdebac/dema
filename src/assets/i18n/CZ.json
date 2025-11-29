@@ -14,7 +14,7 @@
   "delete.page": "Smazat stránku",
   "create.page": "Vytvořit novou stránku",
   "new.page": "Nová stránka",
-  "title.and.icons": "Názvy a ikony",
+  "title.and.icons": "Menu",
   "create.item": "Vytvořit novou položku",
   "update.item": "Aktualizovat položku",
   "item.dialog.description": "Popis",
@@ -46,6 +46,8 @@
   "summer.center": "Na střed",
   "summer.panel.off": "Panel vypnut",
   "summer.panel.on": "Panel zapnut",
+  "summer.side.menu.off": "Skrýt postranní nabídku",
+  "summer.side.menu.on": "Zobrazit postranní nabídku",
   "summer.columns": "Sloupce",
   "summer.new.item": "Nová položka",
   "activation.successful": "Aktivace úspěšná!",
@@ -63,7 +65,9 @@
   "send.me.email": "Pošlete mi e-mail",
   "set.new.password": "Nastavit nové heslo",
   "forgot.your.password": "Zapomněli jste heslo?",
-  "nothing.remembered": "Nic, vzpomněl jsem si."
+  "nothing.remembered": "Nic, vzpomněl jsem si.",
+  "header.actions": "Akce záhlaví",
+  "page.actions": "Akce stránky"
 }
 
 

@@ -36,7 +36,7 @@ import {ConformationDialogComponent} from "../../dialogs/conformation-dialog/con
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Customer} from "../../../domain/customer";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {NgFor} from "@angular/common";
+
 import {MatOption, MatSelect} from "@angular/material/select";
 import {Roles} from "../../../domain/roles";
 import {AuthStore} from "../../../services/authentication/auth-store";
@@ -49,27 +49,26 @@ import {ApartmentDialogComponent} from "../../dialogs/apartment-dialog/apartment
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [MainTableDatasource],
     imports: [
-        NgFor,
-        MatTable,
-        MatSort,
-        MatColumnDef,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatCellDef,
-        MatCell,
-        MatIconButton,
-        MatIcon,
-        MatSortHeader,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        MatSelect,
-        MatOption,
-        TranslatePipe,
-        RouterLinkActive,
-        MatFabButton,
-    ],
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatIcon,
+    MatSortHeader,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatSelect,
+    MatOption,
+    TranslatePipe,
+    RouterLinkActive,
+    MatFabButton
+],
     animations: [
         trigger('detailExpand', [
             state('collapsed', style({ height: '0px', minHeight: '0' })),

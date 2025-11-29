@@ -50,6 +50,7 @@ public class PanelMapper extends AbstractMapper {
                 .id(panel.getId())
                 .iso(toEntityIso(panel.getIso()))
                 .orderNum(panel.getOrderNum())
+                .panelUrl(panel.getPanelUrl())
                 .icon(panel.getIcon())
                 .build();
     }
@@ -75,6 +76,7 @@ public class PanelMapper extends AbstractMapper {
         if(panel.getIso() != null) {
             entity.setIso(toEntityIso(panel.getIso()));
         }
+        entity.setPanelUrl(panel.getPanelUrl());
         entity.setOrderNum(panel.getOrderNum());
         entity.setIcon(panel.getIcon());
     }

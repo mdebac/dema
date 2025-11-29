@@ -4,10 +4,10 @@
       <mat-label class="text"><b>{{ label }}</b></mat-label>
 
       <div class="buttonSpace">
-          <button (click)="onYes()"  mat-flat-button>
+          <button class="mybutton" (click)="onYes()"  mat-flat-button>
               {{'confirm.yes' | translate}}
           </button>
-          <button (click)="onNo()"  mat-flat-button>
+          <button class="mybutton" (click)="onNo()"  mat-flat-button>
               {{'confirm.no' | translate}}
           </button>
       </div>

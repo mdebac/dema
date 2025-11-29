@@ -4,72 +4,62 @@
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
 
-.dashboard-card {
-  position: absolute;
-  top: 15px;
-  left: 0;
-  right: 15px;
-  bottom: 5px;
-  background-color: $primary-color;
-  overflow-y: auto;
-  //scrollbar-color: $secondary-color $primary-color;
-  @include mat.card-overrides((
-    elevated-container-shape: 16px
-  ));
-}
-
-
-.dashboard-card-content {
-  text-align: center;
-  overflow: hidden;
-  height: 100%;
-  padding: 0;
-  margin-bottom: 5px;
-}
-.dashboard-card-actions {
-  padding: 0;
-  margin: 0;
-}
-
-
-
-
 .container {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  --ngx-editor-background-color: $primary-color;
-  --ngx-editor-border-color: $primary-color;
-  font-size: large;
-
+  //font-size: large;
+ // height: inherit;
 }
 
 .content {
   width: 100%;
-  line-height: 30px;
-}
+  height: 100%;
+  //line-height: 30px;
 
-.editor {
-
-  .NgxEditor {
+  span{
+    line-height: 10px;
+    margin: 0;
+    padding: 0;
   }
+  .my-quill-view2{
+    font-size: 51px !important;
+    line-height: 1 !important;
+    .ql-editor{
+      margin: 0;
+      padding: 0;
+      //font-size: 52px !important;
+     // line-height: 1 !important;
+      span{
+        font-size: 35px !important;
+        line-height: 1.2 !important;
 
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: auto;
-    margin-bottom: 0.7rem;
+      }
 
-    pre {
-      white-space: pre !important;
+      .ql-size-huge{
+        font-size: 100px !important;
+        line-height: 1.4 !important;
+        margin: 0;
+        padding: 0;
+      }
+      .ql-size-large{
+        line-height: 1.2 !important;
+        font-size: 70px !important;
+        margin: 0;
+        padding: 0;
+      }
+      .ql-size-small{
+        line-height: 1.2 !important;
+        font-size: 20px !important;
+        margin: 0;
+        padding: 0;
+      }
     }
   }
+
 }
 
-.title{
-  font-family: "Arial";
-  font-size: xx-large;
-  padding: 10px;
-  margin: 0;
-}
+

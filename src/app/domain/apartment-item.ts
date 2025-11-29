@@ -3,6 +3,8 @@ import {ApartmentItemIso} from "./apartment-item-iso";
 import {Colors} from "./colors";
 import {Chip} from "./chip.enum";
 import {Hosts} from "./hosts";
+import {Language} from "./language";
+import {Font} from "./font";
 
 export interface ApartmentItem extends Audit{
   description: string;
@@ -28,7 +30,8 @@ export interface ApartmentItem extends Audit{
 
 
 export interface ApartmentItemDialogData {
-  languages: string[] | undefined | null;
+  languages: Language[] | undefined | null;
+  fonts: Font[] | undefined | null;
   item: Partial<ApartmentItem>;
   colors: Colors | null | undefined;
   roles: string[];

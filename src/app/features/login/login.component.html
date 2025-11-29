@@ -2,7 +2,7 @@
     isMobile: isMobile$
  } as vm">
 
-    <mat-card class="dashboard-card">
+    <mat-card class="dashboard-card2">
         <mat-card-header>
 
             <div class="loginSpace">
@@ -15,9 +15,13 @@
                 <div class="contentSpace">
                     <h3 class="text-center"><b>{{ 'sign.in' | translate }}</b></h3>
 
-                    <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
-                        <p *ngFor="let msg of errorMsg">{{ msg }}</p>
-                    </div>
+                    @if (errorMsg.length) {
+                        <div class="alert alert-danger" role="alert">
+                            @for (msg of errorMsg; track msg) {
+                                <p>{{ msg }}</p>
+                            }
+                        </div>
+                    }
 
                 </div>
 
@@ -50,10 +54,14 @@
                                    placeholder="Password">
 
                             <div class="input-group-append">
-                                <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true"
-                                   *ngIf="!showPassword"></i>
-                                <i class="fa fa-eye-slash" (click)="showPassword = !showPassword"
-                                   aria-hidden="true" *ngIf="showPassword"></i>
+                                @if (!showPassword) {
+                                    <i class="fa fa-eye" (click)="showPassword = !showPassword" aria-hidden="true"
+                                    ></i>
+                                }
+                                @if (showPassword) {
+                                    <i class="fa fa-eye-slash" (click)="showPassword = !showPassword"
+                                       aria-hidden="true"></i>
+                                }
                             </div>
 
                         </div>
@@ -85,4 +93,3 @@
         </mat-card-content>
     </mat-card>
 </ng-container>
-

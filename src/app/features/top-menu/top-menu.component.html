@@ -2,21 +2,37 @@
 
     @if (canEdit) {
         <button mat-icon-button (click)="createMenuDetail(header)">
-            <mat-icon>add</mat-icon>
+            <mat-icon class="text-text">add</mat-icon>
         </button>
     }
-    @for (headerDetail of header?.menus; track headerDetail.menuUrl) {
-        @for (iso of headerDetail.iso; track iso.iso) {
+    @for (menu of header?.menus; track $index) {
+        @for (iso of menu.iso; track iso.iso) {
             @if (selectedIso === iso.iso) {
-                    <button routerLink="{{ headerDetail.menuUrl }}"
-                            routerLinkActive="activebutton"
-                            mat-fab extended>
-                        <mat-icon *ngIf="headerDetail.icon"> {{ headerDetail.icon }}
-                        </mat-icon>
-                        {{ iso.title }}
-                    </button>
-            }
+                <div routerLink="{{ menu.menuUrl }}"
+                     [ngClass]="direction === 'row' ? 'buttonWidth' : 'buttonMaxWidth'"
+                     routerLinkActive="activebutton"
+                >
+                    @if (menu.image) {
+                        <img src="{{'data:image/jpg;base64,' + menu.image}}" alt=""/>
+                    } @else {
+                        @if (menu.icon) {
+                            <div class="menu-icon">
+                                <mat-icon class="icon-display"> {{ menu.icon }}</mat-icon>
+                            </div>
+                        }
+                    }
+                    <br>
+                    @if (iso.title){
+                        <div class="button-text">
+                            <quill-view [content]="getTopMenuLabel(iso.title)" format="html" theme="snow"></quill-view>
+                        </div>
+                    }
+
+                </div>
+           }
         }
     }
 
 </div>
+
+

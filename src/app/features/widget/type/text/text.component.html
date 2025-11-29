@@ -1,20 +1,6 @@
-
-
-<div>
-  <b><h3 class="title">{{ getTitle(selectedIso, item) }} </h3></b>
-</div>
-
 <div class="container">
   <div class="content">
-      <div class="editor">
-        <ngx-editor [editor]="editor"
-                    [ngModel]="getDescription(selectedIso, item)"
-                    [disabled]="true"
-                    [placeholder]="''"
-        >
-        </ngx-editor>
-      </div>
-
+          <quill-view class="my-quill-view2" [content]="getDescription(selectedIso, item)" format="html" theme="snow"></quill-view>
   </div>
 </div>
 

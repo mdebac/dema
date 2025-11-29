@@ -7,46 +7,55 @@ $warn-color: var(--warn-color);
 $info-color: var(--info-color);
 $accept-color: var(--accept-color);
 
+
 .primaryColor{
-  --mat-standard-button-toggle-background-color: #{$primary-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$primary-color};
+  background-color: $primary-color;
   width: 50px;
 }
 .secondaryColor{
-  --mat-standard-button-toggle-background-color: #{$secondary-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
+  background-color: $secondary-color;
   width: 50px;
 }
 .dangerColor{
-  --mat-standard-button-toggle-background-color: #{$danger-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$danger-color};
+  background-color: $danger-color;
   width: 50px;
 }
 
 .warnColor{
-  --mat-standard-button-toggle-background-color: #{$warn-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$warn-color};
+  background-color: $warn-color;
   width: 50px;
 }
 
 .infoColor{
-  --mat-standard-button-toggle-background-color: #{$info-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$info-color};
+  background-color: $info-color;
   width: 50px;
 }
 
 .acceptColor{
-  --mat-standard-button-toggle-background-color: #{$accept-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$accept-color};
+  background-color: $accept-color;
   width: 50px;
 }
 
+.whiteColor{
+  background-color: white;
+  width: 50px;
+}
+
+.blackColor{
+  background-color: black;
+  width: 50px;
+}
+
+.columns-text{
+  font-weight: bolder;
+  color: $secondary-color;
+  background-color: $primary-color;
+}
+.selected{
+  font-weight: bolder;
+  color: $primary-color;
+  background-color: $secondary-color;
+}
 .dashboard-card {
   position: relative;
   margin: 15px;
@@ -55,7 +64,16 @@ $accept-color: var(--accept-color);
   color: $secondary-color;
   //scrollbar-color: $secondary-color $primary-color;
 }
-
+.mybutton {
+  margin-top: 2px;
+  margin-left: 2px;
+  background-color: $primary-color !important;
+  color: $secondary-color !important;
+}
+.mybutton:hover {
+  background-color: $secondary-color !important;
+  color: $primary-color !important;
+}
 .dashboard-card mat-card-content {
   text-align: left;
   display: grid;

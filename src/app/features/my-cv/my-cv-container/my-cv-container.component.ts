@@ -18,8 +18,6 @@ export class MyCvContainerComponent {
   cvCount$ = this.cvStore.cvCount$;
 
   @Input() set colors (colors: Colors){
-
-    console.log("MyCvContainerComponent load colors", colors);
     const variables = [
       '--primary-color: '+ colors.primaryColor +';',
       '--secondary-color: '+ colors.secondaryColor +';',

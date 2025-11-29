@@ -27,6 +27,7 @@ import java.util.Set;
 public class MenuEntity extends BaseAuditEntity {
 
     private String icon;
+    private String menuUrl;
     private Integer orderNum;
     private String imageFileName;
     private String imageMimeType;
@@ -79,11 +80,6 @@ public class MenuEntity extends BaseAuditEntity {
             setImageMimeType(null);
             setImageFileName(null);
         }
-    }
-
-    @Transient
-    public String getMenuUrl() {
-        return this.iso.stream().filter(iso-> iso.getIso().equals(Country.EN)).findFirst().orElseThrow(() -> new RuntimeException("Menu Url not found")).getTitle().toLowerCase().replace(" ","_");
     }
 
 }

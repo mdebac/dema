@@ -4,7 +4,6 @@ import {
   inject,
   Input,
   OnDestroy,
-  OnInit,
 } from "@angular/core";
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {Widget} from "./widget";
@@ -14,8 +13,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {Colors} from "../../domain/colors";
-import { NgIf, NgComponentOutlet } from "@angular/common";
-import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
+import { NgComponentOutlet } from "@angular/common";
+import {MatMiniFabButton} from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
@@ -26,12 +25,15 @@ import {ApartmentItemIso} from "../../domain/apartment-item-iso";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {Hosts} from "../../domain/hosts";
 import {Roles} from "../../domain/roles";
+import {Language} from "../../domain/language";
+import {Font} from "../../domain/font";
 
 // @ts-ignore
 @Component({
     selector: 'widget',
     templateUrl: './widget.component.html',
     styleUrls: ['./widget.component.scss'],
+  //encapsulation: ViewEncapsulation.None,
   imports: [
     MatMiniFabButton,
     MatIcon,
@@ -103,6 +105,7 @@ export class WidgetComponent implements OnDestroy {
       item: null,
       languages: null,
       component: TextComponent,
+      fonts:null,
       colors: undefined,
       host: this._data?.host
     };
@@ -110,11 +113,12 @@ export class WidgetComponent implements OnDestroy {
 
   unsubscribe$ = new Subject<void>();
 
-  updateItem(languages: string[] | undefined | null, colors: Colors | undefined, item: ApartmentItem  | undefined | null, host: Hosts | undefined) {
+  updateItem(languages: Language[] | undefined | null,fonts: Font[] | undefined | null, colors: Colors | undefined, item: ApartmentItem  | undefined | null, host: Hosts | undefined) {
     const partial: Partial<ApartmentItem> = {...item}
     const data: ApartmentItemDialogData = {
       languages: languages,
       item: partial,
+      fonts: fonts,
       colors: colors,
       roles: this.authStore.userRoles,
       host: host
@@ -137,6 +141,7 @@ export class WidgetComponent implements OnDestroy {
       const data: ApartmentItemDialogData = {
         languages: [],
         item: partial,
+        fonts: [],
         colors: colors,
         roles: this.authStore.userRoles,
         host: host
@@ -177,7 +182,7 @@ export class WidgetComponent implements OnDestroy {
   openDialogItem(data: ApartmentItemDialogData) {
 
     const dialogRef = this.dialog.open(ItemDialogComponent, {
-      width: '500px',
+      width: '31rem',
       data: {
         ...data
       },
@@ -189,7 +194,7 @@ export class WidgetComponent implements OnDestroy {
   openDialogItemSettings(data: ApartmentItemDialogData | null) {
 
     const dialogRef = this.dialog.open(ItemSettingsDialogComponent, {
-      width: '500px',
+      width: '31rem',
       data: {
         ...data
       },

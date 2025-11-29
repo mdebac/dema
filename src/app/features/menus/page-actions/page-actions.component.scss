@@ -12,6 +12,7 @@ $danger-color: var(--danger-color);
 $warn-color: var(--warn-color);
 $info-color: var(--info-color);
 $accept-color: var(--accept-color);
+$activeBgColor: var(--active-bg-color);
 
 :host {
   @include mat.icon-overrides((
@@ -25,6 +26,10 @@ $accept-color: var(--accept-color);
   ));
 }
 
+.columns-text{
+  font-weight: bolder;
+  color: $secondary-color;
+}
 //mat-accordion {
 //  // color: white;
 //  min-height: 4rem;
@@ -54,31 +59,31 @@ mat-slide-toggle {
   font-weight: normal;
 }
 
-.dashboard-card {
-  position: absolute;
-  top: 1px;
-
-  left: $left;
-  right: $right;
-  bottom: 10px;
-
-  background-color: $background-color;
-  border: 2px solid $primary-color;
-  overflow-y: auto;
-  //scrollbar-color: $secondary-color $primary-color;
-  @include mat.card-overrides((
-          elevated-container-shape: $corner-radius
-  ));
-}
-
-.dashboard-card mat-card-content {
-  padding-top: 0.5rem;
-  text-align: left;
-  display: grid;
-  grid-template-columns: repeat(var(--grid-col), 1fr);
-  // grid-template-columns: repeat(1, 1fr);
-  gap: 16px;
-}
+//.dashboard-card {
+//  position: absolute;
+//  top: 1px;
+//
+//  left: $left;
+//  right: $right;
+//  bottom: 10px;
+//
+//  background-color: $background-color;
+//  border: 2px solid $primary-color;
+//  overflow-y: auto;
+//  //scrollbar-color: $secondary-color $primary-color;
+//  @include mat.card-overrides((
+//          elevated-container-shape: $corner-radius
+//  ));
+//}
+//
+//.dashboard-card mat-card-content {
+//  padding-top: 0.5rem;
+//  text-align: left;
+//  display: grid;
+//  grid-template-columns: repeat(var(--grid-col), 1fr);
+//  // grid-template-columns: repeat(1, 1fr);
+//  gap: 16px;
+//}
 
 .mat-mdc-card-header {
   display: flex;
@@ -110,8 +115,6 @@ mat-slide-toggle {
   flex-direction: column;
   // align-items: start;
   // justify-content: left;
-  --ngx-editor-background-color: $primary-color;
-  --ngx-editor-border-color: $primary-color;
   font-size: large;
 }
 
@@ -152,21 +155,6 @@ mat-slide-toggle {
   align-items: start;
   align-content: start;
   align-self: start;
-}
-
-.editor {
-  .NgxEditor {
-  }
-
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: auto;
-    margin-bottom: 0.7rem;
-
-    pre {
-      white-space: pre !important;
-    }
-  }
 }
 
 
@@ -241,58 +229,46 @@ mat-slide-toggle {
   --mdc-chip-label-text-weight: large;
 }
 
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  background-color: $activeBgColor;
+}
+
 
 .primaryColor{
-  --mat-standard-button-toggle-background-color: #{$primary-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$primary-color};
+  background-color: $primary-color;
   width: 50px;
 }
 .secondaryColor{
-  --mat-standard-button-toggle-background-color: #{$secondary-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
+  background-color: $secondary-color;
   width: 50px;
 }
 .dangerColor{
-  --mat-standard-button-toggle-background-color: #{$danger-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$danger-color};
+  background-color: $danger-color;
   width: 50px;
 }
 
 .warnColor{
-  --mat-standard-button-toggle-background-color: #{$warn-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$warn-color};
+  background-color: $warn-color;
   width: 50px;
 }
 
 .infoColor{
-  --mat-standard-button-toggle-background-color: #{$info-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$info-color};
+  background-color: $info-color;
   width: 50px;
 }
 
 .acceptColor{
-  --mat-standard-button-toggle-background-color: #{$accept-color};
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: #{$accept-color};
+  background-color: $accept-color;
   width: 50px;
 }
 
 .whiteColor{
-  --mat-standard-button-toggle-background-color: white;
-  --mat-standard-button-toggle-selected-state-text-color: black;
-  --mat-standard-button-toggle-selected-state-background-color: white;
+  background-color: white;
   width: 50px;
 }
 
 .blackColor{
-  --mat-standard-button-toggle-background-color: black;
-  --mat-standard-button-toggle-selected-state-text-color: white;
-  --mat-standard-button-toggle-selected-state-background-color: black;
+  background-color: black;
   width: 50px;
 }
 //

@@ -21,8 +21,8 @@ $accept-color: var(--accept-color);
           actions-divider-color: orange,
     // container-background-color: red,
           container-text-color:black,
-
   ));
+
 
   @include mat.checkbox-overrides((
           label-text-color: var(--secondary-color),
@@ -47,12 +47,15 @@ $accept-color: var(--accept-color);
 //  // color: white;
 //  min-height: 4rem;
 //}
-
+.icon-display-menu {
+  color:$secondary-color;
+}
 .expPnl {
   color: black;
   min-height: 4rem;
   background-color: darkolivegreen;
 }
+
 //.mat-expansion-panel{
 //
 //}
@@ -65,6 +68,100 @@ $accept-color: var(--accept-color);
 
 
 
+
+:host{
+  //.ql-editor {
+  //  color: $primary-color;
+  //  border: $primary-color 1px solid;
+  //}
+}
+
+@mixin outline-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__native-control:enabled {
+      &.checked,
+      &:focus:checked,
+      &:indeterminate,
+      &[data-indeterminate='true'],
+      &:checked,
+      &:hover:checked,
+      &:not(:disabled):active:checked {
+        ~ .mdc-checkbox__background {
+          background-color: $secondary-color;
+          border-color: $primary-color;
+        }
+      }
+    }
+
+    // Define the style for .mdc-checkbox__checkmark
+    .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
+      .mdc-checkbox__checkmark {
+        color: $primary-color;
+        border-color: #0a53be;
+      }
+    }
+  }
+}
+
+.checkbox-item {
+  @include outline-checkbox;
+}
+
+.mat-checkbox-ripple .mat-ripple-element {
+  background-color: rgb(100, 12, 12) !important;
+}
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: black !important;
+}
+
+ .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: black !important;
+}
+
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  border-radius: 5px !important;
+  background-color: black !important;
+}
+.mat-expansion-panel{
+  width: 100%;
+  background-color: $primary-color !important;
+}
+.mat-expansion-panel-header{
+  background-color: $primary-color !important;
+  min-width: 10rem;
+}
+
+.mat-expansion-panel-header-title{
+  background-color: $primary-color;
+}
+
+.mat-expansion-panel-header:hover {
+ // background-color: $secondary-color !important;
+}
+.mat-expansion-panel-content{
+  background-color: $secondary-color;
+  min-width: 10rem;
+}
+//.ql-snow .ql-stroke {
+//  fill: none;
+//  stroke: red !important;
+//  stroke-linecap: round;
+//  stroke-linejoin: round;
+//  stroke-width: 2;
+//  color: green;
+//}
+//.ql-snow{
+//  box-sizing: border-box;
+//  color: yellow !important;
+//}
+
+.text-text{
+  color: $primary-color;
+  font-weight: bolder;
+}
+.isoText {
+  padding-left: 1rem;
+}
 
 mat-slide-toggle {
   margin: 8px 0;
@@ -105,135 +202,22 @@ mat-slide-toggle {
   align-items: start;
 }
 
-.header-actions{
+.header-actions {
   display: flex;
   flex-direction: $direction;
-  width: 100%;
+//  width: 100%;
 }
 
-.header-title{
+.header-title {
   display: flex;
   flex-direction: row;
 }
-
-.container {
-  justify-content: left;
-  justify-items: left;
-  justify-self: left;
-  align-items: start;
-  align-content: start;
-  align-self: start;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  // align-items: start;
-  // justify-content: left;
-  --ngx-editor-background-color: $primary-color;
-  --ngx-editor-border-color: $primary-color;
-  font-size: large;
-}
-
 
 .button-container {
   padding: 2px;
 }
 
-.grb {
-  align-items: center;
-  color: $primary-color;
-  padding-right: 30px;
-  align-content: center;
-  display: grid;
-  grid-template-columns: repeat(2, 20px);
-  grid-template-rows: repeat(2, 20px);
-}
-
-.grb-crveno {
-  width: 20px;
-  height: 20px;
-  background-color: $secondary-color;
-}
-
-.grb-bijelo {
-  width: 20px;
-  height: 20px;
-  background-color: $primary-color;
-}
-
-
-.content {
-  width: 100%;
-  line-height: 30px;
-  justify-content: left;
-  justify-items: left;
-  justify-self: left;
-  align-items: start;
-  align-content: start;
-  align-self: start;
-}
-
-.editor {
-  .NgxEditor {
-  }
-
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: auto;
-    margin-bottom: 0.7rem;
-
-    pre {
-      white-space: pre !important;
-    }
-  }
-}
-
-
-.mat-mdc-button-base {
-  margin: 8px 8px 8px 8px;
-  color: $secondary-color;
-  border-radius: 10px;
-  --mdc-extended-fab-container-elevation-shadow: 0px 0px 2px 1px var(--primary-color), 0px 0px 3px 1px var(--primary-color), 0px 0px 2px 1px var(--primary-color);
-  --mdc-protected-button-container-color: $secondary-color;
-
-  --mdc-extended-fab-pressed-container-elevation-shadow: none;
-  --mdc-filled-button-container-color: $primary-color;
-  border: 2px solid $secondary-color;
-}
-
-
-.mat-mdc-unelevated-button {
-  background-color: $primary-color ;
-  color: $secondary-color;
-  @include mat.icon-overrides((
-          color: $secondary-color,
-  ));
-  justify-content: left;
-}
-.mat-mdc-unelevated-button:hover {
-  background-color: $secondary-color;
-  color: $primary-color;
-  @include mat.icon-overrides((
-          color: $primary-color,
-  ));
-  justify-content: left;
-}
-
-.mat-mdc-extended-fab:hover {
-  background-color: $primary-color;
-  color: $secondary-color;
-}
-
-.mat-mdc-extended-fab {
-  background-color: $secondary-color;
-  color: $primary-color;
-}
-
-.mat-mdc-mini-fab {
-  background-color: $primary-color;
-  color: $secondary-color;
-
-}
-.actionButtons{
+.actionButtons {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -241,102 +225,170 @@ mat-slide-toggle {
 }
 
 
-.mat-mdc-standard-chip.mdc-evolution-chip__text-label{
-  color: $secondary-color;
-}
-
-.mat-mdc-standard-chip.mdc-evolution-chip--selected:not(.mdc-evolution-chip--disabled) {
-  background-color: $primary-color;
-  --mdc-chip-selected-label-text-color:  var(--secondary-color);
-  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
-}
-
-.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
-  background-color: $primary-color;
-  --mdc-chip-selected-label-text-color:  var(--secondary-color);
-  --mdc-chip-with-icon-selected-icon-color:  var(--secondary-color);
-  --mdc-chip-label-text-color: var(--secondary-color);
-  --mdc-chip-label-text-weight: large;
-}
-
-
-.primaryColor{
+.primaryColor {
   --mat-standard-button-toggle-background-color: #{$primary-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$primary-color};
   width: 50px;
 }
-.secondaryColor{
+
+.secondaryColor {
   --mat-standard-button-toggle-background-color: #{$secondary-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$secondary-color};
   width: 50px;
 }
-.dangerColor{
+
+.dangerColor {
   --mat-standard-button-toggle-background-color: #{$danger-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$danger-color};
   width: 50px;
 }
 
-.warnColor{
+.warnColor {
   --mat-standard-button-toggle-background-color: #{$warn-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$warn-color};
   width: 50px;
 }
 
-.infoColor{
+.infoColor {
   --mat-standard-button-toggle-background-color: #{$info-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$info-color};
   width: 50px;
 }
 
-.acceptColor{
+.acceptColor {
   --mat-standard-button-toggle-background-color: #{$accept-color};
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: #{$accept-color};
   width: 50px;
 }
 
-.whiteColor{
+.whiteColor {
   --mat-standard-button-toggle-background-color: white;
   --mat-standard-button-toggle-selected-state-text-color: black;
   --mat-standard-button-toggle-selected-state-background-color: white;
   width: 50px;
 }
 
-.blackColor{
+.blackColor {
   --mat-standard-button-toggle-background-color: black;
   --mat-standard-button-toggle-selected-state-text-color: white;
   --mat-standard-button-toggle-selected-state-background-color: black;
   width: 50px;
 }
+
 //
-.panel-header{
+.panel-header {
   display: flex;
   flex-direction: row;
   width: 100%;
 }
-.panel-title{
+
+.panel-title {
   flex-grow: 0.9;
 }
-.panel-arrow{
+
+.panel-arrow {
   flex-grow: 0.1;
 }
+
 .custom-panel {
   background-color: $primary-color;
   color: $secondary-color;
-  margin-top: 0.5rem;
+  margin-top: 0.5rem !important;
+  .ql-editor {
+    color: $primary-color;
+    border: $primary-color 1px solid;
+    width: 20rem;
+  }
 }
 
-.naslov{
+.myEditor{
+
+  .ql-toolbar .ql-stroke {
+    fill: none;
+    stroke: $primary-color;
+  }
+
+  .ql-toolbar .ql-fill {
+    fill: $primary-color;
+    stroke: none;
+  }
+
+  .ql-toolbar .ql-picker {
+    color: $primary-color;
+  }
+
+
+  .ql-picker-options{
+    background-color: $secondary-color !important;
+    color: $primary-color !important;
+  }
+  .ql-picker-options:hover{
+    background-color: $secondary-color !important;
+    color: $primary-color !important;
+  }
+  .ql-active{
+    font-weight: bolder !important;
+    color: $primary-color !important;
+  }
+  .ql-stroke{
+    color: $primary-color !important;
+  }
+
+  .ql-picker-label{
+    color: $primary-color !important;
+  }
+  .ql-toolbar .ql-snow{
+    color: $primary-color !important;
+  }
+  .ql-bold .ql-active{
+    color: $primary-color !important;
+    font-weight: bolder;
+  }
+
+
+
+
+}
+.custom-panel-flags {
+  background-color: $primary-color;
+  color: $secondary-color;
+  margin-top: 0.5rem !important;
+  //.mat-expansion-panel-header {
+  //  display: flex;
+  //  flex-direction: row;
+  //  width: 100%;
+  //}
+
+  .ql-editor {
+    color: $primary-color;
+    border: $primary-color 1px solid;
+   // padding-right: 10px;
+    width: 12rem;
+  }
+}
+
+.mybutton {
+ margin-top: 1rem;
+  background-color: $secondary-color !important;
+  color: $primary-color !important;
+}
+.mybutton:hover {
+  background-color: $primary-color !important;
+  color: $secondary-color !important;
+}
+
+.naslov {
   padding-left: 1rem;
   color: $secondary-color;
 }
 
-.my-slider{
+.my-slider {
   --mdc-slider-handle-color: $secondary-color;
   --mdc-slider-active-track-color: $secondary-color;
   --mdc-slider-inactive-track-color: orange;

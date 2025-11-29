@@ -10,22 +10,21 @@ import {AuthenticationRequest} from "../../domain/authentication-request";
 import {CodeInputModule} from "angular-code-input";
 import {TranslatePipe} from "@ngx-translate/core";
 import {SetNewPasswordRequest} from "../../domain/set-new-password-request";
-import {NgIf} from "@angular/common";
+
 
 @Component({
     selector: 'forgot-password',
     imports: [
-        FormsModule,
-        LetDirective,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatFabButton,
-        CodeInputModule,
-        TranslatePipe,
-        RouterLink,
-        NgIf,
-    ],
+    FormsModule,
+    LetDirective,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatFabButton,
+    CodeInputModule,
+    TranslatePipe,
+    RouterLink
+],
     templateUrl: './forgot-password.component.html',
     styleUrl: './forgot-password.component.scss'
 })

@@ -14,7 +14,7 @@
   "delete.page": "Slet side",
   "create.page": "Opret ny side",
   "new.page": "Ny side",
-  "title.and.icons": "Titler og ikoner",
+  "title.and.icons": "Menuer",
   "create.item": "Opret nyt element",
   "update.item": "Opdater element",
   "item.dialog.description": "Beskrivelse",
@@ -46,6 +46,8 @@
   "summer.center": "Centrer",
   "summer.panel.off": "Panel fra",
   "summer.panel.on": "Panel til",
+  "summer.side.menu.off": "Skjul sidemenu",
+  "summer.side.menu.on": "Vis sidemenu",
   "summer.columns": "Kolonner",
   "summer.new.item": "Nyt element",
   "activation.successful": "Aktivering gennemført!",
@@ -63,5 +65,7 @@
   "send.me.email": "Send mig en e-mail",
   "set.new.password": "Indstil ny adgangskode",
   "forgot.your.password": "Har du glemt din adgangskode?",
-  "nothing.remembered": "Intet, jeg huskede det."
+  "nothing.remembered": "Intet, jeg huskede det.",
+  "header.actions": "Applikationshandlinger",
+  "page.actions": "Sidehandlinger"
 }

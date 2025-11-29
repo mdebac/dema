@@ -7,7 +7,7 @@ import {MatCardFooter} from "@angular/material/card";
     selector: 'navigation',
     templateUrl: './navigation.component.html',
     styleUrls: ['./navigation.component.scss'],
-    imports: [RouterOutlet, MatCardFooter],
+    imports: [RouterOutlet],
 })
 export class NavigationComponent {
 

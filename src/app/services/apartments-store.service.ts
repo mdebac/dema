@@ -254,14 +254,14 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         }
     );
 
-    colors$: Observable<Colors | null> = this.select(
-        this.header$,
-        (header) => {
-            if (header?.colors) {
-                return header.colors;
-            } else return null;
-        }
-    );
+    // colors$: Observable<Colors | null> = this.select(
+    //     this.header$,
+    //     (header) => {
+    //         if (header?.main) {
+    //             return header.main;
+    //         } else return null;
+    //     }
+    // );
 
     //TODO pagination
     apartmentCriteria$: Observable<ApartmentCriteria> = this.select(
@@ -318,8 +318,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.backgroundColorSummer$,
         this.header$,
         (color, header) => {
-            if (header?.colors?.primaryColor && header?.colors?.secondaryColor) {
-                return color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor;
+            if (header?.main?.primaryColor && header?.main?.secondaryColor) {
+                return color === header?.main?.primaryColor ? header?.main?.secondaryColor : header?.main?.primaryColor;
             } else {
                 return "";
             }
@@ -330,8 +330,8 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
         this.backgroundColorPanel$,
         this.header$,
         (color, header) => {
-            if (header?.colors?.primaryColor && header?.colors?.secondaryColor) {
-                return color === header?.colors?.primaryColor ? header?.colors?.secondaryColor : header?.colors?.primaryColor;
+            if (header?.main?.primaryColor && header?.main?.secondaryColor) {
+                return color === header?.main?.primaryColor ? header?.main?.secondaryColor : header?.main?.primaryColor;
             } else {
                 return "";
             }
@@ -759,7 +759,7 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
                                     activeSideMenuUrl: menuSideUrl,
                                 }
                                 this.patchState({header: header});
-                                this.router.navigate([menuSideUrl, menuSideUrl]);
+                                this.router.navigate([menuTopUrl, menuSideUrl]);
                             },
                             error: (error) => this.patchState({error: error.error}),
                         }),
@@ -837,10 +837,11 @@ export class ApartmentStore extends ComponentStore<ApartmentState> {
     selectIso(country: string) {
         console.log("ISO selected", country);
         this.translateService.use(country);
-        this.patchState({selectedIso: country});
+       this.patchState({selectedIso: country});
     }
 
     setMobileView(isMobile: boolean) {
+     //   console.log("set mobile view", isMobile);
         this.patchState({isMobile: isMobile});
     }
 

@@ -1,111 +1,56 @@
 <mat-card class="dashboard-card">
-    <mat-card-header>
-        <h2 class="button-container-left">
-            @if (isNew) {
-                {{ 'create.page' | translate }}
-            } @else {
-                {{ 'update.page' | translate }}
-            }</h2>
-        <div class="languageSpace">
-            <button mat-icon-button (click)="chooseLanguages()">
-                <mat-icon>language</mat-icon>
-            </button>
-            <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle" (selectedOut)="activeIso($event)">
-            </iso-buttons>
-        </div>
+  <mat-card-header>
+    <h2 class="button-container-left">
+      @if (isNew) {
+        {{ 'create.page' | translate }}
+      } @else {
+        {{ 'update.page' | translate }}
+      }</h2>
     </mat-card-header>
     <mat-card-content class="form" [formGroup]="form">
 
-        <div class="dialog-left">
+      <div class="dialog-left">
 
-            <div formArrayName="iso">
-                <div *ngFor="let item of isoArray.controls; let i = index">
 
-                    @if (isIsoSelected(item.value)) {
-                        <div class="row-input-container-left text" [formGroupName]="i">
-                            <mat-form-field appearance="outline">
-                                <mat-label>{{ 'dialog.main.title' | translate }}</mat-label>
-                                <input matInput formControlName="title">
-                                <mat-hint align="end">{{ 'dialog.main.title.hint' | translate }}</mat-hint>
-                                <mat-error>
-                                    Min 3, Max 30
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
+        @if (isAdmin) {
+          <div class="row-input-container-left">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Domain name</mat-label>
+              <input matInput formControlName="host">
+              <mat-hint align="end">your-domain.eu</mat-hint>
+            </mat-form-field>
+          </div>
+        }
 
-                        <div class="row-input-container-left" [formGroupName]="i">
-                            <mat-form-field appearance="outline">
-                                <mat-label>{{ 'dialog.main.description' | translate }}</mat-label>
-                                <textarea matInput formControlName="description"></textarea>
-                                <mat-hint align="end">{{ 'dialog.main.description.hint' | translate }}</mat-hint>
-                                <mat-error>
-                                    Max 2000
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
+      </div>
 
-                        <div class="row-input-container-left" [formGroupName]="i">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Icon text</mat-label>
-                                <input matInput formControlName="iconText">
-                                <mat-error>
-                                    Min 3, Max 30
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
+      <div class="dialog-right">
 
-                    }
-                </div>
-            </div>
 
-            @if (isAdmin) {
-                <div class="row-input-container-left">
-                    <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Domain name</mat-label>
-                        <input matInput formControlName="host">
-                        <mat-hint align="end">your-domain.eu</mat-hint>
-                    </mat-form-field>
-                </div>
+        <div class="row-input-container-left">
+
+          <mat-divider></mat-divider>
+
+          <div class="buttonSpace">
+            @if (isNew) {
+              <button (click)="createApartment()"
+                [disabled]="!form.valid"
+                mat-fab extended>
+                {{ "create.page" | translate }}
+              </button>
+            } @else {
+              <button (click)="createApartment()"
+                [disabled]="!form.valid"
+                mat-fab extended>
+                {{ "update.page" | translate }}
+              </button>
             }
-
-            @if (isHostDemaApartments) {
-                <div class="row-input-container-left full-width">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Price</mat-label>
-                        <input matInput type="number" formControlName="price">
-                    </mat-form-field>
-                </div>
-            }
+          </div>
 
         </div>
 
-        <div class="dialog-right">
-
-
-            <div class="row-input-container-left">
-
-                <mat-divider></mat-divider>
-
-                <div class="buttonSpace">
-                    @if (isNew) {
-                        <button (click)="createApartment()"
-                                [disabled]="!form.valid"
-                                mat-fab extended>
-                            {{ "create.page" | translate }}
-                        </button>
-                    } @else {
-                        <button (click)="createApartment()"
-                                [disabled]="!form.valid"
-                                mat-fab extended>
-                            {{ "update.page" | translate }}
-                        </button>
-                    }
-                </div>
-
-            </div>
-
-        </div>
+      </div>
 
 
     </mat-card-content>
-</mat-card>
+  </mat-card>

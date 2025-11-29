@@ -1,12 +1,11 @@
-import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, Input, OnDestroy} from '@angular/core';
 import {ApartmentItemIso} from "../../../../domain/apartment-item-iso";
-import {Editor, NgxEditorComponent} from "ngx-editor";
 import {ApartmentStore} from "../../../../services/apartments-store.service";
-import {EMPTY, Subject} from "rxjs";
+import {Subject} from "rxjs";
 import {filter, takeUntil} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {FormsModule} from '@angular/forms';
-import {MatButton, MatFabButton} from '@angular/material/button';
+import {MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslatePipe} from '@ngx-translate/core';
 
@@ -14,9 +13,9 @@ import {TranslatePipe} from '@ngx-translate/core';
     selector: 'job',
     templateUrl: './job.component.html',
     styleUrl: './job.component.scss',
-    imports: [NgxEditorComponent, FormsModule, MatButton, MatIcon, TranslatePipe, MatFabButton]
+    imports: [FormsModule, MatIcon, TranslatePipe, MatFabButton]
 })
-export class JobComponent implements OnInit, OnDestroy {
+export class JobComponent implements OnDestroy {
 
     store = inject(ApartmentStore);
     unsubscribe$ = new Subject<void>();
@@ -29,14 +28,8 @@ export class JobComponent implements OnInit, OnDestroy {
     @Input() itemId: number = 1;
     @Input() loggedIn: boolean = false;
 
-    editor: Editor = new Editor();
-
-    ngOnInit(): void {
-        this.editor = new Editor();
-    }
 
     ngOnDestroy(): void {
-        this.editor.destroy();
         this.unsubscribe$.next();
         this.unsubscribe$.unsubscribe();
 
@@ -71,7 +64,7 @@ export class JobComponent implements OnInit, OnDestroy {
     openCvDialog(itemId: number) {
         // @ts-ignore
         const dialogRef = this.dialog.open(CvDataDialogComponent, {
-            width: '500px',
+            width: '31rem',
             panelClass: "dialog-panel",
             data: itemId,
         });
