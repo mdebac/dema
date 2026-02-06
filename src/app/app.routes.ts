@@ -11,12 +11,15 @@ import {TranslateModule, TranslatePipe, TranslateService} from "@ngx-translate/c
 import {headerWithDetailResolver} from "./services/guard/header-with-detail-resolver";
 import {ForgotPasswordComponent} from "./features/forgot-password/forgot-password.component";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {DashboardUsersComponent} from "./features/dashboard/dashboard-users.component";
+import {DashboardProductsComponent} from "./features/dashboard/dashboard-products.component";
+import {SearchComponent} from "./features/search/search.component";
 
 export const routes: Routes = [
     {
         path: '',
         component: StartComponent,
-        providers: [ApartmentsHttpService, ApartmentStore, headerResolver, TranslateService,TranslateModule, TranslatePipe, MatExpansionModule],
+        providers: [ApartmentsHttpService, ApartmentStore, headerResolver, TranslateService, TranslateModule, TranslatePipe, MatExpansionModule],
         resolve: {
             myData: headerResolver,
         },
@@ -32,18 +35,32 @@ export const routes: Routes = [
             {
                 path: 'login',
                 component: LoginComponent
-            } ,
+            },
             {
                 path: 'forgot',
                 component: ForgotPasswordComponent
-            } ,
+            },
+            {
+                path: 'search',
+                component: SearchComponent
+            },
             {
                 path: 'activate-account',
                 component: ActivateAccountComponent,
             },
             {
                 path: 'my', component: DashboardComponent,
-                canActivate: [authGuard]
+                canActivate: [authGuard],
+                children: [
+                    {
+                        path: 'users',
+                        component: DashboardUsersComponent
+                    },
+                    {
+                        path: 'business',
+                        component: DashboardProductsComponent
+                    }
+                ]
             },
             {
                 path: ':menu',

@@ -1,17 +1,51 @@
 <div class="buttonSpace">
 
     @if (canEdit) {
-        <button mat-icon-button (click)="createMenuDetail(header)">
+        @if (header?.main?.host === Hosts.INFO_DEMA_TEST1_COM || isAdmin){
+                <button mat-icon-button disabled="{{isCreateMenuProductDisabled(header?.main?.products)}}" (click)="createMenuDetail(header,TopMenuType.AUTO)">
+                    <mat-icon class="text-text">directions_car</mat-icon>
+                </button>
+        }
+
+        @if (header?.main?.host === Hosts.DEMA_APARTMENTS || isAdmin){
+            <button mat-icon-button disabled="{{isCreateMenuProductDisabled(header?.main?.products)}}" (click)="createMenuDetail(header,TopMenuType.HOTEL)">
+                <mat-icon class="text-text">hotel</mat-icon>
+            </button>
+        }
+
+        @if (header?.main?.host === Hosts.RESIDENCE_INFO_DEMA_EU || isAdmin){
+            <button mat-icon-button disabled="{{isCreateMenuProductDisabled(header?.main?.products)}}" (click)="createMenuDetail(header,TopMenuType.RESIDENCE)">
+                <mat-icon class="text-text">domain</mat-icon>
+            </button>
+        }
+
+        @if (header?.main?.host === Hosts.ADRIATICSUN_EU || isAdmin){
+            <button mat-icon-button disabled="{{isCreateMenuProductDisabled(header?.main?.products)}}" (click)="createMenuDetail(header,TopMenuType.JOB)">
+                <mat-icon class="text-text">work</mat-icon>
+            </button>
+        }
+
+        <button mat-icon-button (click)="createMenuDetail(header,TopMenuType.MENU)">
             <mat-icon class="text-text">add</mat-icon>
         </button>
+
+
     }
     @for (menu of header?.menus; track $index) {
         @for (iso of menu.iso; track iso.iso) {
             @if (selectedIso === iso.iso) {
+
+                @if (canEdit && activeDetail?.topMenu?.id === menu.id && calculateBeforeId(activeDetail?.topMenu?.id, header?.menus)) {
+                    <button mat-mini-fab class="icon-display-top-menu" (click)="moveLeft(menu, calculateBeforeId(activeDetail?.topMenu?.id, header?.menus))">
+                        <mat-icon class="my-icon-top-menu">arrow_circle_left</mat-icon>
+                    </button>
+                }
+
                 <div routerLink="{{ menu.menuUrl }}"
                      [ngClass]="direction === 'row' ? 'buttonWidth' : 'buttonMaxWidth'"
                      routerLinkActive="activebutton"
                 >
+
                     @if (menu.image) {
                         <img src="{{'data:image/jpg;base64,' + menu.image}}" alt=""/>
                     } @else {
@@ -22,14 +56,22 @@
                         }
                     }
                     <br>
-                    @if (iso.title){
-                        <div class="button-text">
-                            <quill-view [content]="getTopMenuLabel(iso.title)" format="html" theme="snow"></quill-view>
+                    @if (iso.title) {
+                        <div class="menu-title-text-top">
+                            <quill-view
+                                    class="my-quill-view-top"
+                                    [content]="getTopMenuLabel(iso.title)"
+                                    format="html" theme="snow"></quill-view>
                         </div>
                     }
 
                 </div>
-           }
+                @if (canEdit && activeDetail?.topMenu?.id === menu.id && calculateNextId(activeDetail?.topMenu?.id, header?.menus)) {
+                    <button mat-mini-fab class="icon-display-top-menu" (click)="moveRight(menu, calculateNextId(activeDetail?.topMenu?.id, header?.menus))">
+                        <mat-icon class="my-icon-top-menu">arrow_circle_right</mat-icon>
+                    </button>
+                }
+            }
         }
     }
 

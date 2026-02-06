@@ -56,16 +56,7 @@ $row-color: #f6f6f1;
   transition: all 300ms;
 }
 
-.domain{
-  display: flex;
-  flex-direction: row;
-  text-decoration: none;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 16px;
-  align-items: center;
-  height: 12.5rem;
-}
+
 
 
 .mat-mdc-paginator{
@@ -80,8 +71,4 @@ $row-color: #f6f6f1;
 
 .customers-element-row{
   display: none;
-}
-.example-element-detail {
-  overflow: hidden;
-  display: flex;
 }

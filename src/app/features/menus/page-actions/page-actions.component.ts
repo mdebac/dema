@@ -26,6 +26,7 @@ import {
 } from "@angular/material/expansion";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Language} from "../../../domain/language";
+import {defaultIso} from "../../../domain/countries-iso";
 
 
 @Component({
@@ -54,6 +55,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
 
     @Input() activeDetail: ApartmentDetail | null = null;
     @Input() header: Header | null = null;
+    @Input() selectedIso: string = defaultIso;
 
     @HostBinding("style.--active-bg-color")
     @Input() activeBgColor: string | undefined = "";
@@ -66,13 +68,13 @@ export class PageActionsComponent implements OnDestroy, OnInit {
     isOpened: boolean = true;
     form: FormGroup;
 
-    selectedPictureTopMenu: string | null = null;
-    toBigTopMenuImage: string = "";
-    selectedTopMenuImage: File | null = null;
-
-    selectedPictureSideMenu: string | null = null;
-    toBigSideMenuImage: string = "";
-    selectedSideMenuImage: File | null = null;
+    // selectedPictureTopMenu: string | null = null;
+    // toBigTopMenuImage: string = "";
+    // selectedTopMenuImage: File | null = null;
+    //
+    // selectedPictureSideMenu: string | null = null;
+    // toBigSideMenuImage: string = "";
+    // selectedSideMenuImage: File | null = null;
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();
@@ -116,6 +118,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
             const data: ApartmentItemDialogData = {
                 languages: this.header?.main.languages,
                 item: item,
+                selectedIso: this.selectedIso,
                 fonts: this.header?.main.fonts,
                 colors: colors,
                 roles: this.authStore.userRoles,
@@ -159,7 +162,9 @@ export class PageActionsComponent implements OnDestroy, OnInit {
         const partial: Partial<ApartmentDetail> = {...detail}
         const data: Partial<ApartmentDetailDialogData> = {
             languages: selectedLanguages,
+            products: header?.main.products,
             detail: partial,
+            selectedIso: this.selectedIso,
             fonts: header?.main.fonts,
             colors: header?.main.colors,
             host: header?.main.host,
@@ -170,7 +175,7 @@ export class PageActionsComponent implements OnDestroy, OnInit {
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
                 if (detailProps.id) {
-                    this.store.updateDetailEffect(detailProps);
+                  this.store.updateDetailEffect(detailProps);
                 }
             }
         );
@@ -266,12 +271,12 @@ export class PageActionsComponent implements OnDestroy, OnInit {
     }
 
     sideMenuOn(detail: ApartmentDetail | null) {
-        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: true}
+        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: false}
         this.store.updateMenuEffect(menuUpdate);
     }
 
     sideMenuOff(detail: ApartmentDetail | null) {
-        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: false}
+        const menuUpdate: Partial<Menu> = {...detail?.topMenu, panels: undefined, hideMenuPanelIfOne: true}
         this.store.updateMenuEffect(menuUpdate);
     }
 

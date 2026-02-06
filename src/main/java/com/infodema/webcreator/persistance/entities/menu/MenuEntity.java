@@ -1,10 +1,12 @@
 package com.infodema.webcreator.persistance.entities.menu;
 
-import com.infodema.webcreator.domain.enums.Country;
+import com.infodema.webcreator.domain.core.ProductType;
 import com.infodema.webcreator.domain.enums.Layout;
 import com.infodema.webcreator.domain.enums.Side;
+import com.infodema.webcreator.domain.enums.TopMenuType;
 import com.infodema.webcreator.persistance.entities.BaseAuditEntity;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
+import com.infodema.webcreator.persistance.entities.main.ProductEntity;
 import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.type.TrueFalseConverter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +35,8 @@ public class MenuEntity extends BaseAuditEntity {
     private String imageFileName;
     private String imageMimeType;
     private long imageSize;
+    private BigDecimal price;
+
     @Column(name = "image_content", columnDefinition="MEDIUMBLOB")
     private byte[] imageContent;
 
@@ -42,6 +47,10 @@ public class MenuEntity extends BaseAuditEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Layout layout;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TopMenuType topMenuType;
 
     @Convert(converter = TrueFalseConverter.class)
     private Boolean hideMenuPanelIfOne;
@@ -56,6 +65,11 @@ public class MenuEntity extends BaseAuditEntity {
     @JoinColumn(name = "main_id", nullable = false)
     private MainEntity main;
 
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private ProductEntity product;
+
+    @OrderBy("orderNum ASC")
     @OneToMany(mappedBy = "menu")
     private List<PanelEntity> panels;
 
@@ -66,6 +80,15 @@ public class MenuEntity extends BaseAuditEntity {
     )
     @Builder.Default
     private Set<MenuIsoEntity> iso = new HashSet<>();
+
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "menu_properties",
+            joinColumns = @JoinColumn(name = "menu_id", nullable = false)
+    )
+    @Builder.Default
+    private Set<MenuPropertyEntity> menuProperties = new HashSet<>();
 
     @SneakyThrows
     public void setImage(MultipartFile multipartFile){

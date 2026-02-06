@@ -1,6 +1,5 @@
 package com.infodema.webcreator.domain.core;
 
-import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

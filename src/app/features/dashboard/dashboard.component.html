@@ -2,51 +2,78 @@
         title: title$,
         chip: chip$,
         apartmentsCount: apartmentsCount$,
+        selectedIso: selectedIso$,
         header: header$,
-        } as vm">
+        shrinkMenu: shrinkMenu$,
+        stateLayout: stateLayout$,
+ } as vm">
 
-    <mat-grid-list cols="8" rowHeight="8:6" gutterSize="0px">
-        <mat-grid-tile class="main-tile" [colspan]="6" [rowspan]="5">
-            <mat-card class="dashboard-card">
-                <mat-card-header>
-                    <h2 class="button-container-left text">
-                        <div class="dashboard-title">
-                            <mat-icon class="button-container-left text icon-size-transform">dashboard</mat-icon>
-                            <p> {{ "my.dashboard" | translate }} </p>
-                        </div>
-                    </h2>
-                    @if (isAdmin || isManager && vm.header?.main?.host === Hosts.DEMA_APARTMENTS){
-                        <div>
-                            <button (click)="createApartment()"
-                                    mat-fab extended>
-                                <mat-icon>add_circle</mat-icon>
-                                {{ "create.page" | translate }}
-                            </button>
-                        </div>
-                    }
-                </mat-card-header>
-                <mat-card-content>
-                    @if (isAdmin || isManager){
-                        <customers-table
-                                [chip]="vm.chip"
-                                [title]="vm.title"
-                                [apartmentsCount]="vm.apartmentsCount"
-                        ></customers-table>
-                    }
-                    @if (isUser && vm.header?.main?.host === Hosts.ADRIATICSUN_EU){
-                        //user status table
-                    }
-                </mat-card-content>
-            </mat-card>
+    <mat-grid-list cols="20" rowHeight="18:13" gutterSize="0px">
+
+
+        <mat-grid-tile class="menu-tile"
+                       [colspan]=2
+                       [rowspan]=13>
+            <dashboard-menu [loggedIn]="true"
+                            [selectedIso]="vm.selectedIso"
+                            [header]="vm.header"
+                            [paddingTop]="vm.shrinkMenu ? '0.5rem' : 0"
+                            [closedMenu]="vm.shrinkMenu"
+                            [justifyMenu]="vm.shrinkMenu ? 'center' : 'left'"
+                            [disableAddingNewPanels]="false"
+            ></dashboard-menu>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="main-tile"
+                       [colspan]="18"
+                       [rowspan]="13">
+
+            <ng-container *ngrxLet="{
+                            title: title$,
+                            chip: chip$,
+                            apartmentsCount: apartmentsCount$,
+                            header: header$,
+                            stateLayout: stateLayout$,
+                            products: products$
+                            } as vm">
+
+                <mat-card class="dashboard-card-dash">
+                    <mat-card-header>
+                        <h2 class="button-container-left text">
+                            <div class="dashboard-title">
+                                <mat-icon class="button-container-left text icon-size-transform">dashboard</mat-icon>
+                                <p> {{ "my.dashboard" | translate }} </p>
+                            </div>
+                        </h2>
+                        @if (isAdmin) {
+                            <div>
+                                <button (click)="createApartment()"
+                                        mat-fab extended>
+                                    <mat-icon>add_circle</mat-icon>
+                                    {{ "create.page" | translate }}
+                                </button>
+                            </div>
+                        }
+                    </mat-card-header>
+                    <mat-card-content>
+                        @if (isAdmin || isManager) {
+                            <router-outlet></router-outlet>
+                        }
+                    </mat-card-content>
+                </mat-card>
+
+
+            </ng-container>
+
 
         </mat-grid-tile>
-        <mat-grid-tile class="panel-tile" [colspan]="2" [rowspan]="5">
-<!--            <panel [loggedIn]="vm.isLoggedIn"-->
-<!--                   [cornerRadius]="vm.cornerRadius"-->
-<!--                   [selectedIso]="vm.selectedIso"-->
-<!--                   [activeDetail]="vm.activeDetail"-->
-<!--                   [header]="vm.header"-->
-<!--            ></panel>-->
-        </mat-grid-tile>
+
     </mat-grid-list>
+
+
 </ng-container>
+<footer class="createdBy">
+
+    created by <a href="https://info-dema.eu/web_creator">Dema Web Creator</a>
+</footer>
+

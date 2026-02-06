@@ -14,6 +14,7 @@ import java.util.List;
 public class MainWithoutChildrenMapper extends AbstractMapper {
 
     private final MainMapper mainMapper;
+    private final ProductMapper productMapper;
 
     public Page<Main> toDomain(Page<MainEntity> entities) {
         return convertPageCollection(entities, this::toDomain);
@@ -49,6 +50,7 @@ public class MainWithoutChildrenMapper extends AbstractMapper {
                 .price(entity.getPrice())
                 .fonts(mainMapper.toDomainMainFonts(entity.getFonts()))
                 .languages(mainMapper.toDomainMainLanguages(entity.getLanguages()))
+                .products(productMapper.toDomain(entity.getProducts()))
                 .iso(mainMapper.toDomainMainIso(entity.getIso()))
                 .colors(Colors.builder()
                         .primaryColor(entity.getPrimaryColor())

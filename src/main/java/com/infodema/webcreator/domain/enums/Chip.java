@@ -8,6 +8,12 @@ public enum Chip {
    FORM,
    TABLE,
    SETTINGS,
-   SHOP,
-   DOMAINS
+   SHOPPING_ITEM,
+   RESIDENCE,
+   AUTO,
+   SHOPPING_CARD,
+   DOMAINS,
+   HOTEL_SEARCH,
+   MOVE_RIGHT,
+   MOVE_LEFT
 }

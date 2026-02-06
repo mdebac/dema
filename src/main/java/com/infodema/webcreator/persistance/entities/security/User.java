@@ -56,7 +56,7 @@ public class User implements UserDetails, Principal {
     @ManyToMany(fetch = EAGER)
     private List<Role> roles;
     private String host;
-
+    private String stripeAccount;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;

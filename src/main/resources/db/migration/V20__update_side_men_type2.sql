@@ -1,0 +1,1 @@
+ALTER TABLE menu MODIFY COLUMN top_menu_type enum ('HOTEL','SHOPPING','JOB','MENU', 'RESIDENCE', 'AUTO');

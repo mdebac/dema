@@ -72,4 +72,19 @@ export class ErrorService {
     }
     return throwError(() => error);
   }
+
+  handleStripeError(error: any) {
+    console.error('An backend error occured', error);
+
+    if (error.status === 0) {
+      console.error('An error occured', error.error);
+    } else {
+      console.error(
+          'Backend error code' + error.status + ', body was',
+          error.error,
+      );
+    }
+    return throwError(() => error);
+  }
+
 }

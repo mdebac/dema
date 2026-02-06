@@ -1,4 +1,3 @@
-
 <div>
     <div>
         @if (!closedMenu) {
@@ -33,182 +32,472 @@
     </div>
 
     <div>
-        @for (panel of activeDetail?.topMenu?.panels; track panel.id; let i = $index) {
-            @for (iso of panel.iso; track iso.iso) {
-                @if (selectedIso === iso.iso) {
-                    @if (panel.panelUrl === activeDetail?.sideMenu?.panelUrl) {
+        @if (activeDetail?.topMenu?.type !== TopMenuType.MENU){
 
-                        <div class="{{'zajednicko ' + resolveActiveClass(i)}}">
+            @for (panel of activeDetail?.topMenu?.panels; track panel.id; let j = $index) {
 
-                            <div class="menu-container">
+                @for (iso of panel.iso; track iso.iso) {
+                    @if (selectedIso === iso.iso) {
+                        @if (panel.panelUrl === activeDetail?.sideMenu?.panelUrl) {
 
-                                @if (menuSide === Side.LEFT) {
+                            <div class="{{'zajednicko ' + resolveActiveClass(j)}}">
 
-                                    @if (panel.image) {
+                                <div class="up-down-actions">
+                                    @if ((roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase())) && calculateBeforeId(j,activeDetail?.topMenu)) {
+                                        <button class="icon-display-side-menu" mat-mini-fab
+                                                (click)="moveUp(panel, calculateBeforeId(j,activeDetail?.topMenu))">
+                                            <mat-icon class="my-icon-side-menu">arrow_circle_up</mat-icon>
+                                        </button>
+                                    }
 
-                                        <div class="image-desc">
-                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
-                                            @if (closedMenu) {
-                                                <div class="menu-title-text-closed">
-                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                                </div>
-                                            }
-                                        </div>
-                                    } @else {
+                                    @if ((roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase())) && calculateNextId(j,activeDetail?.topMenu)) {
+                                        <button class="icon-display-side-menu" mat-mini-fab
+                                                (click)="moveDown(panel,calculateNextId(j,activeDetail?.topMenu))">
+                                            <mat-icon class="my-icon-side-menu">arrow_circle_down</mat-icon>
+                                        </button>
+                                    }
 
-                                        @if (panel.icon) {
-                                            <div class="menu-icon">
-                                                <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
+
+                                </div>
+
+                                <div class="menu-container">
+
+                                    @if (menuSide === Side.LEFT) {
+                                        @if (panel.image) {
+
+                                            <div class="image-desc">
+                                                <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
                                                 @if (closedMenu) {
                                                     <div class="menu-title-text-closed">
-                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
+                                                        <quill-view
+                                                                class="my-quill-view-menu"
+                                                                [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                format="html" theme="snow"></quill-view>
                                                     </div>
                                                 }
                                             </div>
-                                        } @else if (closedMenu) {
-                                            <div class="menu-title-text-closed">
-                                                <quill-view [content]="iso.title" format="html"
-                                                            theme="snow"></quill-view>
-                                            </div>
-                                        }
-
-                                    }
-
-                                    <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-                                            @if (!closedMenu) {
-                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
-                                                            theme="snow"></quill-view>
-                                            }
-                                    </div>
-                                }
-
-                                @if (menuSide === Side.RIGHT) {
-
-                                    @if (panel.image) {
-                                        <div class="image-desc">
-                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
-
-                                            @if (closedMenu) {
-                                                <div class="menu-title-text-closed">
-                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                                </div>
-                                            }
-
-                                        </div>
-
-                                    } @else {
-
-                                        @if (panel.icon) {
-                                            <div class="menu-icon">
-                                                <mat-icon class="icon-display icon-active"> {{ panel.icon }}</mat-icon>
-                                                @if (closedMenu) {
-                                                    <div class="menu-title-text-closed">
-                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                                    </div>
-                                                }
-                                            </div>
-                                        } @else if (closedMenu) {
-                                            <div class="menu-title-text-closed">
-                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                            </div>
-                                        }
-
-                                    }
-
-                                    <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-                                        @if (!closedMenu) {
-                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
-                                                        theme="snow"></quill-view>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        </div>
-
-
-                    } @else {
-
-                        <div class="{{'zajednicko ' + resolveClass(i)}}"
-                                (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
-
-                            <div class="menu-container">
-
-                                @if (menuSide === Side.LEFT) {
-
-                                    @if (panel.image) {
-                                        <div class="image-desc">
-                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
-
-                                            @if (closedMenu) {
-                                                <div class="menu-title-text-closed">
-                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                                </div>
-                                            }
-                                        </div>
-                                    } @else {
+                                        } @else {
 
                                             @if (panel.icon) {
                                                 <div class="menu-icon">
-                                                  <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                    <mat-icon class="icon-display icon-active"> {{ panel.icon }}
+                                                    </mat-icon>
                                                     @if (closedMenu) {
                                                         <div class="menu-title-text-closed">
-                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
+                                                            <quill-view
+                                                                    class="my-quill-view-menu"
+                                                                    [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                    format="html" theme="snow"></quill-view>
                                                         </div>
                                                     }
                                                 </div>
                                             } @else if (closedMenu) {
                                                 <div class="menu-title-text-closed">
-                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
+                                                    <quill-view [content]="iso.title" format="html"
+                                                                class="my-quill-view-menu"
+                                                                theme="snow"></quill-view>
                                                 </div>
                                             }
 
-                                    }
-
-                                    <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-                                        @if (!closedMenu) {
-                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
-                                                        theme="snow"></quill-view>
                                         }
-                                    </div>
-                                }
 
-                                @if (menuSide === Side.RIGHT) {
-
-                                    @if (panel.image) {
-                                        <div class="image-desc">
-                                            <img  src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
-
-                                            @if (closedMenu) {
-                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
+                                        <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                            @if (!closedMenu) {
+                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                            format="html"
+                                                            theme="snow"></quill-view>
                                             }
                                         </div>
-                                    } @else {
+                                    }
 
-                                        @if (panel.icon) {
-                                            <div class="menu-icon">
-                                                <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                    @if (menuSide === Side.RIGHT) {
+
+                                        @if (panel.image) {
+                                            <div class="image-desc">
+                                                <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
                                                 @if (closedMenu) {
                                                     <div class="menu-title-text-closed">
-                                                        <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
+                                                        <quill-view class="my-quill-view-menu"
+                                                                    [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                    format="html" theme="snow"></quill-view>
+                                                    </div>
+                                                }
+
+                                            </div>
+
+                                        } @else {
+
+                                            @if (panel.icon) {
+                                                <div class="menu-icon">
+                                                    <mat-icon class="icon-display icon-active"> {{ panel.icon }}
+                                                    </mat-icon>
+                                                    @if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view class="my-quill-view-menu"
+                                                                        [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            } @else if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                class="my-quill-view-menu"
+                                                                format="html" theme="snow"></quill-view>
+                                                </div>
+                                            }
+
+                                        }
+
+                                        <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                            @if (!closedMenu) {
+                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                            format="html"
+                                                            theme="snow"></quill-view>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                        } @else {
+
+                            <div class="{{'zajednicko ' + resolveClass(j)}}"
+                                 (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
+
+                                <div class="menu-container">
+
+                                    @if (menuSide === Side.LEFT) {
+                                        @if (panel.image) {
+                                            <div class="image-desc">
+                                                <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                                @if (closedMenu) {
+                                                    <div class="menu-title-text-closed">
+                                                        <quill-view
+                                                                class="my-quill-view-menu"
+                                                                [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                format="html" theme="snow"></quill-view>
                                                     </div>
                                                 }
                                             </div>
-                                        } @else if (closedMenu) {
-                                            <div class="menu-title-text-closed">
-                                                <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)" format="html" theme="snow"></quill-view>
-                                            </div>
+                                        } @else {
+
+                                            @if (panel.icon) {
+                                                <div class="menu-icon">
+                                                    <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                    @if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view
+                                                                    class="my-quill-view-menu"
+                                                                    [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                    format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            } @else if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                class="my-quill-view-menu"
+                                                                format="html" theme="snow"></quill-view>
+                                                </div>
+                                            }
+
                                         }
+
+                                        <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                            @if (!closedMenu) {
+                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                            format="html"
+                                                            theme="snow"></quill-view>
+                                            }
+                                        </div>
                                     }
 
-                                    <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
-                                        @if (!closedMenu) {
-                                            <quill-view [content]="getSideMenuLabel(iso.title, iso.description)" format="html"
-                                                        theme="snow"></quill-view>
+                                    @if (menuSide === Side.RIGHT) {
+
+                                        @if (panel.image) {
+                                            <div class="image-desc">
+                                                <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                                @if (closedMenu) {
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                class="my-quill-view-menu"
+                                                                format="html" theme="snow"></quill-view>
+                                                }
+                                            </div>
+                                        } @else {
+
+                                            @if (panel.icon) {
+                                                <div class="menu-icon">
+                                                    <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                    @if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view
+                                                                    class="my-quill-view-menu"
+                                                                    [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                    format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            } @else if (closedMenu) {
+                                                <div class="menu-title-text-closed">
+                                                    <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                class="my-quill-view-menu"
+                                                                format="html" theme="snow"></quill-view>
+                                                </div>
+                                            }
                                         }
+
+                                        <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                            @if (!closedMenu) {
+                                                <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                            format="html"
+                                                            theme="snow"></quill-view>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            }
+
+        } @else {
+
+            @for (menu of header?.menus; track menu.id; let j = $index) {
+
+                @if (menu.id === activeDetail?.topMenu?.id) {
+
+                    @for (panel of menu.panels; track panel.id; let i = $index) {
+                        @for (iso of panel.iso; track iso.iso) {
+                            @if (selectedIso === iso.iso) {
+                                @if (panel.panelUrl === activeDetail?.sideMenu?.panelUrl) {
+                                    <div class="{{'zajednicko ' + resolveActiveClass(i)}}">
+
+                                        <div class="up-down-actions">
+                                            @if ((roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase())) && calculateBeforeId(i, menu)) {
+                                                <button class="icon-display-side-menu" mat-mini-fab
+                                                        (click)="moveUp(panel, calculateBeforeId(i,menu))">
+                                                    <mat-icon class="my-icon-side-menu">arrow_circle_up</mat-icon>
+                                                </button>
+                                            }
+
+                                            @if ((roles?.includes(Roles.ADMIN.toUpperCase()) || roles?.includes(Roles.MANAGER.toUpperCase())) && calculateNextId(i, menu)) {
+                                                <button class="icon-display-side-menu" mat-mini-fab
+                                                        (click)="moveDown(panel,calculateNextId(i,menu))">
+                                                    <mat-icon class="my-icon-side-menu">arrow_circle_down</mat-icon>
+                                                </button>
+                                            }
+
+
+                                        </div>
+
+                                        <div class="menu-container">
+
+                                            @if (menuSide === Side.LEFT) {
+                                                @if (panel.image) {
+
+                                                    <div class="image-desc">
+                                                        <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+                                                        @if (closedMenu) {
+                                                            <div class="menu-title-text-closed">
+                                                                <quill-view
+                                                                        class="my-quill-view-menu"
+                                                                        [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        format="html" theme="snow"></quill-view>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                } @else {
+
+                                                    @if (panel.icon) {
+                                                        <div class="menu-icon">
+                                                            <mat-icon class="icon-display icon-active"> {{ panel.icon }}
+                                                            </mat-icon>
+                                                            @if (closedMenu) {
+                                                                <div class="menu-title-text-closed">
+                                                                    <quill-view
+                                                                            class="my-quill-view-menu"
+                                                                            [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                            format="html" theme="snow"></quill-view>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    } @else if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view [content]="iso.title" format="html"
+                                                                        class="my-quill-view-menu"
+                                                                        theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+
+                                                }
+
+                                                <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                                    @if (!closedMenu) {
+                                                        <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                                    format="html"
+                                                                    theme="snow"></quill-view>
+                                                    }
+                                                </div>
+                                            }
+
+                                            @if (menuSide === Side.RIGHT) {
+
+                                                @if (panel.image) {
+                                                    <div class="image-desc">
+                                                        <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                                        @if (closedMenu) {
+                                                            <div class="menu-title-text-closed">
+                                                                <quill-view class="my-quill-view-menu"
+                                                                            [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                            format="html" theme="snow"></quill-view>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+
+                                                } @else {
+
+                                                    @if (panel.icon) {
+                                                        <div class="menu-icon">
+                                                            <mat-icon class="icon-display icon-active"> {{ panel.icon }}
+                                                            </mat-icon>
+                                                            @if (closedMenu) {
+                                                                <div class="menu-title-text-closed">
+                                                                    <quill-view class="my-quill-view-menu"
+                                                                                [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                                format="html" theme="snow"></quill-view>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    } @else if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        class="my-quill-view-menu"
+                                                                        format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+
+                                                }
+
+                                                <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                                    @if (!closedMenu) {
+                                                        <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                                    format="html"
+                                                                    theme="snow"></quill-view>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                } @else {
+
+                                    <div class="{{'zajednicko ' + resolveClass(i)}}"
+                                         (click)="goTo(activeDetail?.topMenu?.menuUrl, panel.panelUrl)">
+
+                                        <div class="menu-container">
+
+                                            @if (menuSide === Side.LEFT) {
+                                                @if (panel.image) {
+                                                    <div class="image-desc">
+                                                        <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                                        @if (closedMenu) {
+                                                            <div class="menu-title-text-closed">
+                                                                <quill-view
+                                                                        class="my-quill-view-menu"
+                                                                        [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        format="html" theme="snow"></quill-view>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                } @else {
+
+                                                    @if (panel.icon) {
+                                                        <div class="menu-icon">
+                                                            <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                            @if (closedMenu) {
+                                                                <div class="menu-title-text-closed">
+                                                                    <quill-view
+                                                                            class="my-quill-view-menu"
+                                                                            [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                            format="html" theme="snow"></quill-view>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    } @else if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        class="my-quill-view-menu"
+                                                                        format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+
+                                                }
+
+                                                <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                                    @if (!closedMenu) {
+                                                        <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                                    format="html"
+                                                                    theme="snow"></quill-view>
+                                                    }
+                                                </div>
+                                            }
+
+                                            @if (menuSide === Side.RIGHT) {
+
+                                                @if (panel.image) {
+                                                    <div class="image-desc">
+                                                        <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>
+
+                                                        @if (closedMenu) {
+                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        class="my-quill-view-menu"
+                                                                        format="html" theme="snow"></quill-view>
+                                                        }
+                                                    </div>
+                                                } @else {
+
+                                                    @if (panel.icon) {
+                                                        <div class="menu-icon">
+                                                            <mat-icon class="icon-display"> {{ panel.icon }}</mat-icon>
+                                                            @if (closedMenu) {
+                                                                <div class="menu-title-text-closed">
+                                                                    <quill-view
+                                                                            class="my-quill-view-menu"
+                                                                            [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                            format="html" theme="snow"></quill-view>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    } @else if (closedMenu) {
+                                                        <div class="menu-title-text-closed">
+                                                            <quill-view [content]="getSideMenuLabelWhenClosed(iso.title)"
+                                                                        class="my-quill-view-menu"
+                                                                        format="html" theme="snow"></quill-view>
+                                                        </div>
+                                                    }
+                                                }
+
+                                                <div class="menu-text" [@fadeInOut]="closedMenu ? 'close' : 'open'">
+                                                    @if (!closedMenu) {
+                                                        <quill-view [content]="getSideMenuLabel(iso.title, iso.description)"
+                                                                    format="html"
+                                                                    theme="snow"></quill-view>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 }
-                            </div>
-                        </div>
+                            }
+                        }
                     }
                 }
             }

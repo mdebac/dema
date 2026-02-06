@@ -29,7 +29,9 @@ public class PanelMapper extends AbstractMapper {
     public Panel toDomain(PanelEntity entity) {
         return Panel.builder()
                 .id(entity.getId())
+                .menuId(entity.getMenu().getId())
                 .panelUrl(entity.getPanelUrl())
+                .type(entity.getSideMenuType())
                 .icon(entity.getIcon())
                 .orderNum(entity.getOrderNum())
                 .image(entity.getImageContent())
@@ -51,6 +53,7 @@ public class PanelMapper extends AbstractMapper {
                 .iso(toEntityIso(panel.getIso()))
                 .orderNum(panel.getOrderNum())
                 .panelUrl(panel.getPanelUrl())
+                .sideMenuType(panel.getType())
                 .icon(panel.getIcon())
                 .build();
     }
@@ -77,6 +80,7 @@ public class PanelMapper extends AbstractMapper {
             entity.setIso(toEntityIso(panel.getIso()));
         }
         entity.setPanelUrl(panel.getPanelUrl());
+        entity.setSideMenuType(panel.getType());
         entity.setOrderNum(panel.getOrderNum());
         entity.setIcon(panel.getIcon());
     }

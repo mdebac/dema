@@ -1,0 +1,71 @@
+<ng-container
+        *ngrxLet="{
+        hotels: hotels$
+        } as vm"
+        >
+
+<div class="main-content">
+    <div class="section-content section-content-p30">
+        <div class="container-fluid">
+            <div class="row">
+
+                @for (hotel of vm.hotels; track $index) {
+                    <!-- loop over the collection of products -->
+                    <div class="col-md-3">
+
+                        <div class="product-box">
+
+                            <a routerLink="/products/{{ hotel.id }}">
+                                <img src="{{ hotel.image }}" class="img-responsive">
+                            </a>
+
+                            <a routerLink="/products/{{ hotel.id }}">
+                                <h1>{{ hotel.iso[0] }}</h1>
+                            </a>
+
+<!--                            <div class="price">{{ hotel.unitPrice | currency:'USD' }}</div>-->
+<!--                            <a href="#" class="primary-btn">Add to cart</a>-->
+                        </div>
+
+                    </div>
+                }
+
+
+
+                @if (vm.hotels.length == 0) {
+                    <div class="alert alert-warning col-md-12" role="alert">
+                        No products found.
+                    </div>
+                }
+
+            </div>
+
+            <!-- begin footer -->
+            <div class="footer-pagination">
+                <div class="row">
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9" style="padding-left: 30%">
+pagination
+<!--                                <ngb-pagination [(page)]="thePageNumber"-->
+<!--                                                [pageSize]="thePageSize"-->
+<!--                                                [collectionSize]="theTotalElements"-->
+<!--                                                (pageChange)="listProducts()">-->
+
+<!--                                </ngb-pagination>-->
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- end footer -->
+
+        </div>
+    </div>
+</div>
+
+</ng-container>

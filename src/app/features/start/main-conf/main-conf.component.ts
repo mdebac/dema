@@ -9,26 +9,27 @@ import {Header} from "../../../domain/header";
 })
 export class MainConfComponent {
 
-  @Input() set header (data: Header | null) {
+  @Input() set header (data: any | null) {
 
-    if (data) {
+    if (data.header) {
 
+      const iconImage = data.image ? data.image : data.header.main.iconImage
       const variables = [
-        '--primary-color: ' + data.main.primaryColor + ';',
-        '--secondary-color: ' + data.main.secondaryColor + ';',
-        '--danger-color: ' + data.main.dangerColor + ';',
-        '--warn-color: ' + data.main.warnColor + ';',
-        '--info-color: ' + data.main.infoColor + ';',
-        '--accept-color: ' + data.main.acceptColor + ';',
-        '--myIconImage:url(data:image/jpg;base64,' + data.main.iconImage + ');',
-        '--myImageUrl: linear-gradient(to left, transparent, ' + data.main.secondaryColor + ' ' + data.main.linearPercentage + '%),url(data:image/jpg;base64,' + data.main.backgroundImage + ');',
+        '--primary-color: ' + data.header.main.primaryColor + ';',
+        '--secondary-color: ' + data.header.main.secondaryColor + ';',
+        '--danger-color: ' + data.header.main.dangerColor + ';',
+        '--warn-color: ' + data.header.main.warnColor + ';',
+        '--info-color: ' + data.header.main.infoColor + ';',
+        '--accept-color: ' + data.header.main.acceptColor + ';',
+        '--myIconImage:url(data:image/jpg;base64,' + iconImage + ');',
+        '--myImageUrl: linear-gradient(to left, transparent, ' + data.header.main.secondaryColor + ' ' + data.header.main.linearPercentage + '%),url(data:image/jpg;base64,' + data.header.main.backgroundImage + ');',
       ];
 
-      if (data.main.iconImage) {
+      if (data.header.main.iconImage) {
         const fav = document.createElement('link');
         fav.setAttribute('rel', 'icon');
         fav.setAttribute('sizes', '24x24');
-        fav.setAttribute('href', 'data:image/jpg;base64,' + data.main.iconImage);
+        fav.setAttribute('href', 'data:image/jpg;base64,' + data.header.main.iconImage);
         document.head.appendChild(fav);
       }
 

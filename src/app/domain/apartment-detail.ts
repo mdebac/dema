@@ -7,6 +7,8 @@ import {Panel} from "./panel";
 import {Hosts} from "./hosts";
 import {Language} from "./language";
 import {Font} from "./font";
+import {TopMenuType} from "./top-menu-type";
+import {ProductType} from "./product-type";
 
 export interface ApartmentDetail extends Audit{
 
@@ -28,6 +30,8 @@ export interface ApartmentDetail extends Audit{
 
 export interface ApartmentDetailDialogData {
   languages: Language[] | undefined;
+  products: ProductType[] | undefined;
+  selectedIso: string;
   fonts: Font[] | undefined;
   detail: Partial<ApartmentDetail>;
   colors: Partial<Colors> | undefined;

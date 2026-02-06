@@ -101,6 +101,10 @@ public class MainEntity extends BaseAuditEntity {
    // @Fetch(FetchMode.SUBSELECT)
     private List<MenuEntity>  menus;
 
+    @OneToMany(mappedBy = "main")
+    // @Fetch(FetchMode.SUBSELECT)
+    private Set<ProductEntity> products;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "main_iso",
@@ -125,6 +129,7 @@ public class MainEntity extends BaseAuditEntity {
     )
     @Builder.Default
     private Set<MainLanguageEntity> languages = new HashSet<>();
+
 
     @Transient
     public double getRate() {

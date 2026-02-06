@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -43,13 +47,18 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days --> not used
   cors:
-    origins: http://localhost:8081/,https://info-dema.eu,https://dema-apartments.eu/,https://adriaticsun.eu/,https://dev-news.eu/
+    origins: http://localhost:8081/,https://info-dema.eu,https://www.info-dema.eu,https://dema-apartments.eu/,https://www.dema-apartments.eu/,https://adriaticsun.eu/,https://www.adriaticsun.eu/,https://dev-news.eu/,https://www.dev-news.eu/,https://info-dema-test1.com/,https://www.info-dema-test1.com/,https://residence.info-dema.eu/,https://www.residence.info-dema.eu/,https://dekor-kamen.info-dema.eu/,https://www.dekor-kamen.info-dema.eu/,https://cannabis-oil.shop/,https://www.cannabis-oil.shop/,https://villa-dubravka-samobor.com/,https://www.villa-dubravka-samobor.com/,
 
 server:
   port: ${API_PORT}
 google:
   recaptcha:
     secret: ${RECAPTCHA_SECRET}
+
+stripe:
+  secret:
+    key: ${STRIPE_SECRET}
+
 #logging:
 #  level:
 #    org.springframework.security: TRACE

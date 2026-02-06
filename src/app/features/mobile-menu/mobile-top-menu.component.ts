@@ -4,6 +4,8 @@ import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {MatIcon} from "@angular/material/icon";
 import {Header} from "../../domain/header";
 import {TopMenuComponent} from "../top-menu/top-menu.component";
+import {defaultIso} from "../../domain/countries-iso";
+import {ProductType} from "../../domain/product-type";
 
 @Component({
   selector: 'mobile-top-menu',
@@ -22,6 +24,7 @@ export class MobileTopMenuComponent {
 
     @Input() canEdit: boolean = false;
     @Input() header: Header | null = null
-    @Input() selectedIso: string | null | undefined = "";
+    @Input() selectedIso: string = defaultIso;
+    @Input() products: ProductType[] | Partial<ProductType>[] = [];
 
 }

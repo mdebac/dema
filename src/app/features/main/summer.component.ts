@@ -6,9 +6,9 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild, ViewEncapsulation
 } from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Subject} from "rxjs";
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -32,13 +32,14 @@ import {MatIcon} from "@angular/material/icon";
 import {PageActionsComponent} from "../menus/page-actions/page-actions.component";
 import {TranslatePipe} from "@ngx-translate/core";
 import {HeaderActionsComponent} from "../menus/header-actions/header-actions.component";
-import {Router, RouterLink} from "@angular/router";
+import {Router} from "@angular/router";
 import {QuillViewComponent} from "ngx-quill";
 
 @Component({
     selector: 'summer',
     templateUrl: './summer.component.html',
     styleUrl: './summer.component.scss',
+    encapsulation: ViewEncapsulation.None,
     imports: [
         MatCard,
         MatCardHeader,
@@ -46,7 +47,6 @@ import {QuillViewComponent} from "ngx-quill";
         MatCardContent,
         CdkDropList,
         WidgetComponent,
-        CdkDrag,
         MatButton,
         MatIcon,
         MatMenu,
@@ -65,6 +65,7 @@ export class SummerComponent implements OnInit, OnDestroy {
 
     @Input() activeDetail: ApartmentDetail | null = null;
     @Input() header: Header | null = null;
+    @Input() selectedIso: string = defaultIso;
 
     @HostBinding("style.--grid-col")
     cssGridCol: number = 1;
@@ -87,7 +88,6 @@ export class SummerComponent implements OnInit, OnDestroy {
 
     @HostBinding("style.--color-menu")
     colorMenu: string = "";
-
 
     @Input()
     @HostBinding("style.--actions-border-color")
@@ -142,9 +142,6 @@ export class SummerComponent implements OnInit, OnDestroy {
 
     //canEditItems TODO
 
-    @Input()
-    selectedIso: string | null = defaultIso;
-
     unsubscribe$ = new Subject<void>();
     apartment: string = "";
     hideContent: boolean = false;
@@ -164,20 +161,38 @@ export class SummerComponent implements OnInit, OnDestroy {
     }
 
     drop(event: CdkDragDrop<ApartmentItem[]>): void {
-        //  if (event.previousContainer === event.container) {
+          if (event.previousContainer === event.container) {
+      //  console.log("moveItemInArray", event.container.data, event.previousIndex, event.currentIndex);
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        /* } else {
+         } else {
            transferArrayItem(event.previousContainer.data,
              event.container.data,
              event.previousIndex,
              event.currentIndex);
-         }*/
+         }
     }
 
-    transformItemToWidget(detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined, host: Hosts | undefined, isMobile: boolean): Widget {
+    transformItemToWidget(index: number,detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined, host: Hosts | undefined, isMobile: boolean): Widget {
 
         if(isMobile){
+            //TODO without changing item
             item = {...item, colSpan: 1, rowSpan: 1};
+        }
+
+        let beforeItemId = null;
+        if(index !== 0){
+            beforeItemId = detail.items.at(index-1)?.id;
+            if(beforeItemId){
+                item = {...item, beforeItemId: beforeItemId};
+            }
+        }
+
+        let nextItemId = null;
+        if(detail.items.at(index + 1)){
+            nextItemId = detail.items.at(index+1)?.id;
+            if(nextItemId){
+                item = {...item, nextItemId: nextItemId};
+            }
         }
 
         return {
@@ -186,13 +201,11 @@ export class SummerComponent implements OnInit, OnDestroy {
             component: ChipMap.get(item.chip),
             fonts: this.header?.main.fonts,
             colors: colors,
-            host: host
+            host: host,
+            isMobile: isMobile
         };
     }
 
-    // getTitle(country: string | null, iso: ApartmentDetailIso[] | undefined) {
-    //     return iso?.find(iso => iso.iso === country)?.title;
-    // }
 
     menuContainerClick(){
         this.hideContent = !this.hideContent;
@@ -206,20 +219,6 @@ export class SummerComponent implements OnInit, OnDestroy {
 
         }
     }
-
-    getTopMenuLabel(title: string) {
-        let output: string = "";
-        if (title) {
-            output = output + title;
-        }
-        //    output = output.replace("ql-size-huge", "ql-size-large");
-        //    output = output.replace("ql-size-normal", "ql-size-large");
-        if(output.includes("<p>")){
-            output = output.replace("<p>","<p class=\"ql-align-center\">");
-        }
-        return output;
-    }
-
 
     @ViewChild('menuContainer', { static: false }) menuContainer: ElementRef | undefined;
     goTo(menuUrl: string | undefined, panelUrl: string) {
@@ -239,6 +238,13 @@ export class SummerComponent implements OnInit, OnDestroy {
         }
         if (description) {
             output = output + description;
+        }
+        return output;
+    }
+    getMobileMenuLabelTitle(title: string) {
+        let output: string = "";
+        if (title) {
+            output = output + title;
         }
         return output;
     }

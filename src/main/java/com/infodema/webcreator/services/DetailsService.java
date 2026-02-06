@@ -1,12 +1,15 @@
 package com.infodema.webcreator.services;
 
 import com.infodema.webcreator.domain.core.*;
+import com.infodema.webcreator.domain.enums.Country;
+import com.infodema.webcreator.domain.enums.SideMenuType;
 import com.infodema.webcreator.domain.mappers.DetailMapper;
 import com.infodema.webcreator.domain.mappers.MenuMapper;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.detail.DetailEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
+import com.infodema.webcreator.persistance.entities.panel.PanelIsoEntity;
 import com.infodema.webcreator.persistance.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,25 +38,179 @@ public class DetailsService {
     private final MenuService menuService;
     private final PanelService panelService;
 
+
+    @Transactional
+    public Detail createHotel(Detail payload, MultipartFile topMenuImageFile) {
+
+        Menu menu;
+        if (payload.getTopMenu().getId() == null) {
+
+            Integer currentMaxOrderNum = menuRepository.findMaxOrderNum(payload.getTopMenu().getMainId());
+            if (currentMaxOrderNum == null) {
+                payload.getTopMenu().setOrderNum(1);
+            } else {
+                payload.getTopMenu().setOrderNum(currentMaxOrderNum + 1);
+            }
+            menu = menuService.addMenu(payload.getTopMenu(), topMenuImageFile);
+
+        } else {
+            menu = menuService.updateMenu(payload.getTopMenu().getId(), payload.getTopMenu(), topMenuImageFile);
+        }
+
+
+        Set<PanelIsoEntity> panelGalleryIso = new HashSet<PanelIsoEntity>();
+        panelGalleryIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("GB-eng"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Photos</span></p>")
+                        .description("description")
+                        .build());
+        panelGalleryIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("HR"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Slike</span></p>")
+                        .description("description")
+                        .build());
+
+        Set<PanelIsoEntity> panelLocationIso = new HashSet<PanelIsoEntity>();
+        panelLocationIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("GB-eng"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Location</span></p>")
+                        .description("description")
+                        .build());
+        panelLocationIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("HR"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Lokacija</span></p>")
+                        .description("description")
+                        .build());
+
+        Set<PanelIsoEntity> panelReservationsIso = new HashSet<PanelIsoEntity>();
+        panelReservationsIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("GB-eng"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Booking</span></p>")
+                        .description("description")
+                        .build());
+        panelReservationsIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("HR"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Rezervacije</span></p>")
+                        .description("description")
+                        .build());
+
+
+        Set<PanelIsoEntity> panelAccessoriesIso = new HashSet<PanelIsoEntity>();
+        panelAccessoriesIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("GB-eng"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Accessories</span></p>")
+                        .description("description")
+                        .build());
+        panelAccessoriesIso.add(
+                PanelIsoEntity.builder()
+                        .iso(Country.fromCode("HR"))
+                        .title("<p><span class=\"ql-font-caesarDressing\" style=\"font-size: 2.3em;\">Sadržaj</span></p>")
+                        .description("description")
+                        .build());
+
+
+        MenuEntity menuEntity = menuRepository.findById(menu.getId())
+                .orElseThrow(() -> new EntityNotFoundException("No Menu found with ID:: " + menu.getId()));
+
+        PanelEntity panelAccessories = PanelEntity.builder()
+                .panelUrl("accessories")
+                .sideMenuType(SideMenuType.ACCESSORIES)
+                .iso(panelAccessoriesIso)
+                .menu(menuEntity)
+                .orderNum(1)
+                .build();
+
+        PanelEntity panelReservations = PanelEntity.builder()
+                .panelUrl("reservations")
+                .sideMenuType(SideMenuType.RESERVATIONS)
+                .iso(panelReservationsIso)
+                .menu(menuEntity)
+                .orderNum(2)
+                .build();
+
+        PanelEntity panelLocation = PanelEntity.builder()
+                .panelUrl("location")
+                .sideMenuType(SideMenuType.LOCATION)
+                .iso(panelLocationIso)
+                .menu(menuEntity)
+                .orderNum(3)
+                .build();
+
+        PanelEntity panelGallery = PanelEntity.builder()
+                .panelUrl("gallery")
+                .sideMenuType(SideMenuType.GALLERY)
+                .iso(panelGalleryIso)
+                .menu(menuEntity)
+                .orderNum(4)
+                .build();
+
+        DetailEntity activeDetail = hotelPanel(panelGallery, menuEntity, payload);
+        hotelPanel(panelAccessories, menuEntity, payload);
+        hotelPanel(panelLocation, menuEntity, payload);
+        hotelPanel(panelReservations, menuEntity, payload);
+
+        return detailMapper.toDomain(activeDetail);
+
+
+//        if (payload.getSideMenu().getId() == null) {
+//
+//            Integer currentMaxOrderNum = panelRepository.findMaxOrderNum(menu.getId());
+//            if(currentMaxOrderNum == null){
+//                payload.getSideMenu().setOrderNum(1);
+//            }else{
+//                payload.getSideMenu().setOrderNum(currentMaxOrderNum + 1);
+//            }
+//
+        //    panel = panelService.addPanel(menu.getId(), payload.getSideMenu(), null);
+//        } else {
+//            panel = panelService.updatePanel(menu.getId(), payload.getSideMenu(), sideMenuImageFile);
+//        }
+//
+//        if (payload.getId() == null) {
+//            return addDetail(menu.getId(), panel.getId(), payload);
+//        } else {
+//            return updateDetail(payload, topMenuImageFile, sideMenuImageFile);
+//        }
+        // return addDetail(menu.getId(), panel.getId(), payload);
+    }
+
+    private DetailEntity hotelPanel(PanelEntity panel, MenuEntity menu, Detail payload) {
+
+        Integer currentMaxOrder = panelRepository.findMaxOrderNum(menu.getId());
+        if (currentMaxOrder == null) {
+            panel.setOrderNum(1);
+        } else {
+            panel.setOrderNum(currentMaxOrder + 1);
+        }
+        panelRepository.save(panel);
+
+        DetailEntity pageEntity = detailMapper.toEntity(payload);
+        pageEntity.setPanel(panel);
+        pageEntity.setMenu(menu);
+        return detailRepository.save(pageEntity);
+    }
+
     @Transactional
     public Detail create(Detail payload, MultipartFile topMenuImageFile, MultipartFile sideMenuImageFile) {
 
         Menu menu;
         if (payload.getTopMenu().getId() == null) {
 
-          //  MenuIso eng = payload.getTopMenu().getIso().stream().filter(i -> i.getIso().equals(Country.EN.getCountryCode())).findFirst().orElseThrow();
-//            Set<PanelIso> panelIso = new HashSet<>();
-//            panelIso.add(PanelIso.builder()
-//                    .title(eng.getTitle())
-//                    .iso(Country.EN.getCountryCode())
-//                    .build()
-//            );
-//            payload.getSideMenu().setIso(panelIso);
-//            payload.getSideMenu().setOrderNum(1);
-
-          //  Integer orderNum = Integer.sum(menuRepository.finderNumByMain_Id(payload.getMenu().getMainId()) , 1);
-           // payload.getMenu().setOrderNum(orderNum);
+            Integer currentMaxOrderNum = menuRepository.findMaxOrderNum(payload.getTopMenu().getMainId());
+            if (currentMaxOrderNum == null) {
+                payload.getTopMenu().setOrderNum(1);
+            } else {
+                payload.getTopMenu().setOrderNum(currentMaxOrderNum + 1);
+            }
             menu = menuService.addMenu(payload.getTopMenu(), topMenuImageFile);
+
         } else {
             menu = menuService.updateMenu(payload.getTopMenu().getId(), payload.getTopMenu(), topMenuImageFile);
         }
@@ -60,8 +218,12 @@ public class DetailsService {
         Panel panel;
         if (payload.getSideMenu().getId() == null) {
 
-          //  Integer orderNum = Integer.sum( panelRepository.findOrderNumTop1OrderNumByMenu_Id(menu.getId()) , 1);
-          //  payload.getPanel().setOrderNum(orderNum);
+            Integer currentMaxOrderNum = panelRepository.findMaxOrderNum(menu.getId());
+            if (currentMaxOrderNum == null) {
+                payload.getSideMenu().setOrderNum(1);
+            } else {
+                payload.getSideMenu().setOrderNum(currentMaxOrderNum + 1);
+            }
 
             panel = panelService.addPanel(menu.getId(), payload.getSideMenu(), sideMenuImageFile);
         } else {
@@ -91,7 +253,6 @@ public class DetailsService {
         PanelEntity panel = panelRepository.findById(panelId)
                 .orElseThrow(() -> new EntityNotFoundException("No Panel found with ID:: " + panelId));
 
-
         DetailEntity detailEntity = detailMapper.toEntity(payload);
         detailEntity.setMenu(menu);
         detailEntity.setPanel(panel);
@@ -102,27 +263,30 @@ public class DetailsService {
     }
 
     @Transactional
-    public void removeDetail(Long mainId, Long menuId, Long panelId, Long detailId) {
+    public void removeDetail(Long mainId, Long detailId) {
         log.info("Removing detail {}", detailId);
+
+        DetailEntity detail = detailRepository.findById(detailId).orElseThrow(() -> new EntityNotFoundException("No Detail found with ID:: " + detailId));
+
+        Long panelId = detail.getPanel().getId();
+        Long menuId = detail.getMenu().getId();
+
         if (menuRepository.countByMain_Id(mainId) == 1) {
             if (panelRepository.countByMenu_Id(menuId) == 1) {
                 throw new RuntimeException("Minimum one");
-            }else{
+            } else {
                 itemRepository.deleteByDetail_Id(detailId);
                 detailRepository.deleteById(detailId);
                 panelService.removePanel(menuId, panelId, detailId);
             }
-        }else{
-
+        } else {
             itemRepository.deleteByDetail_Id(detailId);
             detailRepository.deleteById(detailId);
-
             if (panelRepository.countByMenu_Id(menuId) == 1) {
                 menuService.removeMenu(mainId, menuId);
-            }else{
-                panelService.removePanel(menuId, panelId, detailId);
+            } else {
+                panelRepository.deleteById(panelId);
             }
-
         }
     }
 
@@ -171,9 +335,24 @@ public class DetailsService {
         MainEntity mainHostEntity = mainRepository.findByHost(host)
                 .orElseThrow(() -> new RuntimeException("Main was not found with label [" + host + "]"));
         MenuEntity menu = mainHostEntity.getMenus().stream().filter(a -> a.getMenuUrl().equals(menuUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Menu was not found with menuUrl [" + menuUrl + "]"));
-        PanelEntity panel = menu.getPanels().stream().filter(a -> a.getPanelUrl().equals(menuPanelUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Panel was not found with panelUrl [" + menuPanelUrl + "]"));
-        return detailMapper.toDomain(
-                detailRepository.findByMenu_IdAndPanel_Id(menu.getId(), panel.getId()).orElseThrow(() -> new RuntimeException("Detail was not found by menu [" + menu.getId() + "] and panel [" + panel.getId() + "]")));
+        PanelEntity panel = null;
+        if (menuPanelUrl != null && !menuPanelUrl.isEmpty()) {
+            panel = menu.getPanels().stream().filter(a -> a.getPanelUrl().equals(menuPanelUrl)).findFirst().orElseThrow(() -> new RuntimeException("first Panel was not found with panelUrl [" + menuPanelUrl + "]"));
+
+        } else {
+            panel = menu.getPanels().stream().min(Comparator.comparingInt(PanelEntity::getOrderNum)).orElseThrow(() -> new RuntimeException("first Panel was not found"));
+        }
+
+        if (panel != null) {
+            PanelEntity finalPanel = panel;
+            return detailMapper.toDomain(
+                    detailRepository.findByMenu_IdAndPanel_Id(menu.getId(), panel.getId()).orElseThrow(() -> new RuntimeException("Detail was not found by menu [" + menu.getId() + "] and panel [" + finalPanel.getId() + "]"))
+
+            );
+        } else {
+            return null;
+        }
+
     }
 
     @Transactional(readOnly = true)

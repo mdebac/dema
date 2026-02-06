@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +29,11 @@ public class ItemEntity extends BaseAuditEntity {
     private String backgroundColor;
     private Integer orderNum;
     private String shadowColor;
+    private BigDecimal price;
+    private String imageAlignHorizontal;
+    private String imageAlignVertical;
+    private Integer imageHeight;
+    private Integer imageWidth;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

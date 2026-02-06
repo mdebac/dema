@@ -16,7 +16,7 @@ $shadow-color: var(--shadow-color);
   transform: scale(1);
   color: $primary-color !important;
   background-color: $secondary-color;
-  .my-icon{
+  .my-icon-item{
     color: $primary-color;
   }
 }
@@ -25,7 +25,7 @@ $shadow-color: var(--shadow-color);
   transform: scale(1);
   background-color: $primary-color;
 
-  .my-icon{
+  .my-icon-item{
     color: $secondary-color;
   }
 }
@@ -35,12 +35,12 @@ $shadow-color: var(--shadow-color);
 //  background-color: $secondary-color;
 //}
 
-.containery{
+.containery-widget{
   box-sizing: border-box;
   border-radius: inherit;
   background-color: var(--backgroundColor);
   box-shadow: 0 0 15px 3px $shadow-color;
-  height: 100%;
+  min-height: 100%;
 }
 
 .settings-button{

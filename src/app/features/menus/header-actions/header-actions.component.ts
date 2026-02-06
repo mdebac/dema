@@ -4,9 +4,7 @@ import {
     inject,
     Input,
     OnInit,
-    QueryList,
     ViewChild,
-    ViewChildren,
     ViewEncapsulation
 } from '@angular/core';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
@@ -34,6 +32,7 @@ import {MatFabButton} from "@angular/material/button";
 import {font_families} from "../../../domain/font";
 import {ChooseIsoComponent} from "../../choose-iso/choose-iso.component";
 import {Language} from "../../../domain/language";
+import {ImageCroppedEvent, ImageCropperComponent, OutputFormat} from "ngx-image-cropper";
 
 @Component({
     selector: 'header-actions',
@@ -54,6 +53,7 @@ import {Language} from "../../../domain/language";
         MatDivider,
         MatFabButton,
         ChooseIsoComponent,
+        ImageCropperComponent,
     ],
     templateUrl: './header-actions.component.html',
     styleUrl: './header-actions.component.scss',
@@ -66,20 +66,20 @@ export class HeaderActionsComponent implements OnInit {
 
     @Input() header: Header | null = null;
 
-    @ViewChildren('editor') editors: QueryList<QuillEditorComponent> | undefined;
-
     quillConfiguration: any;
-
     isOpened: boolean = true;
     form: FormGroup;
-    selectedPicture: string | null = null;
-    selectedPictureBackground: string | null = null;
+
+    selectedPicture: string | ArrayBuffer | null = null;
+    selectedPictureBackground: string | ArrayBuffer | null = null;
+
     toBigImage: string = "";
     toBigBackgroundImage: string = "";
+
     selectedLogo: File | null = null;
     selectedBackgroundImage: File | null = null;
 
-    selectedIso: string = defaultIso;
+    //@Input() selectedIso: string | null = defaultIso;
     selectedFamilies: string[] | undefined = [];
 
     constructor() {
@@ -112,15 +112,15 @@ export class HeaderActionsComponent implements OnInit {
         if (this.header && this.header?.main.iso?.length > 0) {
             this.header?.main.iso.map(iso => this.addExisting(iso.title, iso.description, iso.iconText, iso.iso));
         } else {
-             this.header?.main.languages.map(iso => this.addItem(iso.iso));
+            this.header?.main.languages.map(iso => this.addItem(iso.iso));
         }
         this.selectedFamilies = this.header?.main?.fonts.map(font => font.family);
 
 
-        const fonts = this.header?.main?.fonts?.map(font=>font.family);
+        const fonts = this.header?.main?.fonts?.map(font => font.family);
         this.quillConfiguration = {
             toolbar: [
-                ['bold', 'italic',{align: ''}, {align: 'center'}, {align: 'right'}, {align: 'justify'},{
+                ['bold', 'italic', {align: ''}, {align: 'center'}, {align: 'right'}, {align: 'justify'}, {
                     'color': [
                         this.header?.main?.colors?.primaryColor ? this.header.main.primaryColor : "",
                         this.header?.main?.colors?.secondaryColor ? this.header.main.secondaryColor : "",
@@ -148,12 +148,12 @@ export class HeaderActionsComponent implements OnInit {
                 // [{'list': 'ordered'}, {'list': 'bullet'}],
                 // [{'script': 'sub'}, {'script': 'super'}],                            // superscript/subscript
                 // [{'indent': '-1'}, {'indent': '+1'}],
-                [{'size': ['small', false, 'large', 'huge']}],                       // custom dropdown
+                [{ 'size': ['1.25em', '1.8em', '2.3em', '4em', '6.25em'] }],
                 // [{'header': [1, 2, 3, 4, 5, 6, false]}],
                 // dropdown with defaults from theme
                 [{'font': fonts}],                     // whitelist of fonts
                 // [{'align': []}],
-                // ['clean'],
+                 ['clean'],
                 // ['link']                                          // link and image, video
             ]
         };
@@ -206,8 +206,8 @@ export class HeaderActionsComponent implements OnInit {
         return this.header?.main?.acceptColor ? this.header?.main.acceptColor : "";
     };
 
-    reload(){
-     window.location.reload();
+    reload() {
+        window.location.reload();
     }
 
     formatLabel(value: number): string {
@@ -235,21 +235,21 @@ export class HeaderActionsComponent implements OnInit {
     }
 
     changeColor() {
-      //  if (this.form.valid) {
-            const apartmentProps = {
-                ...this.header?.main,
-                primaryColor: this.form.value.primaryColor,
-                secondaryColor: this.form.value.secondaryColor,
-                dangerColor: this.form.value.dangerColor,
-                warnColor: this.form.value.warnColor,
-                infoColor: this.form.value.infoColor,
-                acceptColor: this.form.value.acceptColor,
-            } as Partial<Apartment>;
-            this.store.createMainEffect(apartmentProps);
-      //  }
+        //  if (this.form.valid) {
+        const apartmentProps = {
+            ...this.header?.main,
+            primaryColor: this.form.value.primaryColor,
+            secondaryColor: this.form.value.secondaryColor,
+            dangerColor: this.form.value.dangerColor,
+            warnColor: this.form.value.warnColor,
+            infoColor: this.form.value.infoColor,
+            acceptColor: this.form.value.acceptColor,
+        } as Partial<Apartment>;
+        this.store.createMainEffect(apartmentProps);
+        //  }
     }
 
-    get showPicture(): string | undefined {
+    get showPicture(): string | undefined | ArrayBuffer {
         if (this.selectedPicture) {
             return this.selectedPicture;
         } else if (this.header?.main.iconImage) {
@@ -258,7 +258,7 @@ export class HeaderActionsComponent implements OnInit {
         return;
     }
 
-    get showBackgroundImage(): string | undefined {
+    get showBackgroundImage(): string | undefined | ArrayBuffer {
         if (this.selectedPictureBackground) {
             return this.selectedPictureBackground;
         } else if (this.header?.main.backgroundImage) {
@@ -267,35 +267,62 @@ export class HeaderActionsComponent implements OnInit {
         return;
     }
 
+    cropWidth: number | undefined = undefined;
+    cropQuality = 60;
+    cropHeight: number | undefined = undefined;
+    cropType = 'jpeg';
+    file: any;
+    url: string | undefined;
+    // croppedImages:any[] = [];
+    cFile: any = "";
+    bgFile: any = "";
+
+    keepSpectRatio = false;
+    backgroundColor: any;
 
     selectLogo(event: any) {
-        if (event.target.files[0].size < 589000) {
+        this.toBigImage = "";
+        if (event.target?.files[0]?.size < 589000) {
             this.selectedLogo = event.target.files[0];
             if (this.selectedLogo) {
-
+                this.cFile = {};
                 const apartmentProps = {
                     ...this.header?.main,
                     iconImage: this.selectedLogo,
                 } as Partial<Apartment>;
                 this.store.createMainEffect(apartmentProps);
-
                 const reader = new FileReader();
                 reader.onload = () => {
                     this.selectedPicture = reader.result as string;
                 };
                 reader.readAsDataURL(this.selectedLogo);
             }
-            this.toBigImage = "";
         } else {
-            this.toBigImage = "< 0.5 Mb";
+            //optimizied it
+            const file = event.target.files[0];
+            const ext = this.getFilenameExtension(file);
+            const type = file.type;
+            this.cFile = {
+                ext: ext,
+                file: file,
+                type: type,
+            };
+
         }
     }
 
-    selectBackgroundImage(event: any) {
+    getFilenameExtension(file: any) {
+        let ex = file.name.split('.').pop();
+        if (ex === 'jpg') ex = 'jpeg';
+        return ex;
+    }
 
-        if (event.target.files[0].size < 589000) {
+    selectBackgroundImage(event: any) {
+        this.toBigBackgroundImage = "";
+        if (event.target?.files[0]?.size < 589000) {
             this.selectedBackgroundImage = event.target.files[0];
             if (this.selectedBackgroundImage) {
+                this.bgFile = {};
                 const apartmentProps = {
                     ...this.header?.main,
                     backgroundImage: this.selectedBackgroundImage,
@@ -307,9 +334,18 @@ export class HeaderActionsComponent implements OnInit {
                 };
                 reader.readAsDataURL(this.selectedBackgroundImage);
             }
-            this.toBigBackgroundImage = "";
         } else {
-            this.toBigBackgroundImage = "< 0.5 Mb";
+
+            //optimizied it
+            const file = event.target.files[0];
+            const ext = this.getFilenameExtension(file);
+            const type = file.type;
+            this.bgFile = {
+                ext: ext,
+                file: file,
+                type: type,
+            };
+
         }
     }
 
@@ -374,13 +410,13 @@ export class HeaderActionsComponent implements OnInit {
         this.store.createMainEffect(apartmentProps);
     }
 
-    onSelectedIso(selected:string[]){
+    onSelectedIso(selected: string[]) {
         console.log(selected);
 
         const apartmentProps = {
             ...this.header?.main,
             languages: selected.map((iso) => {
-                return { iso: iso } as Language;
+                return {iso: iso} as Language;
             }),
         } as Partial<Apartment>;
         this.store.createMainEffect(apartmentProps);
@@ -395,6 +431,72 @@ export class HeaderActionsComponent implements OnInit {
         }
     }
 
+    imageCropped(event: ImageCroppedEvent) {
+      //  console.log("imageCropped event", event);
+        if (event.objectUrl) {
+
+            fetch(event.objectUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.selectedPicture = reader.result;
+
+                    };
+                    reader.readAsDataURL(blob);
+
+                    if (blob.size > 589000) {
+                        this.toBigImage = "Image to big";
+                    }else{
+                        const apartmentProps = {
+                            ...this.header?.main,
+                            iconImage: blob,
+                        } as Partial<Apartment>;
+                        this.store.createMainEffect(apartmentProps);
+                    }
+
+                });
+        }
+    }
+
+    croppedBackgroundImage(event: ImageCroppedEvent) {
+        console.log("croppedBackgroundImage event", event);
+        if (event.objectUrl) {
+
+            fetch(event.objectUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.selectedPictureBackground = reader.result;
+                    };
+                    reader.readAsDataURL(blob);
+
+                    if (blob.size > 589000) {
+                        this.toBigBackgroundImage = "Image to big";
+                    }else{
+                        const apartmentProps = {
+                            ...this.header?.main,
+                            backgroundImage: blob,
+                        } as Partial<Apartment>;
+                        this.store.createMainEffect(apartmentProps);
+                    }
+                });
+        }
+    }
+
+    // isIsoSelected(iso: string) {
+    //     if (iso === this.selectedIso) {
+    //         return true;
+    //     }
+    //     return false
+    // }
+
+    get isoArray(): FormArray {
+        return this.form.get('iso') as FormArray;
+    }
+
     protected readonly getIsoByKey = getIsoByKey;
     protected readonly font_families = font_families;
+    protected readonly Object = Object;
 }

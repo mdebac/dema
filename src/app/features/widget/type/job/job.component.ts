@@ -49,7 +49,7 @@ export class JobComponent implements OnDestroy {
             takeUntil(this.unsubscribe$)
         ).subscribe(cvDataProps => {
                 // this.cvStore.createCvDataEffect(cvDataProps)
-                console.log("openCV createCvData dialog props", cvDataProps);
+             //   console.log("openCV createCvData dialog props", cvDataProps);
             }
         );
     }

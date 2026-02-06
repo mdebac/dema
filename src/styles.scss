@@ -13,7 +13,6 @@ $info-color: var(--info-color);
 $accept-color: var(--accept-color);
 
 
-
 html{
   background-color: $primary-color;
   scrollbar-color: $secondary-color $primary-color;
@@ -62,6 +61,24 @@ html{
 }
 body{
   background-color: $primary-color;
+}
+
+
+input[type=file]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
+}
+input[type=file]::file-selector-button:hover {
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+input[type=checkbox]::file-selector-button {
+  cursor: pointer;
+  border: 0;
+  background-color: $primary-color;
+  color: $secondary-color;
 }
 
 footer {
@@ -568,4 +585,4 @@ https://stackblitz.com/edit/angular-material-notification-service?file=src%2Fapp
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=zenDots]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=zenDots]::before {
   content: 'ZenDots';
 }
-//---------------------------------------------------------
+

@@ -1,14 +1,8 @@
 package com.infodema.webcreator.domain.mappers;
 
-import com.infodema.webcreator.domain.core.Main;
-import com.infodema.webcreator.domain.core.MainFont;
-import com.infodema.webcreator.domain.core.MainLanguage;
+import com.infodema.webcreator.domain.core.*;
 import com.infodema.webcreator.domain.enums.Country;
-import com.infodema.webcreator.persistance.entities.main.MainEntity;
-import com.infodema.webcreator.domain.core.MainIso;
-import com.infodema.webcreator.persistance.entities.main.MainFontEntity;
-import com.infodema.webcreator.persistance.entities.main.MainIsoEntity;
-import com.infodema.webcreator.persistance.entities.main.MainLanguageEntity;
+import com.infodema.webcreator.persistance.entities.main.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +13,7 @@ import java.util.Set;
 public class MainMapper extends AbstractMapper {
 
     private final MenuMapper menuMapper;
+    private final ProductMapper productMapper;
 
     public Set<MainIso> toDomainMainIso(Set<MainIsoEntity> entities) {
         return convertCollection(entities, this::toDomainMainIso);
@@ -70,6 +65,7 @@ public class MainMapper extends AbstractMapper {
                 .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
           //     .comments(ApartmentCommentMapper.toDomain(entity.getComments()))
                 .menus(menuMapper.toDomain(entity.getMenus()))
+                .products(productMapper.toDomain(entity.getProducts()))
                 .iso(toDomainMainIso(entity.getIso()))
                 .fonts(toDomainMainFonts(entity.getFonts()))
                 .languages(toDomainMainLanguages(entity.getLanguages()))
@@ -96,6 +92,7 @@ public class MainMapper extends AbstractMapper {
                 .owner(main.getOwner())
                 .linearPercentage(main.getLinearPercentage())
                 .iso(toEntityMainIso(main.getIso()))
+                .products(productMapper.toEntity(main.getProducts()))
                 .fonts(toEntityMainFont(main.getFonts()))
                 .languages(toEntityMainLanguage(main.getLanguages()))
                 .createdOn(main.getCreatedOn())
@@ -104,7 +101,6 @@ public class MainMapper extends AbstractMapper {
                 .modifiedBy(main.getModifiedBy())
                 .build();
     }
-
 
     private MainIso toDomainMainIso(MainIsoEntity entity) {
         return MainIso.builder()

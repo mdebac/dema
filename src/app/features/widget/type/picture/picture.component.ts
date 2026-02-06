@@ -13,11 +13,28 @@ import {TextComponent} from "../text/text.component";
     encapsulation: ViewEncapsulation.None,
 })
 export class PictureComponent {
-  @Input() item:ApartmentItem | null | undefined = null;
-  @Input() columns:number = 1;
-  @Input() selectedIso:string = "";
-  @HostBinding("style.--cornerRadius")
-  @Input() cornerRadius:any = "";
+    @Input() item: ApartmentItem | null | undefined = null;
+    @Input() columns: number = 1;
+    @Input() selectedIso: string = "";
+    @Input() isMobile: boolean = true;
+    @HostBinding("style.--cornerRadius")
+    @Input() cornerRadius: any = "";
 
-  protected readonly Chip = Chip;
+    @HostBinding("style.--imageAlignVertical")
+    @Input() imageAlignVertical: any = "";
+
+    @HostBinding("style.--imageAlignHorizontal")
+    @Input() imageAlignHorizontal: any = "";
+
+    @HostBinding("style.--imageHeight")
+    get imageHeight() {
+        return this.item?.imageHeight + '%';
+    }
+
+    @HostBinding("style.--imageWidth")
+    get imageWidth() {
+        return this.item?.imageWidth + '%';
+    }
+
+    protected readonly Chip = Chip;
 }

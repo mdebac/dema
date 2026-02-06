@@ -12,6 +12,9 @@ export class YoutubeComponent implements OnInit {
 
   @Input() item: ApartmentItem | null = null;
   @Input() columns: number = 1;
+  @Input() selectedIso: any;
+  @Input() cornerRadius: any;
+  @Input() isMobile: boolean = true;
 
   ngOnInit() {
     const scriptTag = document.createElement('script');
@@ -19,28 +22,41 @@ export class YoutubeComponent implements OnInit {
     document.body.appendChild(scriptTag);
   }
 
+
   get width(): number {
-    if (this.columns === 1) {
-      return 1350;
-    }else if (this.columns === 2) {
-      return 655;
-    }else if (this.columns === 3) {
-      return 430;
+
+    if(this.isMobile){
+return 200;
     }else{
-      return 320;
+      if (this.columns === 1) {
+        return 1350;
+      }else if (this.columns === 2) {
+        return 655;
+      }else if (this.columns === 3) {
+        return 430;
+      }else{
+        return 320;
+      }
     }
+
   }
 
   get height(): number {
-    if (this.columns === 1) {
-      return 800;
-    } else if (this.columns === 2) {
-      return 420;
-    } else if (this.columns === 3) {
-      return 430;
-    } else {
-      return 400;
+
+    if(this.isMobile){
+      return 200;
+    }else{
+      if (this.columns === 1) {
+        return 800;
+      } else if (this.columns === 2) {
+        return 420;
+      } else if (this.columns === 3) {
+        return 430;
+      } else {
+        return 400;
+      }
     }
+
   }
 
 }

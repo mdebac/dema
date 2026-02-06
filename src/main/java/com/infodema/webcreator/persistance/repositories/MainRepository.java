@@ -43,7 +43,6 @@ public interface MainRepository extends JpaRepository<MainEntity, Long> {
             nativeQuery = true)
     Page<MainProjection> findMainsByCriteria(MainCriteria criteria, Pageable pageable);
 
-
     Page<MainEntity> findByOwner(User owner, Pageable pageable);
 
     Optional<MainEntity> findByHost(String host);

@@ -22,34 +22,16 @@ $accept-color: var(--accept-color);
     // container-background-color: red,
           container-text-color:black,
   ));
-
-
-  @include mat.checkbox-overrides((
-          label-text-color: var(--secondary-color),
-          label-text-font: var(--secondary-color),
-          selected-icon-color: var(--secondary-color),
-          selected-hover-icon-color: var(--secondary-color),
-          selected-checkmark-color: var(--primary-color),
-          selected-focus-icon-color: var(--secondary-color),
-          unselected-icon-color: var(--secondary-color),
-          unselected-pressed-state-layer-color: var(--secondary-color),
-          unselected-hover-state-layer-color: var(--secondary-color),
-          unselected-hover-icon-color: var(--secondary-color),
-          unselected-focus-state-layer-color: var(--secondary-color),
-          selected-pressed-state-layer-color: var(--secondary-color),
-          selected-pressed-icon-color: var(--secondary-color),
-          selected-focus-state-layer-color: var(--secondary-color),
-          selected-hover-state-layer-color: var(--secondary-color),
-  ));
 }
 
-//mat-accordion {
-//  // color: white;
-//  min-height: 4rem;
-//}
+.mat-mdc-menu-panel {
+
+}
+
 .icon-display-menu {
-  color:$secondary-color;
+  color: $secondary-color;
 }
+
 .expPnl {
   color: black;
   min-height: 4rem;
@@ -67,81 +49,75 @@ $accept-color: var(--accept-color);
 //--mat-expansion-container-background-color
 
 
+//@mixin outline-checkbox {
+//  .mdc-checkbox {
+//    .mdc-checkbox__native-control:enabled {
+//      &.checked,
+//      &:focus:checked,
+//      &:indeterminate,
+//      &[data-indeterminate='true'],
+//      &:checked,
+//      &:hover:checked,
+//      &:not(:disabled):active:checked {
+//        ~ .mdc-checkbox__background {
+//          background-color: $secondary-color;
+//          border-color: $primary-color;
+//        }
+//      }
+//    }
+//
+//    // Define the style for .mdc-checkbox__checkmark
+//    .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
+//      .mdc-checkbox__checkmark {
+//        color: $primary-color;
+//        border-color: #0a53be;
+//      }
+//    }
+//  }
+//}
 
+//.checkbox-item {
+//  @include outline-checkbox;
+//}
 
-:host{
-  //.ql-editor {
-  //  color: $primary-color;
-  //  border: $primary-color 1px solid;
-  //}
-}
-
-@mixin outline-checkbox {
-  .mdc-checkbox {
-    .mdc-checkbox__native-control:enabled {
-      &.checked,
-      &:focus:checked,
-      &:indeterminate,
-      &[data-indeterminate='true'],
-      &:checked,
-      &:hover:checked,
-      &:not(:disabled):active:checked {
-        ~ .mdc-checkbox__background {
-          background-color: $secondary-color;
-          border-color: $primary-color;
-        }
-      }
-    }
-
-    // Define the style for .mdc-checkbox__checkmark
-    .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-      .mdc-checkbox__checkmark {
-        color: $primary-color;
-        border-color: #0a53be;
-      }
-    }
-  }
-}
-
-.checkbox-item {
-  @include outline-checkbox;
-}
-
-.mat-checkbox-ripple .mat-ripple-element {
-  background-color: rgb(100, 12, 12) !important;
-}
-.mat-checkbox-checked.mat-accent .mat-checkbox-background {
-  background-color: black !important;
-}
-
- .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-  background-color: black !important;
-}
-
-.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-  border-radius: 5px !important;
-  background-color: black !important;
-}
-.mat-expansion-panel{
+//.mat-checkbox-ripple .mat-ripple-element {
+//  background-color: rgb(100, 12, 12) !important;
+//}
+//.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+//  background-color: black !important;
+//}
+//
+// .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+//  background-color: black !important;
+//}
+//
+//.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+//  border-radius: 5px !important;
+//  background-color: black !important;
+//}
+.mat-expansion-panel {
   width: 100%;
   background-color: $primary-color !important;
 }
-.mat-expansion-panel-header{
+
+.mat-expansion-panel-header {
   background-color: $primary-color !important;
   min-width: 10rem;
 }
 
-.mat-expansion-panel-header-title{
+.mat-expansion-panel-header-title {
   background-color: $primary-color;
 }
 
 .mat-expansion-panel-header:hover {
- // background-color: $secondary-color !important;
+  // background-color: $secondary-color !important;
 }
-.mat-expansion-panel-content{
+
+.mat-expansion-panel-content {
   background-color: $secondary-color;
   min-width: 10rem;
 }
+
 //.ql-snow .ql-stroke {
 //  fill: none;
 //  stroke: red !important;
@@ -155,10 +131,11 @@ $accept-color: var(--accept-color);
 //  color: yellow !important;
 //}
 
-.text-text{
+.text-text {
   color: $primary-color;
   font-weight: bolder;
 }
+
 .isoText {
   padding-left: 1rem;
 }
@@ -179,11 +156,15 @@ mat-slide-toggle {
 
   background-color: $background-color;
   border: 2px solid $primary-color;
-  overflow-y: auto;
+  // overflow-y: auto;
   //scrollbar-color: $secondary-color $primary-color;
   @include mat.card-overrides((
           elevated-container-shape: $corner-radius
   ));
+}
+
+.mat-mdc-menu-content {
+
 }
 
 .dashboard-card mat-card-content {
@@ -205,7 +186,7 @@ mat-slide-toggle {
 .header-actions {
   display: flex;
   flex-direction: $direction;
-//  width: 100%;
+  //  width: 100%;
 }
 
 .header-title {
@@ -217,7 +198,7 @@ mat-slide-toggle {
   padding: 2px;
 }
 
-.actionButtons {
+.actionButtons-header {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -296,19 +277,39 @@ mat-slide-toggle {
   flex-grow: 0.1;
 }
 
-.custom-panel {
+//
+//.custom-panel {
+//  background-color: $primary-color;
+//  color: $secondary-color;
+//  margin-top: 0.5rem !important;
+//  .ql-editor {
+//    color: $primary-color;
+//    border: $primary-color 1px solid;
+//    width: 20rem;
+//  }
+//}
+
+.custom-panel-header {
   background-color: $primary-color;
   color: $secondary-color;
   margin-top: 0.5rem !important;
+
   .ql-editor {
-    color: $primary-color;
-    border: $primary-color 1px solid;
-    width: 20rem;
+    line-height: 1.2 !important;
+    overflow-y: inherit !important;
+min-height: 8rem;
+    li {
+      color: $primary-color;
+    }
   }
 }
 
-.myEditor{
 
+.myEditor {
+
+  .ql-container{
+    height: inherit;
+  }
   .ql-toolbar .ql-stroke {
     fill: none;
     stroke: $primary-color;
@@ -324,60 +325,62 @@ mat-slide-toggle {
   }
 
 
-  .ql-picker-options{
+  .ql-picker-options {
     background-color: $secondary-color !important;
-    color: $primary-color !important;
-  }
-  .ql-picker-options:hover{
-    background-color: $secondary-color !important;
-    color: $primary-color !important;
-  }
-  .ql-active{
-    font-weight: bolder !important;
-    color: $primary-color !important;
-  }
-  .ql-stroke{
     color: $primary-color !important;
   }
 
-  .ql-picker-label{
+  .ql-picker-options:hover {
+    background-color: $secondary-color !important;
     color: $primary-color !important;
   }
-  .ql-toolbar .ql-snow{
+
+  .ql-active {
+    font-weight: bolder !important;
     color: $primary-color !important;
   }
-  .ql-bold .ql-active{
+
+  .ql-stroke {
+    color: $primary-color !important;
+  }
+
+  .ql-picker-label {
+    color: $primary-color !important;
+  }
+
+  .ql-toolbar .ql-snow {
+    color: $primary-color !important;
+  }
+
+  .ql-bold .ql-active {
     color: $primary-color !important;
     font-weight: bolder;
   }
 
-
-
-
 }
+
 .custom-panel-flags {
   background-color: $primary-color;
   color: $secondary-color;
   margin-top: 0.5rem !important;
-  //.mat-expansion-panel-header {
-  //  display: flex;
-  //  flex-direction: row;
-  //  width: 100%;
-  //}
 
   .ql-editor {
     color: $primary-color;
     border: $primary-color 1px solid;
-   // padding-right: 10px;
-    width: 12rem;
+    width: 30rem;
   }
 }
 
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
 .mybutton {
- margin-top: 1rem;
+  margin-top: 1rem;
   background-color: $secondary-color !important;
   color: $primary-color !important;
 }
+
 .mybutton:hover {
   background-color: $primary-color !important;
   color: $secondary-color !important;
@@ -387,6 +390,7 @@ mat-slide-toggle {
   padding-left: 1rem;
   color: $secondary-color;
 }
+
 
 .my-slider {
   --mdc-slider-handle-color: $secondary-color;
@@ -407,6 +411,31 @@ mat-slide-toggle {
   --mdc-slider-inactive-track-shape: 20px;
 }
 
+//FONT SIZE -------------------------------------------------
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="1.25em"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="1.25em"]::before {
+  content: "small";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="1.8em"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="1.8em"]::before {
+  content: "medium";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="2.3em"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="2.3em"]::before {
+  content: "normal";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="4em"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="4em"]::before {
+  content: "large";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="6.25em"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="6.25em"]::before {
+  content: "huge";
+}
 
 //https://www.fusonic.net/en/blog/angular-material-customization
 

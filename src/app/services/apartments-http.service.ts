@@ -17,12 +17,19 @@ import {ApartmentItem} from "../domain/apartment-item";
 import {Menu} from "../domain/menu";
 import {map} from "rxjs/operators";
 import {DetailWithHeader} from "../domain/detail-with-header";
+import {Panel} from "../domain/panel";
+import {environment} from "../../environments/environment";
+import {HotelCriteria} from "../domain/hotel-criteria";
+import {ProductType} from "../domain/product-type";
+import {ProductProperty} from "../domain/product-property";
+import {MenuProductCriteria} from "../domain/menu-product-criteria";
 
 @Injectable({providedIn: 'root'})
 export class ApartmentsHttpService extends BaseService {
 
     errorService = inject(ErrorService);
     url: string;
+    showLogs: boolean = !environment.production;
 
     constructor(config: ApiConfiguration, http: HttpClient) {
         super(config, http);
@@ -33,7 +40,7 @@ export class ApartmentsHttpService extends BaseService {
                              detailUrl: string | null | undefined,
                              panelUrl: string | null | undefined): Observable<ApartmentDetail | null> {
         let detail = "";
-        let panel = "";
+        let panel: string | null | undefined = "";
 
         if (header) {
             if (header.main.id) {
@@ -54,8 +61,11 @@ export class ApartmentsHttpService extends BaseService {
                             panel = header.activeSideMenuUrl;
                         }
                     } else {
-                        detail = header.activeTopMenuUrl;
-                        panel = header.activeSideMenuUrl;
+                        //   console.log("tu ulazi", detailUrl, panelUrl);
+
+                        detail = detailUrl;
+                        panel = panelUrl;
+                        //    console.log("tu header", detail, panel);
                     }
 
                 } else {
@@ -70,16 +80,24 @@ export class ApartmentsHttpService extends BaseService {
             }
 
             const url = this.url + '/find/details';
-            console.log('(http request) fetch DetailByRouteLabels URL', url, detail, panel);
+            if (this.showLogs) {
+                if (!environment.production) {
+                    //console.log('(http request) fetch DetailByRouteLabels URL', url, detail, panel);
+                }
+            }
             // @ts-ignore
             return this.http
                 .get<ApartmentDetail>(url, {
-                    params: new HttpParams().set("menuUrl", detail).set("panelUrl", panel)
+                    params: new HttpParams().set("menuUrl", detail).set("panelUrl", panel ? panel : "")
                 })
                 .pipe(
-                    tap((res) => console.log('(http response) fetch DetailByRouteLabels', res)),
+                    tap((res) => {
+                        if (this.showLogs) {
+                            console.log('(http response) fetch DetailByRouteLabels', res)
+                        }
+                    }),
                     catchError((err) => {
-                        console.log("(http error) fetch DetailByRouteLabels error", err);
+                        //console.log("(http error) fetch DetailByRouteLabels error", err);
                         return this.errorService.handleError(err);
                     }),
                 );
@@ -92,7 +110,7 @@ export class ApartmentsHttpService extends BaseService {
 
     myDomains(): Observable<Page<Apartment>> {
         const url = this.url + '/find/domains';
-        console.log('(http request) Domains URL ---' + url);
+        //console.log('(http request) Domains URL ---' + url);
         // @ts-ignore
         return this.http
             .get<Page<Apartment>>(url)
@@ -106,6 +124,42 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
+    myHotels(criteria: HotelCriteria): Observable<Page<Menu>> {
+        const url = this.url + '/find/hotels';
+        console.log('(http request) myHotels criteria ---' + criteria);
+        // @ts-ignore
+        return this.http
+            .get<Page<Menu>>(url, {
+                params: new HttpParams({fromObject: Util.skipNulls(criteria)})
+            })
+            .pipe(
+                tap((res) => console.log('(http response) Hotels', res)),
+
+                catchError((err) => {
+                    console.log("(http error) Hotels", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
+    /*
+        searchApartments(criteria: ApartmentCriteria): Observable<Page<Apartment>> {
+            const url = this.url + '/find';
+            console.log('(http request) searchApartments URL ---' + url + ', by criteria', criteria);
+            // @ts-ignore
+            return this.http
+                .get<Page<Apartment>>(url, {
+                    params: new HttpParams({fromObject: Util.skipNulls(criteria)})
+                })
+                .pipe(
+                    tap((res) => console.log('(http response) searchApartments', res)),
+                    catchError((err) => {
+                        console.log("(http error) searchApartments", err);
+                        return this.errorService.handleError(err);
+                    }),
+                );
+        }
+     */
 
     myCustomers(): Observable<Page<Apartment>> {
         const url = this.url + '/customers';
@@ -169,6 +223,34 @@ export class ApartmentsHttpService extends BaseService {
     }
 
 
+    createMenuProduct(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
+        const url = this.url + "/details/not-menu";
+        const fetchHeader = this.fetchHeader();
+        console.log('(http request) create Detail', detail, url);
+
+        const formData = new FormData();
+        if (detail.topMenu?.image) {
+            formData.append('top', detail.topMenu.image);
+            detail.topMenu.image = null;
+        }
+
+        formData.append('payload', new Blob([JSON.stringify(detail)], {
+            type: 'application/json'
+        }));
+
+        return this.http.post<ApartmentDetail>(url, formData).pipe(
+            tap((response) => console.log('(http response) Detail created', response)),
+            concatMap(detail => {
+                return fetchHeader.pipe(
+                    map(h => {
+                        return {detail: detail, header: h}
+                    })
+                );
+            }),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
     createDetail(detail: Partial<ApartmentDetail>): Observable<DetailWithHeader> {
         const url = this.url + "/details";
         const fetchHeader = this.fetchHeader();
@@ -176,12 +258,12 @@ export class ApartmentsHttpService extends BaseService {
 
         const formData = new FormData();
         if (detail.topMenu?.image) {
-           formData.append('top', detail.topMenu.image);
-           detail.topMenu.image = null;
+            formData.append('top', detail.topMenu.image);
+            detail.topMenu.image = null;
         }
         if (detail.sideMenu?.image) {
             formData.append('side', detail.sideMenu.image);
-           detail.sideMenu.image = null;
+            detail.sideMenu.image = null;
         }
         formData.append('payload', new Blob([JSON.stringify(detail)], {
             type: 'application/json'
@@ -253,6 +335,61 @@ export class ApartmentsHttpService extends BaseService {
 
     }
 
+
+    deleteProductProperty(mainId: number | undefined,id: number): Observable<ProductType[]> {
+        const url = this.url + '/' + mainId + '/product-property/' + id;
+        console.log('(http request) delete product-property URL', url);
+        return this.http.delete(url).pipe(
+            tap((response) => console.log('(http response) product-property Deleted')),
+            concatMap(_ => {
+                return this.fetchProducts(mainId);
+            }),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
+    deleteProduct(mainId: number | undefined, id: number): Observable<ProductType[]> {
+        const url = this.url + '/' + mainId + '/product/' + id;
+        console.log('(http request) delete product URL', url);
+        return this.http.delete(url).pipe(
+            tap((response) => console.log('(http response) product-property Deleted')),
+            concatMap(_ => {
+                return this.fetchProducts(mainId);
+            }),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
+    saveProductProperty(productProperty: Partial<ProductProperty>): Observable<ProductType[]> {
+        const url = this.url + "/product-property";
+        console.log('(http request) update productProperty', productProperty, url);
+
+        let formData = new FormData();
+        formData.append('payload', new Blob([JSON.stringify(productProperty)], {
+            type: 'application/json'
+        }));
+        return this.http.put<ProductType[]>(url, formData).pipe(
+            tap((response) => console.log('(http response) update productProperty', response)),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
+    saveProduct(product: Partial<ProductType>): Observable<ProductType[]> {
+        const url = this.url + "/product";
+        console.log('(http request) update product', product, url);
+
+        let formData = new FormData();
+        product.propertyDS=undefined;
+        formData.append('payload', new Blob([JSON.stringify(product)], {
+            type: 'application/json'
+        }));
+
+        return this.http.put<ProductType[]>(url, formData).pipe(
+            tap((response) => console.log('(http response) update product', response)),
+            catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
     updateItem(item: Partial<ApartmentItem>): Observable<ApartmentItem> {
         const url = this.url + "/" + item.detailId + "/items";
         console.log('(http request) update Item', item, url);
@@ -305,7 +442,7 @@ export class ApartmentsHttpService extends BaseService {
 
     updateMenu(menu: Partial<Menu>): Observable<Menu> {
         const url = this.url + "/menu/" + menu.id;
-        console.log('(http request) update Menu', menu);
+        // console.log('(http request) update Menu', menu);
 
         const formData = new FormData();
         if (menu.image) {
@@ -319,6 +456,42 @@ export class ApartmentsHttpService extends BaseService {
         return this.http.put<Menu>(url, formData).pipe(
             tap((response) => console.log('(http response) update Menu', response)),
             catchError((err) => this.errorService.handleError(err)),
+        );
+    }
+
+    moveSideMenu(sideMenu: Partial<Panel>): Observable<Header> {
+        const url = this.url + "/move-side-menu";
+        console.log('(http request) move SideMenu', sideMenu.chip, sideMenu);
+
+        const formData = new FormData();
+        formData.append('panel', new Blob([JSON.stringify(sideMenu)], {
+            type: 'application/json'
+        }));
+
+        return this.http.put<Header>(url, formData).pipe(
+            tap((response) => console.log('(http response) move SideMenu', response)),
+            catchError((err) => {
+                console.log("(http error) move SideMenu", err);
+                return this.errorService.handleError(err);
+            }),
+        );
+    }
+
+    moveTopMenu(topMenu: Partial<Menu>): Observable<Header> {
+        const url = this.url + "/menu";
+        console.log('(http request) move TopMenu', topMenu.chip);
+
+        const formData = new FormData();
+        formData.append('menu', new Blob([JSON.stringify(topMenu)], {
+            type: 'application/json'
+        }));
+
+        return this.http.put<Header>(url, formData).pipe(
+            tap((response) => console.log('(http response) move TopMenu', response)),
+            catchError((err) => {
+                console.log("(http error) move TopMenu", err);
+                return this.errorService.handleError(err);
+            }),
         );
     }
 
@@ -364,7 +537,7 @@ export class ApartmentsHttpService extends BaseService {
         console.log('(http request) confirmNewPassword URL ---' + url);
         // @ts-ignore
         return this.http
-            .post<void>(url, request, { headers: headers })
+            .post<void>(url, request, {headers: headers})
             .pipe(
                 tap((res) => console.log('(http response) confirmNewPassword', res)),
                 catchError((err) => {
@@ -430,6 +603,25 @@ export class ApartmentsHttpService extends BaseService {
             );
     }
 
+    fetchMenuProducts(criteria: MenuProductCriteria | undefined): Observable<Page<Menu>> {
+        const url = this.url + '/find/menu-products';
+        console.log('(http request) fetchMenuProducts URL ---' + url + ', by criteria', criteria);
+        // @ts-ignore
+        return this.http
+            .get<Page<Apartment>>(url, {
+                params: new HttpParams({fromObject: Util.skipNulls(criteria)})
+            })
+            .pipe(
+                tap((res) => console.log('(http response) fetchMenuProducts', res)),
+                catchError((err) => {
+                    console.log("(http error) fetchMenuProducts", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
+
+
     ping(): Observable<Message> {
         const url = this.url + '/ping';
         console.log('(http request) fetch Ping URL ---' + url);
@@ -459,5 +651,22 @@ export class ApartmentsHttpService extends BaseService {
                 }),
             );
     }
+
+
+    fetchProducts(mainId: number | undefined): Observable<ProductType[]> {
+        const url = this.url + '/products/' + mainId;
+        console.log('(http request) fetchProducts URL ---' + url + ', by mainId', mainId);
+        // @ts-ignore
+        return this.http
+            .get<ProductType[]>(url)
+            .pipe(
+                tap((res) => console.log('(http response) fetchProducts', res)),
+                catchError((err) => {
+                    console.log("(http error) fetchProducts", err);
+                    return this.errorService.handleError(err);
+                }),
+            );
+    }
+
 
 }

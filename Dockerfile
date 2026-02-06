@@ -26,5 +26,6 @@ ENV DB_PASSWORD: "${DB_PASSWORD}"
 ENV DB_ROOT: "${DB_ROOT}"
 ENV RECAPTCHA_SECRET: "${RECAPTCHA_SECRET}"
 ENV SECRET_KEY: "${SECRET_KEY}"
+ENV STRIPE_SECRET: "${STRIPE_SECRET}"
 ENV API_PORT: "${API_PORT}"
 CMD java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dserver.port="${API_PORT}" -Dspring.profiles.active="${ACTIVE_PROFILE}" dema-*.jar

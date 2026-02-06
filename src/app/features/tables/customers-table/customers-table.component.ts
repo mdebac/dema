@@ -174,12 +174,12 @@ export class CustomersTableComponent implements AfterViewInit, OnInit, OnDestroy
 
 
     updateApartment(apartment: Apartment) {
-        console.log("updateApartment dialog enter", apartment);
+      //  console.log("updateApartment dialog enter", apartment);
         this.openApartmentDialog(apartment).pipe(
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
         ).subscribe(detailProps => {
-                console.log("updateApartment dialog finish", detailProps);
+           //     console.log("updateApartment dialog finish", detailProps);
                 this.store.createMainEffect(detailProps);
                 window.location.reload();
             }

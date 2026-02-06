@@ -33,3 +33,5 @@ public class Detail extends AbstractAuditModel {
     private Menu topMenu;
     private Panel sideMenu;
 }
+
+

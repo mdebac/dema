@@ -1,12 +1,12 @@
-<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+<mat-expansion-panel class="custom-panel-page" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon>format_color_fill</mat-icon>
-            <div class="naslov"> {{ "dialog.main.colors" | translate }}</div>
+            <div class="naslov-page"> {{ "dialog.main.colors" | translate }}</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="actionButtons">
+    <div class="actionButtons-page">
         <mat-button-toggle-group [value]="activeDetail?.backgroundColor"
                                  (change)="onChangeBackgroundColor($event, activeDetail)">
             <mat-button-toggle class="primaryColor" [value]=header?.main?.colors?.primaryColor></mat-button-toggle>
@@ -23,15 +23,15 @@
 </mat-expansion-panel>
 
 
-<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+<mat-expansion-panel class="custom-panel-page" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon>auto_awesome_mosaic</mat-icon>
-            <div class="naslov"> {{ "summer.layout" | translate }}</div>
+            <div class="naslov-page"> {{ "summer.layout" | translate }}</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="actionButtons">
+    <div class="actionButtons-page">
 
         @if (!activeDetail?.topMenu?.hideMenuPanelIfOne) {
             @if (activeDetail?.topMenu?.side === Side.LEFT) {
@@ -71,31 +71,30 @@
             </button>
         }
 
-
         @if (activeDetail?.topMenu?.hideMenuPanelIfOne) {
-            <button mat-flat-button (click)="sideMenuOff(activeDetail)">
-                <i class="fa fa-columns" aria-hidden="true"></i>
-                {{ "summer.side.menu.off" | translate }}
-            </button>
-        } @else {
             <button mat-flat-button (click)="sideMenuOn(activeDetail)">
                 <i class="fa fa-columns" aria-hidden="true"></i>
                 {{ "summer.side.menu.on" | translate }}
+            </button>
+        } @else {
+            <button mat-flat-button (click)="sideMenuOff(activeDetail)">
+                <i class="fa fa-columns" aria-hidden="true"></i>
+                {{ "summer.side.menu.off" | translate }}
             </button>
         }
     </div>
 
 </mat-expansion-panel>
 
-<mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
+<mat-expansion-panel class="custom-panel-page" (opened)="isOpened = !isOpened" (closed)="isOpened = !isOpened">
 
     <mat-expansion-panel-header>
         <mat-panel-title>
             <i class="fa-solid fa-table-cells fa-xl text"></i>
-            <div class="naslov"> {{ "summer.columns" | translate }}</div>
+            <div class="naslov-page"> {{ "summer.columns" | translate }}</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="actionButtons">
+    <div class="actionButtons-page">
         <mat-button-toggle-group hideSingleSelectionIndicator="true"
                                  [value]="activeDetail?.columns"
                                  (change)="onChangeColumns($event,activeDetail)">
@@ -109,32 +108,32 @@
 
 </mat-expansion-panel>
 
-<mat-expansion-panel #updateTitlesAndIconsPanel class="custom-panel"
+<mat-expansion-panel #updateTitlesAndIconsPanel class="custom-panel-page"
                      (click)="updateTitlesAndIcons(header, activeDetail)" hideToggle>
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon>update</mat-icon>
-            <div class="naslov"> {{ "title.and.icons" | translate }}</div>
+            <div class="naslov-page"> {{ "title.and.icons" | translate }}</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
 </mat-expansion-panel>
 
-<mat-expansion-panel #createNewItemPanel class="custom-panel"
+<mat-expansion-panel #createNewItemPanel class="custom-panel-page"
                      (click)="createNewItem(activeDetail, header?.main?.colors, header?.main?.host)" hideToggle>
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon>add_circle</mat-icon>
-            <div class="naslov">{{ "summer.new.item" | translate }}</div>
+            <div class="naslov-page">{{ "summer.new.item" | translate }}</div>
         </mat-panel-title>
     </mat-expansion-panel-header>
 </mat-expansion-panel>
 
 @if (!onlyOne(header?.menus)) {
-    <mat-expansion-panel class="custom-panel" (click)="deleteDetail(activeDetail)" hideToggle>
+    <mat-expansion-panel class="custom-panel-page" (click)="deleteDetail(activeDetail)" hideToggle>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <mat-icon>delete</mat-icon>
-                <div class="naslov">{{ "delete.page" | translate }}</div>
+                <div class="naslov-page">{{ "delete.page" | translate }}</div>
             </mat-panel-title>
         </mat-expansion-panel-header>
     </mat-expansion-panel>

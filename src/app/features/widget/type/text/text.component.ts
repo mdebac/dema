@@ -20,4 +20,6 @@ export class TextComponent{
   getDescription(country: string | null, iso: ApartmentItemIso[] | undefined | null) {
     return iso?.find(iso => iso.iso === country)?.description;
   }
+
+
 }

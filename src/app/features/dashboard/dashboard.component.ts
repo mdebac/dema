@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {filter, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
@@ -6,7 +6,6 @@ import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatFabButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {LetDirective} from '@ngrx/component';
-import {CustomersTableComponent} from '../tables/customers-table/customers-table.component';
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {NotificationService} from "../../services/notification.service";
 import {Apartment} from "../../domain/apartment";
@@ -16,7 +15,8 @@ import {Roles} from "../../domain/roles";
 import {AuthStore} from "../../services/authentication/auth-store";
 import {Hosts} from "../../domain/hosts";
 import {MatGridList, MatGridTile} from "@angular/material/grid-list";
-import {Colors} from "../../domain/colors";
+import {DashboardMenuComponent} from "./dashboard-menu.component";
+import {RouterOutlet} from "@angular/router";
 
 @Component({
     selector: 'dashboard',
@@ -29,10 +29,11 @@ import {Colors} from "../../domain/colors";
         MatIcon,
         MatCardContent,
         LetDirective,
-        CustomersTableComponent,
         MatFabButton,
         MatGridList,
         MatGridTile,
+        DashboardMenuComponent,
+        RouterOutlet,
     ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -47,6 +48,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     title$ = this.store.filterTitle$;
     apartmentsCount$ = this.store.pageCount$;
     header$ = this.store.header$;
+    shrinkMenu$ = this.store.shrinkMenu$;
+    stateLayout$ = this.store.dashboardLayout$;
+    selectedIso$ = this.store.selectedIso$;
+    products$ = this.store.products$;
 
     isManager = this.authStore.authorize(Roles.MANAGER);
     isAdmin = this.authStore.authorize(Roles.ADMIN);
@@ -55,7 +60,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
         console.log("Dashboard ngOnInit");
         if(this.isAdmin || this.isManager){
-            this.store.loadCustomersEffect();
+            //this.store.loadCustomersEffect();
+            //this.store.fetchProductsEffect();
         }
         this.error$.pipe(takeUntil(this.unsubscribe$)).subscribe((error) => {
             this.notificationService.error("error");

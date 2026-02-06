@@ -13,7 +13,7 @@ $secondary-color: var(--secondary-color);
   --mdc-fab-container-color: var(--secondary-color);
 }
 
-.dashboard-card {
+.dashboard-card-dialog {
   position: relative;
   margin: 0.5rem;
   background-color: $primary-color;
@@ -21,14 +21,29 @@ $secondary-color: var(--secondary-color);
   overflow-x: auto;
   color: $secondary-color;
   //scrollbar-color: $secondary-color $primary-color;
+
+  .mat-mdc-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-items: stretch;
+    //padding: 8px 8px 8px 8px;
+    //overflow: hidden;
+    ////margin-right: 30%;
+    //align-items: center;
+    //padding-top: 30px;
+    //padding-bottom: 30px;
+
+    //.button-container-left {
+    //  margin-right: auto;
+    //}
+  }
 }
 
 .mat-expansion-panel-header {
   // min-height: 50px;
   padding: 0;
   background-color: $secondary-color !important;
-
-
 }
 
 .mat-expansion-panel-header-title {
@@ -45,13 +60,22 @@ $secondary-color: var(--secondary-color);
   color: $primary-color;
   font-weight: bolder;
 }
+
+
+
 .custom-panel {
-  .ql-editor {
+ // .ql-editor {
     // color: $primary-color;
-    border: 0;
+  //  border: 0;
     // padding-right: 10px;
     //  width: 12rem;
-  }
+
+ // }
+  //.ql-size-huge{
+  //  font-size: 2.25em !important;
+  //  padding-left: 0.1rem !important;
+  //  line-height: 1.3 !important;
+  //}
 }
 
 .naslov {
@@ -125,52 +149,40 @@ $secondary-color: var(--secondary-color);
 }
 
 .mat-expansion-panel .mat-expansion-panel-header {
-
   img {
     max-height: 4rem;
     min-height: 3rem;
   }
-
-  height: 100px;
-  //
-  //min-height: 4rem;
+  height: 6.25rem;
 }
 
 .mat-expansion-panel .mat-expansion-panel-header:hover {
   background-color: $secondary-color;
-
-  height: 100px;
-
+  height: 6.25rem;
   img {
     max-height: 4rem;
     min-height: 3rem;
   }
-
 }
-
 
 .dashboard-card mat-card-content {
   text-align: left;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 16px;
-
-  //
-  //overflow-y: auto;
-  //overflow-x: auto;
 }
 
 .container {
-  display: flex;
-  flex-direction: row;
-  position: relative;
-  border: 2px solid $secondary-color;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  max-width: 25rem;
+  //display: flex;
+  //flex-direction: row;
+  //position: relative;
+  //border: 2px solid $secondary-color;
+  //border-radius: 10px;
+  //padding: 0.5rem 1rem;
+  //margin-bottom: 1rem;
+  //max-width: 25rem;
+  padding: 0;
 }
-
 
 .eyes {
   align-content: center;
@@ -195,12 +207,15 @@ $secondary-color: var(--secondary-color);
   background-color: $secondary-color;
   justify-content: space-between;
 }
-.mybutton {
+
+.myButton_full_width {
   margin-top: 2px;
   margin-left: 2px;
+  width: 100%;
   background-color: $secondary-color !important;
 }
-.mybutton:hover {
+
+.myButton_full_width:hover {
   background-color: $primary-color !important;
   color: $secondary-color !important;
 }
@@ -214,27 +229,12 @@ $secondary-color: var(--secondary-color);
   font-weight: bolder;
 }
 
-input[type=checkbox]::file-selector-button {
-  cursor: pointer;
-  border: 0;
-  background-color: $primary-color;
-  color: $secondary-color;
-}
 
 .form-control{
   line-height: 2 !important;
   height: 3rem;
 }
-input[type=file]::file-selector-button {
-  cursor: pointer;
-  border: 0;
-  background-color: $primary-color;
-  color: $secondary-color;
-}
-input[type=file]::file-selector-button:hover {
-  background-color: $secondary-color;
-  color: $primary-color;
-}
+
 
 .flexLayout {
   display: grid;
@@ -267,19 +267,7 @@ input[type=file]::file-selector-button:hover {
 
 }
 
-.mat-mdc-card-header {
-  display: flex;
-  padding: 8px 8px 8px 8px;
-  overflow: hidden;
-  //margin-right: 30%;
-  align-items: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
 
-  .button-container-left {
-    margin-right: auto;
-  }
-}
 
 .row-container {
   display: flex;

@@ -1,110 +1,178 @@
 <mat-card class="dashboard-card">
-  <mat-card-header>
-    <h2 class="button-container-left">@if (isNew) {
-      {{ "create.item" | translate }}
-    } @else {
-      {{ "update.item" | translate }} {{ selectedType }}
-    }</h2>
-    <div>
-      <iso-buttons [countries]="languages" [selectedIn]="selectedIsoTitle" (selectedOut)="activeIso($event)">
-      </iso-buttons>
-    </div>
-  </mat-card-header>
+    <mat-card-header>
+        <h2 class="button-container-left">@if (isNew) {
+            {{ "create.item" | translate }}
+        } @else {
+            {{ "update.item" | translate }} {{ selectedType }}
+        }</h2>
+        <div>
+            <iso-buttons [countries]="languages" [selectedIn]="selectedIso" (selectedOut)="activeIso($event)">
+            </iso-buttons>
+        </div>
+    </mat-card-header>
 
-  <mat-card-content [formGroup]="form">
+    <mat-card-content [formGroup]="form">
 
-    @if (isNew) {
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Type</mat-label>
-        <mat-select formControlName="chip" placeholder="Type" (selectionChange)="changeType($event)">
-          <mat-option value="TEXT">Text</mat-option>
-          <mat-option value="PICTURE">Slika</mat-option>
-          <mat-option value="VIDEO">Video</mat-option>
-          <mat-option value="JOB">Job</mat-option>
+        @if (isNew) {
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="chip" placeholder="Type" (selectionChange)="changeType($event)">
+                    <mat-option value="TEXT">Text</mat-option>
+                    <mat-option value="PICTURE">Slika</mat-option>
+                    @if (isAdmin()) {
+                        <mat-option value="HOTEL_SEARCH">Hotel</mat-option>
+                    }
+                    <mat-option value="VIDEO">Video</mat-option>
+                    @if (isJobsEnabled()) {
+                        <mat-option value="JOB">JOB</mat-option>
+                    }
+                    @if (isShoppingEnabled()) {
+                        <mat-option value="SHOPPING_ITEM">SHOPPING_ITEM</mat-option>
+                        @if (isAdmin()) {
+                            <mat-option value="SHOPPING_CARD">SHOPPING_CARD</mat-option>
+                        }
+                    }
 
-          @if (isJobsEnabled()) {
-            <mat-option value="JOB">JOB</mat-option>
-          }
-          @if (isDomainsEnabled()) {
-            <mat-option value="DOMAINS">DOMAINS</mat-option>
-          }
+                    @if (isAdmin()) {
+                        <mat-option value="DOMAINS">DOMAINS</mat-option>
+                    }
 
-        </mat-select>
-      </mat-form-field>
-    }
-
-    @if (isImageTypeSelected) {
-      <mat-label><b>{{ "item.upload.image.text" | translate }}</b></mat-label>
-      <div class="upload-input">
-        <input type="file" #fileUploader accept=".png, .jpg, .jpeg" (change)="selectImage($event)"/>
-      </div>
-      @if (form.get('image')?.hasError('invalidImageSize')) {
-        <mat-error>File must not be bigger then 1 Mb
-        </mat-error>
-      }
-
-      @if (isImageSelected) {
-        <img width="100" src="{{bookCover}}" alt=""/>
-      }
-    }
-
-    @if (isTextTypeSelected || isJobTypeSelected|| isImageTypeSelected) {
-      <ng-container formArrayName="iso">
-        @for (item of isoArray.controls; track item; let i = $index) {
-          @if (isIsoSelected(item.value)) {
-            @if (isJobTypeSelected) {
-              <ng-container [formGroupName]="i">
-                <mat-label class="text">{{ "item.dialog.job.title" | translate }}</mat-label>
-                <mat-form-field class="full-width">
-                  <mat-label class="text">{{ "item.dialog.job.title" | translate }}</mat-label>
-                  <input matInput formControlName="title">
-                  <mat-error class="text">max 255, EN required</mat-error>
-                </mat-form-field>
-              </ng-container>
-            }
-            <ng-container [formGroupName]="i">
-              <mat-label class="text-label">{{ "item.dialog.description" | translate }}</mat-label>
-
-                <quill-editor class="myEditor"
-                              format="html"
-                              [modules]="quillConfiguration"
-                              [placeholder]="'description'"
-                              formControlName="description"
-                ></quill-editor>
-
-<!--                -->
-<!--              <ngx-editor-menu [editor]="editor(item.value.iso)" [colorPresets]="colorPresets"-->
-<!--                [toolbar]="toolbar">-->
-<!--              </ngx-editor-menu>-->
-<!--              <ngx-editor [editor]="editor(item.value.iso)" formControlName="description">-->
-<!--              </ngx-editor>-->
-
-
-              <div class="text">
-                {{ remainingSize(item.value.iso) }}
-              </div>
-            </ng-container>
-          }
+                </mat-select>
+            </mat-form-field>
         }
-      </ng-container>
-    }
+
+        @if (isImageTypeSelected) {
+            <mat-label><b>{{ "item.upload.image.text" | translate }}</b></mat-label>
+            <input type="file" #fileUploader accept=".png, .jpg, .jpeg" (change)="selectImage($event)"/>
 
 
-    @if (isVideoTypeSelected) {
-      <mat-form-field class="full-width">
-        <mat-label> {{ "video.url" | translate }}</mat-label>
-        <input matInput formControlName="url" placeholder="Video Url">
-      </mat-form-field>
-    }
+            @if (Object.hasOwn(itemFile, 'ext')) {
 
-    <button class="max" [disabled]="!form.valid" (click)="onCreateItem()" mat-fab extended>
-      {{ "save.dialog" | translate }}
-    </button>
+                <div class="image-align-container">
+                    <div class="image-align">
+
+                        <image-cropper
+                                [imageQuality]="cropQuality"
+                                [imageFile]="itemFile.file"
+                                format="png"
+                                [onlyScaleDown]="true"
+                                [resizeToWidth]="800"
+                                [maintainAspectRatio]="false"
+                                [aspectRatio]="4/3"
+                                (imageCropped)="itemImageCropped($event)"
+                                [hideResizeSquares]="true"
+
+                        >
+                        </image-cropper>
+
+                    </div>
+                </div>
+
+            } @else if (showPicture) {
+
+                <div class="image-align-container">
+                    <div class="image-align">
+                        <img width="100%" height="100%" src="{{showPicture}}" alt=""/>
+                    </div>
+                </div>
+            }
+
+            {{ toBigImage }}
+
+            <div>
+                @if (Object.hasOwn(itemFile, 'ext') || showPicture) {
+                    <div class="actionButtons-header">
+                        {{ imageWidth }}
+                        <mat-slider class="my-slider" min="0" max="100" step="1" showTickMarks discrete
+                                    [displayWith]="formatLabel">
+                            <input matSliderThumb value="{{imageWidth}}" (valueChange)="changeImageWidthSlider($event)">
+                        </mat-slider>
+                        @if (imageWidth < 100) {
+                            <label>Horizontal Image Align</label>
+                            <mat-radio-group formControlName="imageAlignHorizontal" aria-label="Horizontal Image Align">
+                                @for (imageAlign of imageAlignTypes; track imageAlign) {
+                                    <mat-radio-button value="{{imageAlign}}">{{ imageAlign }}</mat-radio-button>
+                                }
+                            </mat-radio-group>
+                        }
+                    </div>
+                    <div class="actionButtons-header">
+                        {{ imageHeight }}
+                        <mat-slider class="my-slider" min="0" max="100" step="1" showTickMarks discrete
+                                    [displayWith]="formatLabel">
+                            <input matSliderThumb value="{{imageHeight}}"
+                                   (valueChange)="changeImageHeightSlider($event)">
+                        </mat-slider>
+                        @if (imageHeight < 100) {
+                            <label>Vertical Image Align</label>
+                            <mat-radio-group formControlName="imageAlignVertical" aria-label="Vertical Image Align">
+                                @for (imageAlign of imageAlignTypes; track imageAlign) {
+                                    <mat-radio-button value="{{imageAlign}}">{{ imageAlign }}</mat-radio-button>
+                                }
+                            </mat-radio-group>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @if (isTextTypeSelected || isJobTypeSelected || isImageTypeSelected) {
+            <ng-container formArrayName="iso">
+                @for (item of isoArray.controls; track item; let i = $index) {
+                    @if (isIsoSelected(item.value)) {
+                        @if (isJobTypeSelected) {
+                            <ng-container [formGroupName]="i">
+                                <mat-label class="text">{{ "item.dialog.job.title" | translate }}</mat-label>
+                                <mat-form-field class="full-width">
+                                    <mat-label class="text">{{ "item.dialog.job.title" | translate }}</mat-label>
+                                    <input matInput formControlName="title">
+                                    <mat-error class="text">max 255, EN required</mat-error>
+                                </mat-form-field>
+                            </ng-container>
+                        }
+                        <ng-container [formGroupName]="i">
+                            <mat-label class="text-label">{{ "item.dialog.description" | translate }}</mat-label>
+
+                            <quill-editor class="myEditor"
+                                          format="html"
+                                          [modules]="quillConfiguration"
+                                          [placeholder]="'description'"
+                                          formControlName="description"
+                            ></quill-editor>
+
+                            <!--                -->
+                            <!--              <ngx-editor-menu [editor]="editor(item.value.iso)" [colorPresets]="colorPresets"-->
+                            <!--                [toolbar]="toolbar">-->
+                            <!--              </ngx-editor-menu>-->
+                            <!--              <ngx-editor [editor]="editor(item.value.iso)" formControlName="description">-->
+                            <!--              </ngx-editor>-->
 
 
-    <!--  <button (click)="resetForm()" mat-flat-button color="warn">
-    Reset
-  </button>
-  -->
-</mat-card-content>
+                            <div class="text">
+                                {{ remainingSize(item.value.iso) }}
+                            </div>
+                        </ng-container>
+                    }
+                }
+            </ng-container>
+        }
+
+
+        @if (isVideoTypeSelected) {
+            <mat-form-field class="full-width">
+                <mat-label> {{ "video.url" | translate }}</mat-label>
+                <input matInput formControlName="url" placeholder="Video Url">
+            </mat-form-field>
+        }
+
+        <button class="max" [disabled]="!form.valid" (click)="onCreateItem()" mat-fab extended>
+            {{ "save.dialog" | translate }}
+        </button>
+
+
+        <!--  <button (click)="resetForm()" mat-flat-button color="warn">
+        Reset
+      </button>
+      -->
+    </mat-card-content>
 </mat-card>

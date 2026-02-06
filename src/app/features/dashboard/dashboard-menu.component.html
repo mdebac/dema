@@ -1,0 +1,31 @@
+<div class="dashboard-menu-container">
+
+        <div class="{{'zajednicko ' + resolveActiveClass(0)}}" (click)="goTo('users')">
+            <div class="menu-container">
+                <div class="image-desc">
+<!--                    <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>-->
+                        <div class="dashboard-menu-title-text-closed">users
+<!--                            <quill-view-->
+<!--                                    class="my-quill-view-menu"-->
+<!--                                    [content]="getSideMenuLabelWhenClosed(iso.title)"-->
+<!--                                    format="html" theme="snow"></quill-view>-->
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="{{'zajednicko ' + resolveActiveClass(1)}}" (click)="goTo('business')">
+        <div class="menu-container">
+            <div class="image-desc">
+                <!--                    <img src="{{'data:image/jpg;base64,' + panel.image}}" alt=""/>-->
+                <div class="dashboard-menu-title-text-closed">business
+                    <!--                            <quill-view-->
+                    <!--                                    class="my-quill-view-menu"-->
+                    <!--                                    [content]="getSideMenuLabelWhenClosed(iso.title)"-->
+                    <!--                                    format="html" theme="snow"></quill-view>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

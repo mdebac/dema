@@ -3,9 +3,15 @@
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
 
+$imageAlignVertical: var(--imageAlignVertical);
+$imageAlignHorizontal: var(--imageAlignHorizontal);
+
+$imageWidth: var(--imageWidth);
+$imageHeight: var(--imageHeight);
+
 :host{
   @include mat.card-overrides((
-    elevated-container-shape: 16px
+    elevated-container-shape: 1rem
   ));
 }
 .max{
@@ -15,10 +21,38 @@ $secondary-color: var(--secondary-color);
 .max:hover{
  font-weight: bolder;
 }
+
+.image-align-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: $imageAlignHorizontal;
+  justify-content: $imageAlignVertical;
+  border: 1px solid $primary-color;
+  min-height: 8rem;
+  image-cropper{
+    padding: 0;
+  }
+  .ngx-ic-cropper{
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+}
+.image-align{
+  display: flex;
+  width: $imageWidth;
+  height: $imageHeight;
+  //align-items: start;
+  //justify-content: start;
+}
+
+
 .dashboard-card {
   margin: 5px;
   background-color: $secondary-color;
-  max-height: 600px;
+  max-height: 37.5rem;
   position: relative;
   overflow-y: auto;
   color: $primary-color;
@@ -31,7 +65,7 @@ $secondary-color: var(--secondary-color);
   text-align: left;
   display: grid;
   grid-template-columns: repeat(1,1fr);
-  gap: 16px;
+  gap: 1rem;
 }
 
 //.ql-picker-options{
@@ -61,41 +95,32 @@ $secondary-color: var(--secondary-color);
 //  font-weight: bolder;
 //}
 
-input[type=file]::file-selector-button {
-  cursor: pointer;
-  border: 0;
-  background-color: $primary-color;
-  color: $secondary-color;
-}
-input[type=file]::file-selector-button:hover {
-  background-color: $secondary-color;
-  color: $primary-color;
-}
+
 
 input{
   width: 70%;
 }
 
-.mat-mdc-card-header {
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  //margin-right: 30%;
-  align-items: center;
-  padding: 30px 8px;
-
-  .button-container-left {
-    margin-right: auto;
-    color: $primary-color;
-  }
-  color: $secondary-color;
-  .row-input-container-left {
-    .mat-mdc-form-field{
-      width: 100%;
-    }
-  }
-
-}
+//.mat-mdc-card-header {
+//  display: flex;
+//  flex-direction: row;
+//  overflow: hidden;
+//  //margin-right: 30%;
+//  align-items: center;
+//  padding: 30px 8px;
+//
+//  .button-container-left {
+//    margin-right: auto;
+//    color: $primary-color;
+//  }
+//  color: $secondary-color;
+//  .row-input-container-left {
+//    .mat-mdc-form-field{
+//      width: 100%;
+//    }
+//  }
+//
+//}
 
 .mat-mdc-button-base {
   margin: 8px 8px 8px 0;
@@ -109,3 +134,62 @@ input{
   background-color: $primary-color;
   color: $secondary-color;
 }
+
+a {
+  cursor: pointer;
+}
+
+quill-editor:focus {
+  outline: none;
+}
+
+.ql-editor ul[data-checked="false"] > li::before {
+  font-size: 1.25em;
+}
+
+.ql-editor ul[data-checked="true"] > li::before {
+  font-size: 1.25em;
+}
+
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before {
+  content: "18px";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before {
+  content: "20px";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="22px"]::before {
+  content: "22px";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before {
+  content: "24px";
+}
+
+//.ql-snow .ql-size {
+//  width: 68px !important;
+//}
+
+//.modal-content .ql-container .ql-editor p,
+//body.product-documents .ql-container .ql-editor {
+//  font-size: 16px;
+//  line-height: 1.8;
+//  overflow: hidden;
+//}
+/*
+.ql-editor {
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 2;
+  padding: 30px 35px !important;
+}
+
+.ql-editor::before {
+  left: 35px !important;
+} */

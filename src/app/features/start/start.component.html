@@ -1,92 +1,136 @@
 <ng-container
         *ngrxLet="{
         isMobile:isMobile$,
+        isTopMenuActive:isTopMenuActive$,
         menuSide:menuSide$,
-        header:header$,
+        headerData:headerData$,
+        products:products$,
         isLoggedIn: authStore.isLoggedIn$,
         selectedIso: selectedIso$,
         role: role$,
-        user:user$
+        user:user$,
+        activeDetail: activeDetail$
         } as vm"
-  >
+>
 
-  <div class="grid-container">
+    <div class="grid-container">
 
-    <div class="header-container">
+        <div class="header-container">
 
-      <div class="iconSpace">
-        @if (vm.isMobile) {
+            <div [ngClass]="vm.isMobile ? 'iconSpaceMobile' : 'iconSpace'">
+                @if (vm.isMobile) {
 
-          <!--                    <img width="50" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
-          <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
-        } @else {
-          <!--                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
-          <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
-
-
-        }
-      </div>
-
-      <div class="rightSpace">
-        <div class="contentSpace">
-          <div [ngClass]="!vm.isMobile ? 'headerText' : 'headerTextMobile'">
-<!--            <div class="titleText">-->
-<!--              {{ getTitle(vm.selectedIso, vm.header?.iso) }}             -->
-<!--          </div>-->
-          @if (!vm.isMobile) {
-
-            <quill-view class="my-quill-view" [content]="getTitleAndDescription(vm.selectedIso, vm.header?.main?.iso)" format="html" theme="snow"></quill-view>
+                    <!--                    <img width="50" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
+                } @else {
+                    <!--                    <img width="200" *ngIf="vm.header?.iconImage" (click)="toHome()"-->
+                            <!--                         src="{{'data:image/jpg;base64,' + vm.header?.iconImage}}" alt=""/>-->
 
 
-<!--xxx-->
-<!--            <div class="descriptionText">-->
-<!--              {{ getDescriptionText(vm.selectedIso, vm.header?.iso) }}-->
-<!--            </div>-->
+                }
+            </div>
+
+            <div class="rightSpace">
+                <div class="contentSpace">
+                    <div [ngClass]="!vm.isMobile ? 'headerText' : 'headerTextMobile'">
+                        <!--            <div class="titleText">-->
+                        <!--              {{ getTitle(vm.selectedIso, vm.header?.iso) }}             -->
+                        <!--          </div>-->
+                        @if (!vm.isMobile) {
+
+                            @if (vm.isTopMenuActive) {
+                                <quill-view class="my-quill-view"
+                                            [content]="getTitleAndDescription(vm.selectedIso, vm.headerData.header?.main?.iso)"
+                                            format="html" theme="snow"></quill-view>
+                            } @else {
+                                <quill-view class="my-quill-view"
+                                            [content]="getTitleAndDescriptionFromMenu(vm.selectedIso, vm.activeDetail?.topMenu?.iso)"
+                                            format="html" theme="snow"></quill-view>
+                            }
+
+                        } @else {
+                            @if (vm.isTopMenuActive) {
+                                <quill-view class="my-quill-view-mobile"
+                                            [content]="getTitleMobile(vm.selectedIso, vm.headerData.header?.main?.iso)"
+                                            format="html" theme="snow"></quill-view>
+                            } @else {
+                                <quill-view class="my-quill-view-mobile"
+                                            [content]="getTitleFromMenuMobile(vm.selectedIso, vm.activeDetail?.topMenu?.iso)"
+                                            format="html" theme="snow"></quill-view>
+                            }
+                        }
+                    </div>
+                    <div class="isoSpaceLanguage">
+
+                        @if (vm.headerData.header?.main?.languages) {
+                            <iso-buttons [countries]="vm.headerData.header?.main?.languages"
+                                         [selectedIn]="vm.selectedIso"
+                                         [isMobile]="vm.isMobile"
+                                         (selectedOut)="activeIso($event)">
+                            </iso-buttons>
+                        }
+
+                        <user-buttons [user]="vm.user"
+                                      [isMobile]="vm.isMobile"
+                                      [isLoggedIn]="vm.isLoggedIn">
+                        </user-buttons>
+
+                        @if (vm.isMobile) {
+                            <mobile-top-menu
+                                    [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+                                    [header]="vm.headerData.header"
+                                    [products]="vm.products"
+                                    [selectedIso]="vm.selectedIso">
+                            </mobile-top-menu>
+                        }
+                    </div>
+                </div>
+
+                @if (!vm.isMobile) {
+
+                    @if (vm.isTopMenuActive) {
+                        <top-menu
+                                [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
+                                [header]="vm.headerData.header"
+                                [selectedIso]="vm.selectedIso"
+                                [direction]="'row'"
+                                [activeDetail]="vm.activeDetail"
+                        ></top-menu>
+                    } @else {
+                        @if (isHostResidence) {
+                            <div class="pdf-header">
+
+                                <div>
+                                    <img width="100" src="/assets/pdf-icon.png" alt=""/>
+                                </div>
+
+                                    @for (bla of vm.activeDetail?.topMenu?.properties ; track bla) {
+                                        <div class="pdf-text"
+                                             [innerHtml]="formatPdfData(bla, vm.headerData.header.main.products, vm.activeDetail?.topMenu?.productId) | safeHtml"
+                                        >
+                                        </div>
+                                    }
+
+                                <div class="back">
+                                    <button class="back-button" routerLink="/search"
+                                            mat-fab extended>
+                                        <mat-icon class="back-icon">forward_circle</mat-icon>
+                                        Back
+                                    </button>
+                                </div>
+                            </div>
+                        }
 
 
-          }@else{
-              <quill-view class="my-quill-view-mobile" [content]="getTitle(vm.selectedIso, vm.header?.main?.iso)" format="html" theme="snow"></quill-view>
-
-          }
+                    }
+                }
+            </div>
         </div>
-        <div class="isoSpaceLanguage">
 
-          @if (vm.header?.main?.languages) {
-            <iso-buttons [countries]="vm.header?.main?.languages"
-              [selectedIn]="vm.selectedIso"
-              [isMobile]="vm.isMobile"
-              (selectedOut)="activeIso($event)">
-            </iso-buttons>
-          }
-
-          <user-buttons [user]="vm.user"
-            [isMobile]="vm.isMobile"
-            [isLoggedIn]="vm.isLoggedIn">
-          </user-buttons>
-
-          @if (vm.isMobile) {
-            <mobile-top-menu
-              [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
-              [header]="vm.header"
-              [selectedIso]="vm.selectedIso">
-            </mobile-top-menu>
-          }
-        </div>
-      </div>
-
-      @if (!vm.isMobile) {
-        <top-menu
-          [canEdit]="vm.role.includes(Roles.ADMIN.toUpperCase()) || vm.role.includes(Roles.MANAGER.toUpperCase())"
-          [header]="vm.header"
-          [selectedIso]="vm.selectedIso"
-          [direction]="'row'"
-        ></top-menu>
-      }
+        <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
     </div>
-  </div>
 
-  <router-outlet [routerOutletData]="vm.selectedIso"></router-outlet>
-</div>
-
-<main-conf [header]="vm.header"></main-conf>
+    <main-conf
+            [header]="vm.headerData"
+    ></main-conf>
 </ng-container>

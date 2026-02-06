@@ -1,10 +1,7 @@
 package com.infodema.webcreator.services;
 
 import com.infodema.webcreator.domain.core.*;
-import com.infodema.webcreator.domain.enums.Country;
-import com.infodema.webcreator.domain.enums.Layout;
-import com.infodema.webcreator.domain.enums.Roles;
-import com.infodema.webcreator.domain.enums.Side;
+import com.infodema.webcreator.domain.enums.*;
 import com.infodema.webcreator.domain.mappers.*;
 import com.infodema.webcreator.domain.core.DetailIso;
 import com.infodema.webcreator.domain.utility.SecurityUtils;
@@ -20,6 +17,7 @@ import com.infodema.webcreator.persistance.entities.security.User;
 import com.infodema.webcreator.persistance.repositories.security.RoleRepository;
 import com.infodema.webcreator.persistance.repositories.security.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -52,10 +50,15 @@ public class MainService {
     private final MainWithoutChildrenMapper mainWithoutChildrenMapper;
     private final PanelMapper panelMapper;
     private final MenuMapper menuMapper;
+    private final ProductService productService;
 
     @Transactional(readOnly = true)
     public Page<MainProjection> findMains(MainCriteria criteria, Pageable pageable) {
         return mainRepository.findMainsByCriteria(criteria, pageable);
+    }
+
+    private static Logger getLog() {
+        return log;
     }
 
     @Transactional(readOnly = true)
@@ -85,11 +88,17 @@ public class MainService {
         return mainWithoutChildrenMapper.toDomain(mainRepository.findAll(mainPageable));
     }
 
+    @Transactional(readOnly = true)
+    public Page<Main> findHotels(String host, Pageable mainPageable, HotelCriteria criteria) {
+        return mainWithoutChildrenMapper.toDomain(mainRepository.findAll(mainPageable));
+    }
+
     @Transactional
     public void deleteMain(Long id, String host) {
-        userRepository.deleteByHost(host);
 
         MainEntity mainEntity = mainRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        userRepository.deleteByHost(host);
+        productService.deleteProductsByMain_Id(id);
 
         mainEntity.getMenus().forEach(menuEntity -> {
             List<DetailEntity> detailList = detailRepository.findByMenu_Id(menuEntity.getId());
@@ -183,6 +192,7 @@ public class MainService {
                             .orderNum(1)
                             .side(Side.RIGHT)
                             .layout(Layout.FULL)
+                            .topMenuType(TopMenuType.MENU)
                             .hideMenuPanelIfOne(false)
                             .panelOn(false)
                             .main(mainEntity)
@@ -194,6 +204,7 @@ public class MainService {
                             .iso(menuPanelIso)
                             .menu(menuEntity)
                             .panelUrl("title2")
+                            .sideMenuType(SideMenuType.MENU)
                             .orderNum(1)
                             .build()
             );
@@ -233,11 +244,14 @@ public class MainService {
                 .menus(
                         menus.stream()
                                 .sorted(Comparator.comparing(MenuEntity::getOrderNum))
+                                .filter(menu -> menu.getTopMenuType() == TopMenuType.MENU)
                                 .map(menu -> Menu.builder()
                                         .iso(menuMapper.toDomainMenuIso(menu.getIso()))
                                         .menuUrl(menu.getMenuUrl())
                                         .side(menu.getSide())
                                         .layout(menu.getLayout())
+                                        .type(menu.getTopMenuType())
+                                        .id(menu.getId())
                                         .panelOn(menu.getPanelOn())
                                         .image(menu.getImageContent())
                                         .searchOn(menu.getSearchOn())
@@ -253,7 +267,7 @@ public class MainService {
                 .activeTopMenuUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getMenuUrl())
                 .activeSideMenuUrl(menus.stream().min(Comparator.comparing(MenuEntity::getOrderNum)).orElseThrow().getPanels().stream().min(Comparator.comparing(PanelEntity::getOrderNum)).orElseThrow().getPanelUrl())
 //                .linearPercentage(entity.getLinearPercentage() != null ? entity.getLinearPercentage() : 0)
-//                .host(entity.getHost())
+                .host(entity.getHost())
 //                .colors(Colors.builder()
 //                        .primaryColor(entity.getPrimaryColor())
 //                        .secondaryColor(entity.getSecondaryColor())

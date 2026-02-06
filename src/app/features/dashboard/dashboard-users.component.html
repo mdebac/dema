@@ -1,0 +1,15 @@
+<ng-container *ngrxLet="{
+        title: title$,
+        chip: chip$,
+        apartmentsCount: apartmentsCount$,
+        header: header$,
+        stateLayout: stateLayout$,
+        } as vm">
+            @if (isAdmin || isManager) {
+                <customers-table
+                        [chip]="vm.chip"
+                        [title]="vm.title"
+                        [apartmentsCount]="vm.apartmentsCount"
+                ></customers-table>
+            }
+</ng-container>

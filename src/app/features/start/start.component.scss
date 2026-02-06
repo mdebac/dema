@@ -5,8 +5,25 @@ $secondary-color: var(--secondary-color);
 $myImageUrl: var(--myImageUrl);
 $myIconImage: var(--myIconImage);
 $titleSize: var(--title-size);
+$headerTextHeight: 9.25rem;
 
-img{
+.pdf-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.pdf-text {
+  display: flex;
+  flex-direction: row;
+  color: $primary-color;
+  font-weight: bolder;
+  font-size: large;
+  align-content: end;
+  padding-bottom: 1rem;
+  width: 300px !important;
+}
+
+img {
   display: block;
   max-width: 100%;
 }
@@ -19,12 +36,13 @@ img{
 
 
 .header-container {
-  min-height: 50px;
+  min-height: 4rem;
   display: flex;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: right;
   object-fit: cover;
+  // background-color: yellow !important;
   background-image: $myImageUrl;
 }
 
@@ -32,7 +50,7 @@ img{
   display: flex;
   flex-direction: column;
   width: 15%;
- // padding-top: 1rem;
+  // padding-top: 1rem;
   align-items: center;
   align-content: center;
   justify-content: flex-end;
@@ -44,7 +62,26 @@ img{
   object-fit: cover;
   background-image: $myIconImage;
   min-width: 3rem;
-  margin: 1rem;
+  margin: 1.2rem;
+}
+
+.iconSpaceMobile {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  // padding-top: 1rem;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-end;
+  z-index: 2;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left;
+  object-fit: cover;
+  background-image: $myIconImage;
+  min-width: 3rem;
+  margin: 0.4rem;
 }
 
 .header-left {
@@ -119,102 +156,63 @@ img{
   flex-grow: 0.9;
 }
 
-.headerTextMobile{
-  // position: absolute;
-  padding-top:  2px;
+
+.headerTextMobile {
+  padding-top: 2px;
   display: flex;
   flex-direction: column;
-  //align-items: flex-start;
-  //align-content: flex-start;
   color: $primary-color;
-  //font-weight: bold;
-  //font-family: "Lucida Bright";
-  //font-size: 1rem;
   flex-grow: 0.8;
-  min-height: 3.25rem;
-  // background-color: darkred;
+  //min-height: 3.25rem;
 
-  .ql-size-huge{
-    font-size: 2.25em !important;
-    padding-left: 0.1rem !important;
-    line-height: 1.3 !important;
-  }
-  .ql-size-large{
-    font-size: 5px !important;
-  }
-
-
-  .my-quill-view{
-    height: 180px;
+  .my-quill-view-menu-title {
     margin: 0;
     padding: 0;
   }
-  .ql-editor{
-    //   height: 180px;
+  .ql-editor {
     margin: 0;
     padding: 0;
+    height: 3.5em !important;
   }
+
+  //.quill-view {
+  //  margin: 0;
+  //  padding: 0;
+  //  height: 100px !important;
+  //}
 }
 
 .headerText {
- // position: absolute;
-  padding-top:  2px;
+
+  // position: absolute;
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
-  //align-items: flex-start;
-  //align-content: flex-start;
   color: $primary-color;
-  //font-weight: bold;
-  //font-family: "Lucida Bright";
-  //font-size: 1rem;
   flex-grow: 0.8;
-  min-height: 11.25rem;
- // background-color: darkred;
+  min-height: $headerTextHeight;
+  //.ql-size-huge {
+  //  font-size: 6.25em !important;
+  //  padding-left: 1rem !important;
+  //  line-height: 1 !important;
+  //}
+  //
+  //.ql-size-large {
+  //  font-size: 1.56em !important;
+  //}
 
-  .ql-size-huge{
-    font-size: 6.25em !important;
-    padding-left: 1rem !important;
-    line-height: 1.3 !important;
-  }
-  .ql-size-large{
-    font-size: 25px !important;
-  }
-
-
-  .my-quill-view{
-    height: 180px;
+  .my-quill-view {
+    height: $headerTextHeight;
     margin: 0;
     padding: 0;
+    .ql-editor {
+      // height: 180px;
+      margin: 0;
+      padding: 0;
+    }
   }
-  .ql-editor{
- //   height: 180px;
-    margin: 0;
-    padding: 0;
-  }
-
-
 }
 
-
-.titleText {
-  //position: absolute;
-  //top: 1rem;
-  display: flex;
-  align-items: flex-end;
-  align-content: flex-end;
-  color: $primary-color;
-  font-weight: bold;
-  font-family: "Lucida Bright";
-  font-size: $titleSize;
-  //font-size: 1.2rem;
-  word-wrap: break-word;
-  line-height: 1em;
-  //overflow: hidden;
-  //text-overflow: ellipsis;
-  //word-wrap: break-word;
-  //line-height: 1em; /* a */
-  //max-height: 2em; /* a x number of line to show (ex : 2 line)  */
-}
 
 .descriptionText {
   //color: $primary-color;
@@ -266,7 +264,7 @@ img{
   color: $secondary-color;
 }
 
-.actionButtons{
+.actionButtons {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -285,7 +283,6 @@ img{
   margin: 0;
   //  background-color: #{$third-color};
 }
-
 
 
 .reklame-card {
@@ -321,4 +318,26 @@ img {
   bottom: 0;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
   z-index: 1;
+}
+
+.back {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.back-button {
+  background-color: $secondary-color !important;
+  width: 100px;
+  color: $primary-color !important;
+}
+
+.back-button:hover {
+  background-color: $primary-color !important;
+  width: 100px;
+  color: $secondary-color !important;
+}
+
+.back-icon {
+  transform: rotate(180deg);
 }

@@ -1,7 +1,53 @@
 <ng-container *ngrxLet="{
         pageCount: pageCount$,
+        apartmentList: apartmentList$
         } as vm">
-<domains-table
-        [pageCount]="vm.pageCount"
-></domains-table>
+
+    <div class="domain">
+    @for (domain of vm.apartmentList; track domain.id; let i = $index) {
+
+
+        <div class="domain-item" (click)="goTo(domain?.host)"
+             [style.background]="domain.colors.secondaryColor"
+             [style.border]="domain.colors.primaryColor + ' solid 5px'">
+            <div class="domain-item-logo">
+                @if (domain.iconImage) {
+                    <img
+                            src="{{'data:image/jpg;base64,' +domain?.iconImage}}" alt=""/>
+                } @else {
+                    <img
+                            src="/assets/images/no-image.png" alt=""/>
+                }
+            </div>
+
+
+            <div class="domain-item-text" [style.color]="domain.colors.primaryColor">
+
+                <quill-view
+                            [content]="getTitleMobile(selectedIso, domain)"
+                            format="html" theme="snow"></quill-view>
+            </div>
+
+
+            <div class="domain-item-background">
+                @if (domain.backgroundImage) {
+                    <img
+                            src="{{'data:image/jpg;base64,' +domain?.backgroundImage}}" alt=""/>
+                } @else {
+                    <img
+                            src="/assets/images/no-image.png" alt=""/>
+                }
+            </div>
+
+        </div>
+<!--            <div class="txt" (click)="goTo(domain?.host)">-->
+<!--                {{ domain?.host }}-->
+<!--            </div>-->
+
+
+    }
+    </div>
+<!--<domains-table-->
+<!--        [pageCount]="vm.pageCount"-->
+<!--&gt;</domains-table>-->
 </ng-container>

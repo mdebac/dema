@@ -34,4 +34,12 @@ public class Item extends AbstractAuditModel {
     private String shadowColor;
     private Long detailId;
     private Set<ItemIso> iso;
+    private Long nextItemId;
+    private Long beforeItemId;
+    private String imageAlignHorizontal;
+    private String imageAlignVertical;
+    private Integer imageHeight;
+    private Integer imageWidth;
+
+
 }

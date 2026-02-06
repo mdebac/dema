@@ -18,20 +18,26 @@ import {PanelIso} from "../../../domain/panel-iso";
 import {Layout} from "../../../domain/layout";
 import {Side} from "../../../domain/side";
 import {MatCheckbox} from "@angular/material/checkbox";
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
-import {Menu} from "../../../domain/menu";
 import {Hosts} from "../../../domain/hosts";
 import {MatTooltip} from "@angular/material/tooltip";
 import {Language} from "../../../domain/language";
+import {ImageCroppedEvent, ImageCropperComponent} from "ngx-image-cropper";
+import {Cropper} from "../../../domain/cropper";
+import {TopMenuType} from "../../../domain/top-menu-type";
+import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
+import {MenuProperty} from "../../../domain/menu-property";
+import {ProductType} from "../../../domain/product-type";
+import {ProductProperty} from "../../../domain/product-property";
+import {SafeHtmlPipe} from "../../../pipes/safe-html-pipe";
 
 @Component({
     selector: 'detail-dialog',
     templateUrl: './detail-dialog.component.html',
     styleUrl: './detail-dialog.component.scss',
     encapsulation: ViewEncapsulation.None,
-    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, FormsModule, ReactiveFormsModule, MatError, MatIcon, TranslatePipe, MatFabButton, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatCheckbox, QuillModule, FormsModule, MatTooltip]
+    imports: [MatCard, MatCardHeader, IsoButtonsComponent, MatCardContent, MatExpansionPanelHeader, FormsModule, ReactiveFormsModule, MatError, MatIcon, TranslatePipe, MatFabButton, MatCheckbox, QuillModule, FormsModule, MatTooltip, ImageCropperComponent, MatExpansionPanel, MatExpansionPanelTitle, SafeHtmlPipe]
 })
-export class DetailDialogComponent implements OnDestroy, OnInit {
+export class DetailDialogComponent extends Cropper implements OnDestroy, OnInit {
 
     dialog = inject(MatDialog);
     fb = inject(FormBuilder);
@@ -44,24 +50,47 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     isOpened: boolean = true;
     initTop: boolean = true;
     initSide: boolean = true;
+    isMenu: boolean = false;
+    isHotel: boolean = false;
+    isResidence: boolean = false;
+    isAuto: boolean = false;
+    isShoppingItem: boolean = false;
+    isJob: boolean = false;
+
+    topFile: any = "";
+    sideFile: any = "";
+
+    toBigTopMenuImage: string = "";
+    selectedTopMenuImage: string | null | ArrayBuffer = null;
+    selectedTopMenuImageFile: File | null = null;
+
+    toBigSideMenuImage: string = "";
+    selectedSideMenuImage: string | null | ArrayBuffer = null;
+    selectedSideMenuImageFile: File | null = null;
+
     unsubscribe$ = new Subject<void>();
     @ViewChild('topMenuImageInput', {static: false}) topMenuImageInput: ElementRef | undefined;
     @ViewChild('sideMenuImageInput', {static: false}) sideMenuImageInput: ElementRef | undefined;
 
     constructor(@Inject(MAT_DIALOG_DATA) private data: ApartmentDetailDialogData) {
-
+        super();
         if (data.host === Hosts.DEMA_APARTMENTS) {
             this.isTopSearchEnabled = true;
         }
 
-        console.log("ma data", data);
+        this.selectedIso = data.selectedIso;
+        const fonts = data?.fonts?.map(font => font.family);
 
-//https://stackoverflow.com/questions/56961793/can-multiple-dynamically-created-quill-editors-use-the-same-toolbar
-        const fonts = data?.fonts?.map(font=>font.family);
+        this.isMenu = data?.detail?.topMenu?.type == TopMenuType.MENU;
+        this.isHotel = data?.detail?.topMenu?.type == TopMenuType.HOTEL;
+        this.isAuto = data?.detail?.topMenu?.type == TopMenuType.AUTO;
+        this.isShoppingItem = data?.detail?.topMenu?.type == TopMenuType.SHOPPING;
+        this.isJob = data?.detail?.topMenu?.type == TopMenuType.JOB;
+        this.isResidence = data?.detail?.topMenu?.type == TopMenuType.RESIDENCE;
 
         this.quillConfiguration = {
             toolbar: [
-                ['bold', 'italic',{align: ''}, {align: 'center'}, {align: 'right'}, {align: 'justify'},{
+                ['bold', 'italic', {align: ''}, {align: 'center'}, {align: 'right'}, {align: 'justify'}, {
                     'color': [
                         data?.colors?.primaryColor ? data.colors.primaryColor : "",
                         data?.colors?.secondaryColor ? data.colors.secondaryColor : "",
@@ -89,16 +118,17 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                 // [{'list': 'ordered'}, {'list': 'bullet'}],
                 // [{'script': 'sub'}, {'script': 'super'}],                            // superscript/subscript
                 // [{'indent': '-1'}, {'indent': '+1'}],
-                [{'size': ['small', false, 'large', 'huge']}],                       // custom dropdown
+                [{'size': ['1.25em', '2.3em']}],                  // custom dropdown
                 // [{'header': [1, 2, 3, 4, 5, 6, false]}],
                 // dropdown with defaults from theme
                 [{'font': fonts}],                     // whitelist of fonts
                 // [{'align': []}],
-                // ['clean'],
+                ['clean'],
                 // ['link']                                          // link and image, video
             ]
         };
 
+        // @ts-ignore
         this.form = this.fb.group({
             id: [this.data.detail.id],
             columns: [this.data.detail.columns ? this.data.detail.columns : 1],
@@ -115,11 +145,14 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                 icon: [this.data.detail.topMenu?.icon],
                 image: [this.data.detail.topMenu?.image],
                 removeImage: [this.data.detail.topMenu?.removeImage],
+                hideMenuPanelIfOne: [this.data.detail.topMenu?.hideMenuPanelIfOne],
+                type: [this.data.detail.topMenu?.type],
                 side: [this.data.detail.topMenu?.side ? this.data.detail.topMenu?.side : Side.LEFT],
                 layout: [this.data.detail.topMenu?.layout ? this.data.detail.topMenu?.layout : Layout.FULL],
                 iso: this.fb.array([]),
+                properties: this.fb.array([]),
+                productId: this.data.detail.topMenu?.productId
             }),
-
             sideMenu: this.fb.group({
                 id: [this.data.detail.sideMenu?.id],
                 menuId: [this.data.detail.sideMenu?.menuId],
@@ -131,9 +164,42 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                 iso: this.fb.array([]),
             }),
 
-//newMenuOrderNum: header.menus[header.menus.length-1].orderNum + 1
         });
 
+        if (this.data?.detail?.topMenu?.type !== TopMenuType.MENU) {
+
+            this.data?.products?.forEach(
+                product => {
+                    console.log("product", product.id + ' === ' + this.data?.detail?.topMenu?.productId);
+                    if(product.id == this.data?.detail?.topMenu?.productId){
+                        console.log("uso", product.id);
+                        product.properties.forEach(//property=>{
+                         //   this.data?.detail?.topMenu?.properties?.forEach(
+                                menuProp => {
+                                    console.log("puni", menuProp.name);
+                                    // if(menuProp.name === property.name){
+                                       // console.log("puni", menuProp.name);
+                                         this.addExistingMenuProperty(menuProp?.name ? menuProp.name : "","");
+                                    // }
+                          //      }
+
+
+
+                        })
+
+                    }
+
+
+                    //         if (l.iso === iso.iso) {
+                    //             this.addExistingMenu(iso.title, iso.description, iso.iso);
+                    //             dodaniMenu.push(l.iso);
+                    //         }
+                }
+
+            )
+        }
+
+        console.log("napunjeno", this.form.get('topMenu')?.get('properties') as FormArray);
 
         if (this.data?.languages && this.data?.languages.length > 0) {
             const dodaniMenu: string[] = [];
@@ -160,16 +226,20 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                         )
                     }
 
-                    if ((this.data?.detail.topMenu?.side === Side.LEFT || this.data?.detail.topMenu?.side === Side.RIGHT) && this.data?.detail.sideMenu) {
-                        this.data?.detail.sideMenu.iso?.forEach(
-                            iso => {
-                                if (l.iso === iso.iso) {
-                                    this.addExistingSideMenu(iso.title, iso.description, iso.iso);
-                                    dodaniPanel.push(l.iso);
+                    if (this.isMenu || !this.isNew) {
+                        if ((this.data?.detail.topMenu?.side === Side.LEFT || this.data?.detail.topMenu?.side === Side.RIGHT) && this.data?.detail.sideMenu) {
+                            this.data?.detail.sideMenu.iso?.forEach(
+                                iso => {
+                                    if (l.iso === iso.iso) {
+                                        this.addExistingSideMenu(iso.title, iso.description, iso.iso);
+                                        dodaniPanel.push(l.iso);
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
+
+
                 }
             )
             this.data?.languages.forEach(
@@ -180,13 +250,17 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                     if (!dodaniMenu.includes(l.iso)) {
                         this.addMenuItem(l.iso);
                     }
-                    if (!dodaniPanel.includes(l.iso)) {
-                        this.addMenuPanelItem(l.iso);
+
+                    if (this.isMenu || !this.isNew) {
+                        if (!dodaniPanel.includes(l.iso)) {
+                            this.addMenuPanelItem(l.iso);
+                        }
                     }
+
                 }
             )
         } else {
-         //   this.data?.languages?.map(iso => this.addItem(iso));
+            //   this.data?.languages?.map(iso => this.addItem(iso));
         }
         this.languages = this.data?.languages;
     }
@@ -204,28 +278,6 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
         }
     }
 
-    // editor = (iso: string): Editor => {
-    //     const editor = this.editorMap.get(iso);
-    //     if (editor) {
-    //         return editor;
-    //     }
-    //     return new Editor();
-    // };
-
-    //https://dev.to/marcel-goldammer/dynamic-ids-in-angular-components-1b6n
-
-    // quilEditor = (iso: string): Quill => {
-    //     const editor = this.quillEditorMap.get(iso);
-    //     if (editor) {
-    //         return editor;
-    //     }
-    //     return new QuillEditorComponent();
-    // };
-
-    // addItem(country: string) {
-    //     (this.form.get('iso') as FormArray).push(this.createApartmentDetailIso({title: "", iso: country}));
-    // }
-
     addMenuItem(country: string) {
         (this.form.get('topMenu')?.get('iso') as FormArray).push(this.createTopMenuIso({
             title: "",
@@ -235,19 +287,14 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     }
 
     addMenuPanelItem(country: string) {
-        (this.form.get('sideMenu')?.get('iso') as FormArray).push(this.createSideMenuIso({
-            title: "",
-            description: "",
-            iso: country
-        }));
+        if (this.isMenu || !this.isNew) {
+            (this.form.get('sideMenu')?.get('iso') as FormArray).push(this.createSideMenuIso({
+                title: "",
+                description: "",
+                iso: country
+            }));
+        }
     }
-
-    // addExisting(title: string, country: string) {
-    //     (this.form.get('iso') as FormArray).push(this.createApartmentDetailIso({
-    //         title: title,
-    //         iso: country
-    //     }));
-    // }
 
     addExistingMenu(title: string, description: string, country: string) {
         (this.form.get('topMenu')?.get('iso') as FormArray).push(this.createTopMenuIso({
@@ -255,6 +302,13 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
             iso: country,
             description: description
         }));
+    }
+
+    addExistingMenuProperty(name: string, value: string) {
+        (this.form.get('topMenu')?.get('properties') as FormArray).push(this.createMenuProductProperties(({
+            name: name,
+            value: value
+        })));
     }
 
     addExistingSideMenu(title: string, description: string, country: string) {
@@ -268,26 +322,26 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     createTopMenuIso(iso: MenuIso) {
         return this.fb.group({
             title: [iso.title, iso.iso === defaultIso ? [Validators.required, Validators.minLength(2), Validators.maxLength(255)] : [Validators.minLength(2), Validators.maxLength(255)]],
-            description: [iso.description, [Validators.minLength(2), Validators.maxLength(500)]],
+            description: [iso.description, [Validators.maxLength(500)]],
             iso: [iso.iso],
+        })
+    }
+
+
+    createMenuProductProperties(property: MenuProperty) {
+        return this.fb.group({
+            name: [property.name, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
+            value: [property.value, [Validators.maxLength(50)]],
         })
     }
 
     createSideMenuIso(iso: PanelIso) {
         return this.fb.group({
-            title: [iso.title, iso.iso === defaultIso ? [Validators.required, Validators.minLength(2), Validators.maxLength(255)] : [Validators.minLength(2), Validators.maxLength(255)]],
-            description: [iso.description, [Validators.minLength(2), Validators.maxLength(500)]],
+            title: [iso.title, iso.iso === defaultIso && (this.isMenu || !this.isNew) ? [Validators.required, Validators.minLength(2), Validators.maxLength(255)] : [Validators.maxLength(255)]],
+            description: [iso.description, [Validators.maxLength(500)]],
             iso: [iso.iso],
         })
     }
-
-    // createApartmentDetailIso(iso: ApartmentDetailIso) {
-    //     this.editorMap.set(iso.iso, new Editor());
-    //     return this.fb.group({
-    //         title: [iso.title, [Validators.minLength(2), Validators.maxLength(150)]],
-    //         iso: [iso.iso],
-    //     })
-    // }
 
     get visible() {
         return this.form.value.show;
@@ -315,36 +369,36 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
         return this.data.languages ? this.data.languages : [];
     }
 
-    isIsoSelected(iso: string) {
-        if (iso === this.selectedIso) {
-            return true;
-        }
-        return false
+    get menuProductType(): ProductType | undefined {
+        return this.data.products?.find(p=>p.id == this.data.detail.topMenu?.productId);
     }
 
+    innerUnit(property:Partial<ProductProperty> | undefined):string{
+        if(property){
+            return property.unit ? property.name + ' (' + property.unit + ')' : "";
+        }else{
+            return "";
+        }
+    }
     onCreateDetail() {
         if (this.form.valid) {
 
-            const menuProps1 = this.form.get('topMenu')?.value as Partial<Menu>;
+            // const topMenu = this.form.get('topMenu')?.value as Partial<Menu>;
+            // const topMenuPayload = {
+            //     ...topMenu,
+            //     type: TopMenuType.MENU,
+            // } as Partial<ApartmentDetail>;
+            const detail = this.form.getRawValue() as Partial<ApartmentDetail>;
+            //
+            // const detailPayload = {
+            //     ...detail,
+            //     topMenu: topMenuPayload,
+            // } as Partial<ApartmentDetail>;
 
-         //   console.log("this.form.value", this.selectedTopMenuImageFile);
+            console.log("onCreateDetail", detail);
 
-            const detailProps = this.form.getRawValue() as Partial<ApartmentDetail>;
 
-         //   console.log("menuProps1", menuProps1);
-            // let menuProps2:Partial<Menu> = {
-            //     ...menuProps1,
-            //     image: this.selectedTopMenuImageFile,
-            // } as Partial<Menu>;
-            // console.log("menuProps2",menuProps2);
-
-            const apartmentProps = {
-                ...detailProps,
-                topMenu: menuProps1,
-            } as Partial<ApartmentDetail>;
-           // console.log("tu ima", apartmentProps);
-            //   this.store.createDetailEffect(detailProps)
-            this.dialogRef.close(apartmentProps);
+          this.dialogRef.close(detail);
         }
     }
 
@@ -399,7 +453,6 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     }
 
     openSideMenuIconDialog() {
-
         this.openChooseIconDialog().pipe(
             filter(val => !!val),
             takeUntil(this.unsubscribe$)
@@ -427,7 +480,7 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
         const title: string | undefined = isoList.find(iso => iso.iso === country)?.title;
         let output: string = "";
         if (title) {
-         output = output + title;
+            output = output + title;
         }
         if (description) {
             output = output + description;
@@ -459,16 +512,7 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
         return isoList.find(iso => iso.iso === country)?.description;
     }
 
-    toBigTopMenuImage: string = "";
-    selectedTopMenuImage: string | null = null;
-    selectedTopMenuImageFile: File | null = null;
-
-    toBigSideMenuImage: string = "";
-    selectedSideMenuImage: string | null = null;
-    selectedSideMenuImageFile: File | null = null;
-
-
-    get showTopMenuImage(): string | undefined {
+    get showTopMenuImage(): string | undefined | ArrayBuffer {
         if (this.selectedTopMenuImage) {
             this.initTop = false;
             return this.selectedTopMenuImage;
@@ -480,18 +524,11 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
                     return "";
                 }
             }
-
         }
-
-        // if (this.selectedTopMenuImage) {
-        //     return this.selectedTopMenuImage;
-        // } else if (this.form.get('topMenu')?.get('image')?.value) {
-        //     return 'data:image/jpg;base64,' + this.form.get('topMenu')?.get('image')?.value;
-        // }
         return;
     }
 
-    get showSideMenuImage(): string | undefined {
+    get showSideMenuImage(): string | undefined | ArrayBuffer {
         if (this.selectedSideMenuImage) {
             this.initSide = false;
             return this.selectedSideMenuImage;
@@ -509,6 +546,7 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
 
     onRemoveTopMenuImage(event: any) {
         this.selectedTopMenuImage = null;
+        this.topFile = {};
         this.form.get('topMenu')?.patchValue({
             removeImage: event.checked
         });
@@ -519,6 +557,7 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
 
     onRemoveSideMenuImage(event: any) {
         this.selectedSideMenuImage = null;
+        this.sideFile = {};
         this.form.get('sideMenu')?.patchValue({
             removeImage: event.checked
         });
@@ -528,16 +567,13 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     }
 
     selectTopMenuImage(event: any) {
-        if (event.target.files[0].size < 589000) {
+        if (event.target.files[0]?.size < 589000) {
             this.selectedTopMenuImageFile = event.target.files[0];
             if (this.selectedTopMenuImageFile) {
-
+                this.topFile = {};
                 this.form.get('topMenu')?.patchValue({
                     image: this.selectedTopMenuImageFile
                 });
-
-              //  console.log("setan image", this.form.get('topMenu'));
-
                 const reader = new FileReader();
                 reader.onload = () => {
                     this.selectedTopMenuImage = reader.result as string;
@@ -546,19 +582,25 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
             }
             this.toBigTopMenuImage = "";
         } else {
-            this.toBigTopMenuImage = "< 0.5 Mb";
+            const file = event.target.files[0];
+            const ext = this.getFilenameExtension(file);
+            const type = file.type;
+            this.topFile = {
+                ext: ext,
+                file: file,
+                type: type,
+            };
         }
     }
 
     selectSideMenuImage(event: any) {
-        if (event.target.files[0].size < 589000) {
+        if (event.target.files[0]?.size < 589000) {
             this.selectedSideMenuImageFile = event.target.files[0];
             if (this.selectedSideMenuImageFile) {
-
+                this.sideFile = {};
                 this.form.get('sideMenu')?.patchValue({
                     image: this.selectedSideMenuImageFile
                 });
-
                 const reader = new FileReader();
                 reader.onload = () => {
                     this.selectedSideMenuImage = reader.result as string;
@@ -567,13 +609,68 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
             }
             this.toBigSideMenuImage = "";
         } else {
-            this.toBigSideMenuImage = "< 0.5 Mb";
+            //optimizied it
+
+            const file = event.target.files[0];
+            const ext = this.getFilenameExtension(file);
+            const type = file.type;
+            this.sideFile = {
+                ext: ext,
+                file: file,
+                type: type,
+            };
+        }
+    }
+
+
+    topImageCropped(event: ImageCroppedEvent) {
+        if (event.objectUrl) {
+            fetch(event.objectUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.selectedTopMenuImage = reader.result;
+                    };
+                    reader.readAsDataURL(blob);
+
+                    if (blob.size > 300000) {
+                        this.toBigTopMenuImage = "Image to big. < 0.3Mb";
+                    } else {
+                        this.form.get('topMenu')?.patchValue({
+                            image: blob
+                        });
+                    }
+                });
+        }
+    }
+
+    sideImageCropped(event: ImageCroppedEvent) {
+        if (event.objectUrl) {
+            fetch(event.objectUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.selectedSideMenuImage = reader.result;
+                        //  console.log("onloadend",reader.result);
+                    };
+                    reader.readAsDataURL(blob);
+
+                    if (blob.size > 300000) {
+                        this.toBigSideMenuImage = "Image to big. < 0.3Mb";
+                    } else {
+                        this.form.get('sideMenu')?.patchValue({
+                            image: blob
+                        });
+                    }
+                });
         }
     }
 
     onContentChangedTopTitle($event: ContentChange) {
-        const url = $event.text.toLowerCase().replaceAll(" ","_").replaceAll("\n","");
-        if(this.selectedIso === defaultIso){
+        const url = $event.text.toLowerCase().replaceAll(" ", "_").replaceAll("\n", "");
+        if (this.selectedIso === defaultIso) {
             this.form.get('topMenu')?.patchValue({
                 menuUrl: url
             });
@@ -581,17 +678,26 @@ export class DetailDialogComponent implements OnDestroy, OnInit {
     }
 
     onContentChangedSideTitle($event: ContentChange) {
-        const url = $event.text.toLowerCase().replaceAll(" ","_").replaceAll("\n","");
-        if(this.selectedIso === defaultIso){
+        const url = $event.text.toLowerCase().replaceAll(" ", "_").replaceAll("\n", "");
+        if (this.selectedIso === defaultIso) {
             this.form.get('sideMenu')?.patchValue({
                 panelUrl: url
             });
         }
     }
 
+    isIsoSelected(iso: string) {
+
+        if (iso === this.selectedIso) {
+            return true;
+        }
+        return false
+    }
+
     protected readonly Layout = Layout;
     protected readonly Side = Side;
     protected readonly Hosts = Hosts;
+    protected readonly Object = Object;
 }
 
 

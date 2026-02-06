@@ -20,12 +20,20 @@ export interface ApartmentItem extends Audit{
   iso: ApartmentItemIso[];
   editorContent:string;
   shadowColor: string;
-
+  orderNum: number;
   //file data
   fileName: string;
   mimeType: string;
   size: number;
   image: any;
+  imageWidth:number;
+  imageHeight:number;
+  imageAlignVertical: string;
+  imageAlignHorizontal:string;
+
+  beforeItemId:number;
+  nextItemId:number;
+  price: number | null;
 }
 
 
@@ -36,4 +44,5 @@ export interface ApartmentItemDialogData {
   colors: Colors | null | undefined;
   roles: string[];
   host: Hosts | undefined;
+  selectedIso: string;
 }

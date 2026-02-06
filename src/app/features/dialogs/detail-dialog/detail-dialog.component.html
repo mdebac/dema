@@ -1,14 +1,66 @@
-<mat-card class="dashboard-card">
+<mat-card class="dashboard-card-dialog">
     <mat-card-header>
-        <h2 class="button-container-left text">@if (isNew) {
-            {{ "create.page" | translate }}
+
+        @if (isMenu) {
+            <h2 class="button-container-left text">@if (isNew) {
+                {{ "create.page" | translate }}
+            } @else {
+                {{ "title.and.icons" | translate }}
+            }</h2>
         } @else {
-            {{ "title.and.icons" | translate }}
-        }</h2>
+            <h2 class="button-container-left text">@if (isNew) {
+
+                @if (isResidence) {
+                    Unos novog stana
+                }
+
+                @if (isHotel) {
+                    Unos novog apartmana
+                }
+
+                @if (isAuto) {
+                    Unos novog Auto bloga
+                }
+
+                @if (isShoppingItem) {
+                    Unos novog shoping itema
+                }
+
+                @if (isJob) {
+                    Unos novog Job-a
+                }
+
+            } @else {
+
+                @if (isResidence) {
+                    Ažuriraj stan
+                }
+
+                @if (isHotel) {
+                    Ažuriraj apartman
+                }
+
+                @if (isAuto) {
+                    Ažuriraj Auto blog
+                }
+
+                @if (isShoppingItem) {
+                    Ažuriraj shoping item
+                }
+
+                @if (isJob) {
+                    Ažuriraj Job
+                }
+
+            }</h2>
+        }
+
+
         <ng-container>
             <iso-buttons [countries]="languages" [selectedIn]="selectedIso" (selectedOut)="activeIso($event)">
             </iso-buttons>
         </ng-container>
+
     </mat-card-header>
 
     <mat-card-content [formGroup]="form">
@@ -22,7 +74,6 @@
                         @if (isIsoSelected(item.iso)) {
                             <div class="container">
                                 <ng-container [formGroupName]="i">
-                                    <div class="text title2">Top menu</div>
                                     <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened"
                                                          (closed)="isOpened = !isOpened">
                                         <mat-expansion-panel-header>
@@ -48,14 +99,16 @@
                                                           formControlName="title"
                                                           (onContentChanged)="onContentChangedTopTitle($event)"
                                             ></quill-editor>
-                                            <div class="text-text">Description</div>
-                                            <quill-editor class="myEditor"
-                                                          format="html"
-                                                          [modules]="quillConfiguration"
-                                                          [placeholder]="'description'"
-                                                          formControlName="description"
-                                            ></quill-editor>
 
+                                            @if (!isMenu) {
+                                                <div class="text-text">Description</div>
+                                                <quill-editor class="myEditor"
+                                                              format="html"
+                                                              [modules]="quillConfiguration"
+                                                              [placeholder]="''"
+                                                              formControlName="description"
+                                                ></quill-editor>
+                                            }
 
                                             <div class="text-text">Icon or Image</div>
                                             <div class="iconAndFile">
@@ -74,7 +127,24 @@
                                                        type="file"
                                                        accept="image/*"
                                                 >
+
                                             </div>
+
+                                            @if (Object.hasOwn(topFile, 'ext')) {
+                                                <div class="iconAndFile">
+                                                    <image-cropper
+                                                            [imageQuality]="cropQuality"
+                                                            [imageFile]="topFile.file"
+                                                            format="png"
+                                                            [onlyScaleDown]="true"
+                                                            [resizeToWidth]="256"
+                                                            [maintainAspectRatio]="false"
+                                                            [aspectRatio]="getAspectRatio()"
+                                                            (imageCropped)="topImageCropped($event)"
+                                                    >
+                                                    </image-cropper>
+                                                </div>
+                                            }
                                             <div class="iconAndFile">
 
                                                 <div class="text-icon">
@@ -85,20 +155,23 @@
 
                                                 @if (showTopMenuImage) {
                                                     <div>
+
                                                         @if (topMenuIcon) {
                                                             <mat-icon class="icon-display-tooltip"
                                                                       matTooltip="Remove image to see icon"
                                                                       matTooltipPosition="before">info
                                                             </mat-icon>
                                                         }
-                                                        <mat-checkbox class="iconAndFileDesc"
-                                                                      (change)="onRemoveTopMenuImage($event)">
 
-                                                            <div class="iconAndFileDesc">
-                                                                {{ "remove.image" | translate }}
-                                                            </div>
+                                                        @if (Object.hasOwn(topFile, 'ext') || showTopMenuImage) {
+                                                            <mat-checkbox class="iconAndFileDesc"
+                                                                          (change)="onRemoveTopMenuImage($event)">
+                                                                <div class="iconAndFileDesc">
+                                                                    {{ "remove.image" | translate }}
+                                                                </div>
+                                                            </mat-checkbox>
+                                                        }
 
-                                                        </mat-checkbox>
                                                     </div>
                                                 }
                                             </div>
@@ -107,35 +180,62 @@
                                             {{ toBigTopMenuImage }}
                                         </div>
                                     </mat-expansion-panel>
-                                    @if (isTopSearchEnabled) {
-                                        <div class="eyes">
-                                            @if (visible) {
-                                                <i class="fa fa-eye fa-xl" (click)="setVisible()" aria-hidden="true"
-                                                ></i>
-                                            }
-                                            @if (!visible) {
-                                                <i class="fa fa-eye-slash fa-xl" (click)="setVisible()"
-                                                   aria-hidden="true"></i>
-                                            }
-                                        </div>
-                                    }
+                                    <!--                                    @if (isTopSearchEnabled) {-->
+                                    <!--                                        <div class="eyes">-->
+                                    <!--                                            @if (visible) {-->
+                                    <!--                                                <i class="fa fa-eye fa-xl" (click)="setVisible()" aria-hidden="true"-->
+                                    <!--                                                ></i>-->
+                                    <!--                                            }-->
+                                    <!--                                            @if (!visible) {-->
+                                    <!--                                                <i class="fa fa-eye-slash fa-xl" (click)="setVisible()"-->
+                                    <!--                                                   aria-hidden="true"></i>-->
+                                    <!--                                            }-->
+                                    <!--                                        </div>-->
+                                    <!--                                    }-->
                                 </ng-container>
                             </div>
                         }
+                    }
+                </ng-container>
+
+                <ng-container formArrayName="properties">
+
+                    @for (item of menuProductType?.properties; track item; let i = $index) {
+                            <div class="container">
+                                <ng-container [formGroupName]="i">
+
+                                    @if (item.type === 'STRING' || item.type === 'INTEGER') {
+                                        @if (item?.unit){
+                                           <div [innerHtml]="innerUnit(item) | safeHtml"></div>
+                                        } @else {
+                                          {{item.name}}
+                                        }
+                                        <input type="{{item.type === 'STRING' ? 'text' : 'number'}}"
+                                               class="form-control"
+                                                formControlName="value"
+                                        >
+                                    } @else {
+
+                                    }
+
+                                </ng-container>
+                            </div>
+
+
                     }
                 </ng-container>
             </ng-container>
 
         }
 
-        @if (menuSide === Side.LEFT || menuSide === Side.RIGHT) {
+        @if ((menuSide === Side.LEFT || menuSide === Side.RIGHT) && (isMenu || !this.isNew)) {
             <ng-container formGroupName="sideMenu">
                 <ng-container formArrayName="iso">
                     @for (item of isoArray; track item; let i = $index) {
                         @if (isIsoSelected(item.iso)) {
                             <div class="container">
                                 <ng-container [formGroupName]="i">
-                                    <div class="text title2">Side menu</div>
+                                    <!--                                    <div class="text title2">Side menu</div>-->
                                     <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened"
                                                          (closed)="isOpened = !isOpened">
                                         <mat-expansion-panel-header>
@@ -190,6 +290,22 @@
                                                 >
                                             </div>
 
+                                            @if (Object.hasOwn(sideFile, 'ext')) {
+                                                <div class="iconAndFile">
+                                                    <image-cropper
+                                                            [imageQuality]="cropQuality"
+                                                            [imageFile]="sideFile.file"
+                                                            format="png"
+                                                            [onlyScaleDown]="true"
+                                                            [resizeToWidth]="256"
+                                                            [maintainAspectRatio]="false"
+                                                            [aspectRatio]="getAspectRatio()"
+                                                            (imageCropped)="sideImageCropped($event)"
+                                                    >
+                                                    </image-cropper>
+                                                </div>
+                                            }
+
                                             <div class="iconAndFile">
                                                 <div class="text-icon">
                                                     @if (!sideMenuIcon) {
@@ -204,12 +320,16 @@
                                                                       matTooltipPosition="before">info
                                                             </mat-icon>
                                                         }
-                                                        <mat-checkbox class="iconAndFileDesc"
-                                                                      (change)="onRemoveSideMenuImage($event)">
-                                                            <div class="iconAndFileDesc">
-                                                                {{ "remove.image" | translate }}
-                                                            </div>
-                                                        </mat-checkbox>
+
+                                                        @if (Object.hasOwn(sideFile, 'ext') || showSideMenuImage) {
+                                                            <mat-checkbox class="iconAndFileDesc"
+                                                                          (change)="onRemoveSideMenuImage($event)">
+                                                                <div class="iconAndFileDesc">
+                                                                    {{ "remove.image" | translate }}
+                                                                </div>
+                                                            </mat-checkbox>
+                                                        }
+
                                                     </div>
                                                 }
                                             </div>
@@ -226,7 +346,7 @@
             </ng-container>
         }
 
-        <button class="mybutton" [disabled]="!form.valid" (click)="onCreateDetail()" mat-fab extended>
+        <button class="myButton_full_width" [disabled]="!form.valid" (click)="onCreateDetail()" mat-fab extended>
             @if (isNew) {
                 Create
             } @else {

@@ -1,0 +1,4 @@
+ALTER TABLE item
+    MODIFY COLUMN chip
+        ENUM ('TEXT','JOB','PICTURE','VIDEO','FORM','TABLE','SETTINGS','SHOP','DOMAINS',
+            'MOVE_RIGHT','MOVE_LEFT');

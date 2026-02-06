@@ -16,12 +16,12 @@
         <div class="actionButtons">
             <mat-button-toggle-group [value]="activeDetail?.backgroundColor"
                                      (change)="onChangeBackgroundColor($event, activeDetail)">
-                <mat-button-toggle class="primaryColor" [value]=header?.colors?.primaryColor></mat-button-toggle>
-                <mat-button-toggle class="secondaryColor" [value]=header?.colors?.secondaryColor></mat-button-toggle>
-                <mat-button-toggle class="dangerColor" [value]=header?.colors?.dangerColor></mat-button-toggle>
-                <mat-button-toggle class="warnColor" [value]=header?.colors?.warnColor></mat-button-toggle>
-                <mat-button-toggle class="infoColor" [value]=header?.colors?.infoColor></mat-button-toggle>
-                <mat-button-toggle class="acceptColor" [value]=header?.colors?.acceptColor></mat-button-toggle>
+                <mat-button-toggle class="primaryColor" [value]=header?.main?.colors?.primaryColor></mat-button-toggle>
+                <mat-button-toggle class="secondaryColor" [value]=header?.main?.colors?.secondaryColor></mat-button-toggle>
+                <mat-button-toggle class="dangerColor" [value]=header?.main?.colors?.dangerColor></mat-button-toggle>
+                <mat-button-toggle class="warnColor"  [value]=header?.main?.colors?.warnColor></mat-button-toggle>
+                <mat-button-toggle class="infoColor" [value]=header?.main?.colors?.infoColor></mat-button-toggle>
+                <mat-button-toggle class="acceptColor" [value]=header?.main?.colors?.acceptColor></mat-button-toggle>
                 <mat-button-toggle class="whiteColor" [value]="'#FFFFFF'"></mat-button-toggle>
                 <mat-button-toggle class="blackColor" [value]="'#000000'"></mat-button-toggle>
             </mat-button-toggle-group>
@@ -90,7 +90,7 @@
     </mat-menu>
 
     <div class="button-container">
-        <button mat-flat-button (click)="createNewItem(activeDetail, header?.colors, header?.main?.host)">
+        <button mat-flat-button (click)="createNewItem(activeDetail, header?.main?.colors, header?.main?.host)">
             <mat-icon>add_circle</mat-icon>
             {{ "summer.new.item" | translate }}
         </button>

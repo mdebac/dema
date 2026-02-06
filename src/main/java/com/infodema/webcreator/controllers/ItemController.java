@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,6 +21,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @PostMapping("/{detailId}/items")
     public ResponseEntity<Item> create(
             @PathVariable("detailId") Long detailId,
@@ -36,6 +38,7 @@ public class ItemController {
         return ResponseEntity.created(location).body(model);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @PutMapping("/{detailId}/items")
     public ResponseEntity<Item> update(
             @PathVariable("detailId") Long detailId,
@@ -52,6 +55,7 @@ public class ItemController {
         return ResponseEntity.created(location).body(model);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @DeleteMapping("/items/{id}")
     public ResponseEntity<Void> remove(@PathVariable("id") Long id) {
         itemService.removeItem(id);

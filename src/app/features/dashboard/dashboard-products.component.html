@@ -1,0 +1,17 @@
+<!--    name-->
+<!--    main_id-->
+
+<!--      properties-->
+<!--        product_id-->
+<!--        name-->
+<!--        type-->
+<ng-container *ngrxLet="{
+    expandedElement: expandedElement$,
+    mainId: mainId$,
+ } as vm"
+>
+<!--    @for (product of vm.products; track product.id){-->
+<!--       id: {{product.id}}, name: {{product.name}}, prop length: {{product.properties.length}}-->
+<!--    }-->
+    <product-table [expandedElement]="vm.expandedElement" [mainId]="vm.mainId"></product-table>
+</ng-container>

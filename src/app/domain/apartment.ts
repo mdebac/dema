@@ -9,6 +9,7 @@ import {Hosts} from "./hosts";
 import {Font} from "./font";
 import {Language} from "./language";
 import {Colors} from "./colors";
+import {ProductType} from "./product-type";
 
 export interface Apartment extends Audit {
 
@@ -39,6 +40,7 @@ export interface Apartment extends Audit {
   iconImage: File | null;
   backgroundImage: File | null;
   iso: ApartmentIso[];
+  products: ProductType[];
   fonts: Font[];
   languages: Language[];
   customers: Customer[];

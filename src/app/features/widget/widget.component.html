@@ -1,26 +1,46 @@
-<div class="containery">
+<div class="containery-widget">
 
     @if (canEdit){
         <div class="settings-button">
+
+<!--            ako je prvi disable-->
+            @if (data.item?.beforeItemId) {
+                <button class="icon-display-menu" mat-mini-fab
+                        (click)="moveLeft(data.item)">
+                    <mat-icon class="my-icon-item">arrow_circle_left</mat-icon>
+                </button>
+            }
+            @if (data.item?.nextItemId) {
+                <button class="icon-display-menu" mat-mini-fab
+                        (click)="moveRight(data.item)">
+                    <mat-icon class="my-icon-item">arrow_circle_right</mat-icon>
+                </button>
+            }
+
+
             <button class="icon-display-menu" mat-mini-fab  (click)="updateItemSettings(data.colors,data.item, data.host)"
                     aria-label="Settings">
-                <mat-icon class="my-icon">settings</mat-icon>
+                <mat-icon class="my-icon-item">settings</mat-icon>
             </button>
             <button class="icon-display-menu" mat-mini-fab
                     (click)="updateItem(data.languages,data.fonts,data.colors,data.item, data.host )">
-                <mat-icon class="my-icon">edit</mat-icon>
+                <mat-icon class="my-icon-item">edit</mat-icon>
             </button>
             <button class="icon-display-menu" mat-mini-fab (click)="deleteItem(data.item)">
-                <mat-icon class="my-icon" >delete</mat-icon>
+                <mat-icon class="my-icon-item">delete</mat-icon>
             </button>
         </div>
     }
 
     @if (data.item?.chip === Chip.TEXT) {
         @if (data.component) {
-            <ng-container
-                    *ngComponentOutlet="data.component; inputs: { item: dataIso, selectedIso: selectedIso, columns: columns}">
-            </ng-container>
+            @if(data.isMobile && noText(selectedIso, dataIso)){
+
+            } @else {
+                <ng-container
+                        *ngComponentOutlet="data.component; inputs: { item: dataIso, selectedIso: selectedIso, columns: columns}">
+                </ng-container>
+            }
         }
     }
     @if (data.item?.chip === Chip.JOB) {
@@ -30,13 +50,41 @@
             </ng-container>
         }
     }
-    @if (data.item?.chip === Chip.VIDEO || data.item?.chip === Chip.PICTURE) {
+    @if (data.item?.chip === Chip.VIDEO) {
         @if (data.component) {
-            <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, columns: columns, selectedIso: selectedIso, cornerRadius: cornerRadius}">
+            <ng-container *ngComponentOutlet="data.component; inputs: { isMobile: data.isMobile, item: data.item, columns: columns, selectedIso: selectedIso, cornerRadius: cornerRadius}">
+            </ng-container>
+        }
+    }
+
+    @if (data.item?.chip === Chip.PICTURE) {
+        @if (data.component) {
+
+            <ng-container *ngComponentOutlet="data.component; inputs: { imageAlignVertical: data.item?.imageAlignVertical, imageAlignHorizontal:data.item?.imageAlignHorizontal, isMobile: data.isMobile, item: data.item, columns: columns, selectedIso: selectedIso, cornerRadius: cornerRadius}">
+            </ng-container>
+        }
+    }
+
+    @if (data.item?.chip === Chip.SHOPPING_CARD) {
+        @if (data.component) {
+            <ng-container *ngComponentOutlet="data.component; inputs: { user: authStore.customer, item: data.item, selectedIso: selectedIso}">
+            </ng-container>
+        }
+    }
+    @if (data.item?.chip === Chip.SHOPPING_ITEM) {
+        @if (data.component) {
+            <ng-container *ngComponentOutlet="data.component; inputs: { item: data.item, selectedIso: selectedIso}">
             </ng-container>
         }
     }
     @if (data.item?.chip === Chip.DOMAINS) {
+        @if (data.component) {
+            <ng-container
+                    *ngComponentOutlet="data.component; inputs: { isMobile: data.isMobile, selectedIso: selectedIso}">
+            </ng-container>
+        }
+    }
+    @if (data.item?.chip === Chip.HOTEL_SEARCH) {
         @if (data.component) {
             <ng-container
                     *ngComponentOutlet="data.component;">

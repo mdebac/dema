@@ -1,0 +1,189 @@
+<mat-table class="mat-elevation-z8 full-width-table text" #outerSort="matSort" [dataSource]="dataSource"
+           multiTemplateDataRows matSort>
+
+    <ng-container matColumnDef="properties">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell (click)="onToggleCustomers(row)" *matCellDef="let row;">
+            <mat-icon class="arrows">{{ row == expandedElement ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+            </mat-icon>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row;">
+
+            @if (canEdit) {
+
+                @if (row.isEdit) {
+                        <button mat-icon-button (click)="saveProduct(row)">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="cancelEdit(row)">
+                            <mat-icon>close</mat-icon>
+                        </button>
+
+                } @else {
+                    <button mat-icon-button (click)="onEdit(row)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteProduct(row.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                }
+            }
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Product Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            @if (row.isEdit) {
+                <div>
+                    <input matInput type="text" class="form-control" [(ngModel)]="row.name">
+                </div>
+            } @else {
+                <div class="product-name">
+                    {{ row.name }}
+                </div>
+            }
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="new_product">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+            <button mat-fab extended (click)="createNewProduct()">
+            <mat-icon>add_circle</mat-icon>
+           New Product
+        </button></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+
+            @if(row.id){
+                <button mat-fab extended (click)="createNewProperty(row)">
+                    <mat-icon>add_circle</mat-icon>
+                    New Property
+                </button>
+            }
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedCustomers">
+        <mat-header-cell *matHeaderCellDef>expandedCustomers</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <table #innerTables mat-table #innerSort="matSort" [dataSource]="row.propertyDS" matSort>
+                <ng-container matColumnDef="property_space">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="property_actions">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <!--                        <button mat-fab extended routerLinkActive="activebutton">-->
+                        <!--                            Novi property-->
+                        <!--                        </button>-->
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        @if (row.isEdit) {
+                                <button mat-icon-button (click)="saveProperty(row)">
+                                    <mat-icon>check</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="cancelEdit(row)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                        } @else {
+                            <button mat-icon-button (click)="onEdit(row)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+
+                            <button mat-icon-button (click)="deleteProperty(row.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        }
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="property_name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Property Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        @if (row.isEdit) {
+                            <div>
+                                <input matInput type="text" class="form-control" [(ngModel)]="row.name">
+                            </div>
+                        } @else {
+                            <div>
+                                {{ row['name'] }}
+                            </div>
+                        }
+
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="property_type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        @if (row.isEdit) {
+                            <mat-select [(value)]="row.type" [(ngModel)]="row.type">
+                                @for (type of typeToChoose; track type) {
+                                    <mat-option [value]="type">
+                                        {{ type }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        } @else {
+                            <div>
+                                {{ row['type'] }}
+                            </div>
+                        }
+
+
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="property_unit">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Property Unit</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        @if (row.isEdit) {
+                            <div>
+                                <input matInput type="text" class="form-control" [(ngModel)]="row.unit">
+                            </div>
+                        } @else {
+                            <div>
+                                <div [innerHtml]="row['unit'] | safeHtml"></div>
+                            </div>
+                        }
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="new_property">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                       </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="innerDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: innerDisplayedColumns;">
+                </mat-row>
+            </table>
+        </mat-cell>
+
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+    <mat-row *matRowDef="let element; columns: displayedColumns;">
+    </mat-row>
+
+    <mat-row *matRowDef="let element; columns: ['expandedCustomers']"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
+             [class.customers-element-row]="element != expandedElement"
+    ></mat-row>
+
+</mat-table>
+

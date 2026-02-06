@@ -3,15 +3,14 @@ package com.infodema.webcreator.controllers;
 import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.DetailsService;
 import com.infodema.webcreator.domain.core.Detail;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 
 @RestController
@@ -44,6 +43,7 @@ public class DetailController {
                 .body(detailsService.findDetailByDetailId(detailId));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @PostMapping("/details")
     public ResponseEntity<Detail> create(
             @RequestPart("payload") Detail payload,
@@ -58,16 +58,32 @@ public class DetailController {
        return ResponseEntity.created(location).body(detail);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
+    @PostMapping("/details/not-menu")
+    public ResponseEntity<Detail> create(
+            @RequestPart("payload") Detail payload,
+            @RequestPart(value = "top", required = false) MultipartFile top
+    ) {
+        Detail detail = detailsService.createHotel(payload,top);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(detail.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(detail);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @DeleteMapping("/{mainId}/{menuId}/{panelId}/details/{detailId}")
     public ResponseEntity<Void> remove(
             @PathVariable("mainId") Long mainId,
             @PathVariable("menuId") Long menuId,
             @PathVariable("panelId") Long panelId,
             @PathVariable("detailId") Long detailId) {
-        detailsService.removeDetail(mainId, menuId, panelId, detailId);
+        detailsService.removeDetail(mainId, detailId);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @PutMapping("/details")
     public Detail update(
             @RequestPart Detail detail,

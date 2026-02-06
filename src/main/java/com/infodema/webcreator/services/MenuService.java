@@ -1,13 +1,18 @@
 package com.infodema.webcreator.services;
 
+import com.infodema.webcreator.domain.core.MenuProductCriteria;
+import com.infodema.webcreator.domain.core.Panel;
 import com.infodema.webcreator.domain.mappers.MenuMapper;
 import com.infodema.webcreator.persistance.entities.main.MainEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import com.infodema.webcreator.domain.core.Menu;
+import com.infodema.webcreator.persistance.entities.panel.PanelEntity;
 import com.infodema.webcreator.persistance.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,10 +83,57 @@ public class MenuService {
         return menuMapper.toDomain(menuRepository.save(entity));
     }
 
+    @Transactional
+    public void moveTopMenuLeft(Menu payload) {
+        MenuEntity beforeEntity = menuRepository.findById(payload.getBeforeId()).orElseThrow(() -> {
+            log.warn("before MenuEntity {} was not found", payload.getBeforeId());
+            return new RuntimeException(NOT_FOUND);
+        });
+        MenuEntity entity = menuRepository.findById(payload.getId()).orElseThrow(() -> {
+            log.warn("current MenuEntity {} was not found", payload.getId());
+            return new RuntimeException(NOT_FOUND);
+        });
+        Integer beforeOrderNum = beforeEntity.getOrderNum();
+        Integer currentOrderNum = entity.getOrderNum();
+        entity.setOrderNum(beforeOrderNum);
+        beforeEntity.setOrderNum(currentOrderNum);
+        menuRepository.save(beforeEntity);
+        menuRepository.save(entity);
+    }
+
+    @Transactional
+    public void moveTopMenuRight(Menu payload) {
+        MenuEntity nextEntity = menuRepository.findById(payload.getNextId()).orElseThrow(() -> {
+            log.warn("next MenuEntity {} was not found", payload.getNextId());
+            return new RuntimeException(NOT_FOUND);
+        });
+        MenuEntity entity = menuRepository.findById(payload.getId()).orElseThrow(() -> {
+            log.warn("current MenuEntity {} was not found", payload.getId());
+            return new RuntimeException(NOT_FOUND);
+        });
+        Integer beforeOrderNum = nextEntity.getOrderNum();
+        Integer currentOrderNum = entity.getOrderNum();
+        entity.setOrderNum(beforeOrderNum);
+        nextEntity.setOrderNum(currentOrderNum);
+        menuRepository.save(nextEntity);
+        menuRepository.save(entity);
+    }
+
     public void deleteAll(Long mainId) {
         log.info("Deleting all menus from Main id {}", mainId);
         menuRepository.deleteByMain_Id(mainId);
     }
+
+    @Transactional(readOnly = true)
+    public Page<Menu> findMenuProducts(MenuProductCriteria criteria, Pageable pageable){
+
+       Page<MenuEntity> productMenus = menuRepository.findMenuProductsByCriteria(criteria, pageable);
+
+       System.out.println(productMenus);
+
+        return null;
+    }
+
 
 }
 

@@ -6,7 +6,7 @@
 
             <div class="domain" [ngStyle]="{'color': row.primaryColor, 'background-color': row.secondaryColor}">
 
-                @if(row.image){
+                @if (row.image) {
                     <img width="200"
                          src="{{'data:image/jpg;base64,' +row?.image}}" alt=""/>
                 } @else {
@@ -15,7 +15,7 @@
                 }
 
                 <div class="txt" (click)="goTo(row?.host)">
-                    {{row?.host}}
+                    {{ row?.host }}
                 </div>
             </div>
 

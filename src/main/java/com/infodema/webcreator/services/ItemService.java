@@ -32,13 +32,21 @@ public class ItemService {
         DetailEntity detailEntity = detailRepository.findById(detailId)
                 .orElseThrow(() -> new EntityNotFoundException("No detail found with ID:: " + detailId));
 
+        //System.out.println("Order: " + itemRepository.findMaxOrderNum(detailId));
+        Integer currentMaxOrderNum = itemRepository.findMaxOrderNum(detailId);
+        if(currentMaxOrderNum == null){
+            payload.setOrderNum(1);
+        }else{
+            payload.setOrderNum(currentMaxOrderNum + 1);
+        }
+
         ItemEntity itemEntityNew = itemMapper.toEntity(payload);
         if(payload.getChip().equals(Chip.PICTURE)){
             itemEntityNew.setImage(file);
             itemEntityNew.setMinHeight(400);
         }
         if(payload.getChip().equals(Chip.VIDEO)){
-            itemEntityNew.setMinHeight(400);
+            itemEntityNew.setMinHeight(300);
         }
         itemEntityNew.setDetail(detailEntity);
 
@@ -59,6 +67,30 @@ public class ItemService {
             log.warn("Item {} was not found in detail {}", payload.getId(), detailId);
             return new RuntimeException(NOT_FOUND);
         });
+
+        if(payload.getChip() == Chip.MOVE_LEFT){
+            ItemEntity beforeEntity = itemRepository.findById(payload.getBeforeItemId()).orElseThrow(() -> {
+                log.warn("beforeEntity {} was not found", payload.getBeforeItemId());
+                return new RuntimeException(NOT_FOUND);
+            });
+            Integer beforeOrderNum = beforeEntity.getOrderNum();
+            Integer currentOrderNum = entity.getOrderNum();
+            entity.setOrderNum(beforeOrderNum);
+            beforeEntity.setOrderNum(currentOrderNum);
+            itemRepository.save(beforeEntity);
+        }
+
+        if(payload.getChip() == Chip.MOVE_RIGHT){
+            ItemEntity nextEntity = itemRepository.findById(payload.getNextItemId()).orElseThrow(() -> {
+                log.warn("nextEntity {} was not found", payload.getNextItemId());
+                return new RuntimeException(NOT_FOUND);
+            });
+            Integer nextOrderNum = nextEntity.getOrderNum();
+            Integer currentOrderNum = entity.getOrderNum();
+            entity.setOrderNum(nextOrderNum);
+            nextEntity.setOrderNum(currentOrderNum);
+            itemRepository.save(nextEntity);
+        }
 
         itemMapper.updateEntityByModel(entity, payload, file);
         ItemEntity item = itemRepository.save(entity);

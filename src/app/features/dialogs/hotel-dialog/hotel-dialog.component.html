@@ -1,0 +1,151 @@
+<mat-card class="dashboard-card-dialog">
+    <mat-card-header>
+
+        <h2 class="button-container-left text">@if (isNew) {
+            Novi Stan
+        } @else {
+            Ažuriranje Stana
+        }</h2>
+        <ng-container>
+            <iso-buttons [countries]="languages" [selectedIn]="selectedIso" (selectedOut)="activeIso($event)">
+            </iso-buttons>
+        </ng-container>
+
+    </mat-card-header>
+
+    <mat-card-content [formGroup]="form">
+
+        @if (isNew && !isNewMenu && isNewPanel) {
+
+        } @else {
+            <ng-container formGroupName="topMenu">
+                <ng-container formArrayName="iso">
+                    @for (item of isoArray; track item; let i = $index) {
+                        @if (isIsoSelected(item.iso)) {
+                            <div class="container">
+                                <ng-container [formGroupName]="i">
+                                    <mat-expansion-panel class="custom-panel" (opened)="isOpened = !isOpened"
+                                                         (closed)="isOpened = !isOpened">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                @if (showTopMenuImage) {
+                                                    <img src="{{showTopMenuImage}}" alt=""/>
+                                                } @else if (topMenuIcon) {
+                                                    <mat-icon class="icon-display-menutop">{{ topMenuIcon }}</mat-icon>
+                                                }
+                                                <div class="naslov">
+                                                    <quill-view class="my-quill-view"
+                                                                [content]="getTopMenuLabel(selectedIso)" format="html"
+                                                                theme="snow"></quill-view>
+                                                </div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="actionButtons">
+
+                                            <div class="text-text">Title</div>
+                                            <quill-editor class="myEditor"
+                                                          format="html"
+                                                          [modules]="quillConfiguration"
+                                                          [placeholder]="''"
+                                                          formControlName="title"
+                                                          (onContentChanged)="onContentChangedTopTitle($event)"
+                                            ></quill-editor>
+                                            <div class="text-text">Description</div>
+                                            <quill-editor class="myEditor"
+                                                          format="html"
+                                                          [modules]="quillConfiguration"
+                                                          [placeholder]="'description'"
+                                                          formControlName="description"
+                                            ></quill-editor>
+
+                                            <div class="text-text">Icon or Image</div>
+                                            <div class="iconAndFile">
+                                                @if (topMenuIcon) {
+                                                    <button class="mybutton" (click)="openMenuIconDialog()" mat-fab>
+                                                        <mat-icon class="myicon">{{ topMenuIcon }}</mat-icon>
+                                                    </button>
+                                                } @else {
+                                                    <button class="mybutton" (click)="openMenuIconDialog()" mat-fab>
+                                                        <mat-icon class="myicon">close</mat-icon>
+                                                    </button>
+                                                }
+                                                <input #topMenuImageInput
+                                                       class="form-control"
+                                                       type="file"
+                                                       accept="image/*"
+                                                       (change)="selectTopMenuImage($event)"
+                                                >
+
+                                            </div>
+
+                                            @if (Object.hasOwn(topFile, 'ext')) {
+                                                <div class="iconAndFile">
+                                                    <image-cropper
+                                                            [imageQuality]="cropQuality"
+                                                            [imageFile]="topFile.file"
+                                                            format="png"
+                                                            [onlyScaleDown]="true"
+                                                            [resizeToWidth]="256"
+                                                            [maintainAspectRatio]="false"
+                                                            [aspectRatio]="getAspectRatio()"
+                                                            (imageCropped)="topImageCropped($event)"
+                                                    >
+                                                    </image-cropper>
+                                                </div>
+                                            }
+                                            <div class="iconAndFile">
+
+                                                <div class="text-icon">
+                                                    @if (!topMenuIcon) {
+                                                        No Icon
+                                                    }
+                                                </div>
+
+                                                @if (showTopMenuImage) {
+                                                    <div>
+
+                                                        @if (topMenuIcon) {
+                                                            <mat-icon class="icon-display-tooltip"
+                                                                      matTooltip="Remove image to see icon"
+                                                                      matTooltipPosition="before">info
+                                                            </mat-icon>
+                                                        }
+
+                                                        @if (Object.hasOwn(topFile, 'ext') || showTopMenuImage) {
+                                                            <mat-checkbox class="iconAndFileDesc" (change)="onRemoveTopMenuImage($event)">
+                                                                <div class="iconAndFileDesc">
+                                                                    {{ "remove.image" | translate }}
+                                                                </div>
+                                                            </mat-checkbox>
+                                                        }
+
+                                                    </div>
+                                                }
+                                            </div>
+                                            <mat-error></mat-error>
+
+                                            {{ toBigTopMenuImage }}
+                                        </div>
+                                    </mat-expansion-panel>
+
+                                </ng-container>
+                            </div>
+                        }
+                    }
+
+                </ng-container>
+            </ng-container>
+
+        }
+
+
+        <button class="myButton_full_width" [disabled]="!form.valid" (click)="onCreateDetail()" mat-fab extended>
+            @if (isNew) {
+                Create
+            } @else {
+                Update
+            }
+        </button>
+
+    </mat-card-content>
+</mat-card>

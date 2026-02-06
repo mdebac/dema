@@ -54,6 +54,7 @@ export class ApartmentDialogComponent implements OnDestroy {
     isAdmin: boolean = false;
     isManager: boolean = false;
 
+
     constructor(@Inject(MAT_DIALOG_DATA) private apartment: Apartment) {
         this.isAdmin = this.authStore.authorize(Roles.ADMIN);
         this.isManager = this.authStore.authorize(Roles.MANAGER);

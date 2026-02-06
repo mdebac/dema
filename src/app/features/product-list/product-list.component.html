@@ -1,0 +1,3 @@
+@for (menu of products; track menu.id; let j = $index) {
+    {{ menu.name}}: {{ menu.unitPrice | currency:'USD'}}
+}

@@ -30,6 +30,7 @@ public class BeansConfig {
     @Value("${spring.datasource.url}")
     private String dbUrl;
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -52,6 +53,7 @@ public class BeansConfig {
         return new CorsFilter(source);
 
     }
+
 
   /*  @Bean
     public WebMvcConfigurer corsConfigurer() {

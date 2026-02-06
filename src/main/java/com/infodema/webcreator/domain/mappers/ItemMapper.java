@@ -10,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class ItemMapper extends AbstractMapper {
     public Set<ItemIso> toDomainItemIso(Set<ItemIsoEntity> entities) {
         return convertCollection(entities, this::toDomainItemIso);
     }
+
     public Set<ItemIsoEntity> toEntityItemIso(Set<ItemIso> entities) {
         return convertCollection(entities, this::toEntityItemIso);
     }
@@ -43,6 +43,10 @@ public class ItemMapper extends AbstractMapper {
                 .minHeight(entity.getMinHeight())
                 .iso(toDomainItemIso(entity.getIso()))
                 .shadowColor(entity.getShadowColor())
+                .imageAlignHorizontal(entity.getImageAlignHorizontal())
+                .imageAlignVertical(entity.getImageAlignVertical())
+                .imageHeight(entity.getImageHeight())
+                .imageWidth(entity.getImageWidth())
                 .url(entity.getUrl())
                 .chip(entity.getChip())
                 .image(entity.getContent() != null ? entity.getContent() : null)
@@ -51,7 +55,7 @@ public class ItemMapper extends AbstractMapper {
                 .createdBy(entity.getCreatedBy())
                 .modifiedOn(entity.getModifiedOn())
                 .modifiedBy(entity.getModifiedBy())
-               .build();
+                .build();
     }
 
     public List<ItemEntity> toEntity(List<Item> models) {
@@ -70,6 +74,10 @@ public class ItemMapper extends AbstractMapper {
         newItemEntity.setBackgroundColor(item.getBackgroundColor());
         newItemEntity.setMinHeight(item.getMinHeight());
         newItemEntity.setShadowColor(item.getShadowColor());
+        newItemEntity.setImageWidth(item.getImageWidth());
+        newItemEntity.setImageHeight(item.getImageHeight());
+        newItemEntity.setImageAlignVertical(item.getImageAlignVertical());
+        newItemEntity.setImageAlignHorizontal(item.getImageAlignHorizontal());
         newItemEntity.setIso(toEntityItemIso(item.getIso()));
         newItemEntity.setUrl(item.getUrl());
         newItemEntity.setCreatedOn(item.getCreatedOn());
@@ -83,7 +91,7 @@ public class ItemMapper extends AbstractMapper {
     //no id, and detailId
     public void updateEntityByModel(ItemEntity entity, Item item, MultipartFile file) {
 
-        if(item.getChip() == Chip.SETTINGS){
+        if (item.getChip() == Chip.SETTINGS) {
             entity.setRowSpan(item.getRowSpan());
             entity.setColSpan(item.getColSpan());
             entity.setCornerRadius(item.getCornerRadius());
@@ -91,27 +99,35 @@ public class ItemMapper extends AbstractMapper {
             entity.setShadowColor(item.getShadowColor());
             entity.setMinHeight(item.getMinHeight());
         }
-        if(item.getChip() != Chip.SETTINGS) {
+        if (item.getChip() == Chip.SETTINGS
+                || item.getChip() == Chip.MOVE_RIGHT
+                || item.getChip() == Chip.MOVE_LEFT) {
+        } else {
             entity.setChip(item.getChip());
         }
-
-        if(item.getChip().equals(Chip.PICTURE)){
+        if (item.getChip().equals(Chip.PICTURE)) {
+            entity.setImage(file);
+            entity.setImageAlignHorizontal(item.getImageAlignHorizontal());
+            entity.setImageAlignVertical(item.getImageAlignVertical());
+            entity.setImageWidth(item.getImageWidth());
+            entity.setImageHeight(item.getImageHeight());
+            entity.setIso(toEntityItemIso(item.getIso()));
+        }
+        if (item.getChip().equals(Chip.SHOPPING_ITEM)) {
             entity.setImage(file);
             entity.setIso(toEntityItemIso(item.getIso()));
         }
-
-        if(item.getChip().equals(Chip.TEXT) || item.getChip().equals(Chip.JOB)){
+        if (item.getChip().equals(Chip.TEXT) || item.getChip().equals(Chip.JOB)) {
             entity.setIso(toEntityItemIso(item.getIso()));
         }
-
-        if(item.getChip().equals(Chip.VIDEO)){
+        if (item.getChip().equals(Chip.VIDEO)) {
             entity.setUrl(item.getUrl());
         }
 
-        entity.setCreatedBy(entity.getCreatedBy());
-        entity.setCreatedOn(entity.getCreatedOn());
-        entity.setModifiedOn(entity.getModifiedOn());
-        entity.setModifiedBy(entity.getModifiedBy());
+//        entity.setCreatedBy(entity.getCreatedBy());
+//        entity.setCreatedOn(entity.getCreatedOn());
+//        entity.setModifiedOn(entity.getModifiedOn());
+//        entity.setModifiedBy(entity.getModifiedBy());
     }
 
     public ItemIso toDomainItemIso(ItemIsoEntity entity) {

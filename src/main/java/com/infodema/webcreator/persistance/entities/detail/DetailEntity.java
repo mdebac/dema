@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.type.TrueFalseConverter;
+
 import java.util.List;
 
 
@@ -41,7 +42,7 @@ public class DetailEntity extends BaseAuditEntity {
     private String backgroundColor;
 
    @OneToMany(mappedBy = "detail")
-   //@Fetch(FetchMode.SUBSELECT)
+   @OrderBy("orderNum ASC")
    private List<ItemEntity> items;
 
 }

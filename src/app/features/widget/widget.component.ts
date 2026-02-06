@@ -1,10 +1,4 @@
-import {
-  Component,
-  HostBinding,
-  inject,
-  Input,
-  OnDestroy,
-} from "@angular/core";
+import {Component, HostBinding, inject, Input, OnDestroy,} from "@angular/core";
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {Widget} from "./widget";
 import {ApartmentItem, ApartmentItemDialogData} from "../../domain/apartment-item";
@@ -13,9 +7,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {Colors} from "../../domain/colors";
-import { NgComponentOutlet } from "@angular/common";
+import {NgComponentOutlet} from "@angular/common";
 import {MatMiniFabButton} from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
+import {MatIcon} from "@angular/material/icon";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
 import {ItemSettingsDialogComponent} from "../dialogs/item-settings-dialog/item-settings-dialog.component";
@@ -27,13 +21,13 @@ import {Hosts} from "../../domain/hosts";
 import {Roles} from "../../domain/roles";
 import {Language} from "../../domain/language";
 import {Font} from "../../domain/font";
+import {defaultIso} from "../../domain/countries-iso";
 
 // @ts-ignore
 @Component({
     selector: 'widget',
     templateUrl: './widget.component.html',
     styleUrls: ['./widget.component.scss'],
-  //encapsulation: ViewEncapsulation.None,
   imports: [
     MatMiniFabButton,
     MatIcon,
@@ -44,7 +38,7 @@ export class WidgetComponent implements OnDestroy {
   private dialog = inject(MatDialog);
   private store = inject(ApartmentStore);
   private translateService = inject(TranslateService);
-  private authStore = inject(AuthStore);
+  authStore = inject(AuthStore);
 
   private _data: Widget | undefined;
 
@@ -64,26 +58,23 @@ export class WidgetComponent implements OnDestroy {
   @Input() columns: number | undefined;
   @Input() canEdit: boolean = false;
   @Input() loggedIn: boolean = false;
-
   @Input() set data(value: Widget) {
     this._data = value;
     this.rowSpan = this._data?.item?.rowSpan ? this._data.item.rowSpan : 1;
     this.colSpan = this._data?.item?.colSpan ? this._data.item.colSpan : 1;
     this.cornerRadius = (this._data?.item?.cornerRadius ? this._data.item.cornerRadius : 10) + 'px';
     this.shadowColor =this._data?.item?.shadowColor ? this._data.item?.shadowColor : this._data.colors?.primaryColor;
-    this.minHeight = (this._data?.item?.minHeight ? this._data.item.minHeight : 100) + 'px';
+    this.minHeight = this._data?.isMobile ? '0' : (this._data?.item?.minHeight ? this._data.item.minHeight : 100) + 'px';
     this.backgroundColor = this._data?.item?.backgroundColor ? this._data.item.backgroundColor : "";
   }
 
-  @Input() selectedIso: string | null | undefined;
+  @Input() selectedIso: string = defaultIso;
 
   get data(): Widget {
-
     if(this._data?.component){
       return this._data;
     }
     return this.transformItemToWidget();
-
   }
 
   get dataIso(): ApartmentItemIso[] {
@@ -99,16 +90,25 @@ export class WidgetComponent implements OnDestroy {
     }
     return 0;
   }
+
   transformItemToWidget(): Widget {
-  //detail: ApartmentDetail, item: ApartmentItem, colors: Colors | undefined
     return {
       item: null,
       languages: null,
       component: TextComponent,
       fonts:null,
       colors: undefined,
-      host: this._data?.host
+      host: this._data?.host,
+      isMobile: !!this._data?.isMobile
     };
+  }
+
+  noText(country: string | null, iso: ApartmentItemIso[] | undefined | null) {
+    if(iso?.find(iso => iso.iso === country)?.description.length === 0){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   unsubscribe$ = new Subject<void>();
@@ -119,6 +119,7 @@ export class WidgetComponent implements OnDestroy {
       languages: languages,
       item: partial,
       fonts: fonts,
+      selectedIso: this.selectedIso,
       colors: colors,
       roles: this.authStore.userRoles,
       host: host
@@ -140,6 +141,7 @@ export class WidgetComponent implements OnDestroy {
       const partial: Partial<ApartmentItem> = {...item}
       const data: ApartmentItemDialogData = {
         languages: [],
+        selectedIso: this.selectedIso,
         item: partial,
         fonts: [],
         colors: colors,
@@ -151,7 +153,6 @@ export class WidgetComponent implements OnDestroy {
       filter(val => !!val),
       takeUntil(this.unsubscribe$)
     ).subscribe(detailProps => {
-        console.log("(widget) updateItemSettings", detailProps);
         this.store.updateItemEffect(detailProps);
       }
     );
@@ -208,6 +209,21 @@ export class WidgetComponent implements OnDestroy {
     this.unsubscribe$.unsubscribe();
   }
 
+  moveLeft(item: ApartmentItem | undefined | null){
+    const apartmentProps = {
+      ...item,
+      chip: Chip.MOVE_LEFT
+    } as Partial<ApartmentItem>;
+    this.store.updateItemEffect(apartmentProps);
+  }
+
+  moveRight(item: ApartmentItem | undefined | null){
+    const apartmentProps = {
+      ...item,
+      chip: Chip.MOVE_RIGHT
+    } as Partial<ApartmentItem>;
+    this.store.updateItemEffect(apartmentProps);
+  }
 
   protected readonly Chip = Chip;
   protected readonly Roles = Roles;

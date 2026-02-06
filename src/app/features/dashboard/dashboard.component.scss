@@ -3,7 +3,7 @@
 $primary-color: var(--primary-color);
 $secondary-color: var(--secondary-color);
 
-.dashboard-card {
+.dashboard-card-dash {
   position: absolute;
   top: 1px;
   left: 15px;
@@ -13,16 +13,36 @@ $secondary-color: var(--secondary-color);
   overflow-y: auto;
   //scrollbar-color: $secondary-color $primary-color;
 }
+
+//.dashboard-card-dash mat-card-content {
+//  text-align: left;
+//  display: grid;
+//  grid-template-columns: repeat(1,1fr);
+//  gap: 16px;
+//}
+
+
 .icon-size-transform {
   transform: scale(2);
 }
 
-.dashboard-card mat-card-content {
-  text-align: left;
-  display: grid;
-  grid-template-columns: repeat(1,1fr);
-  gap: 16px;
+.main-tile {
+  padding: 0;
+  margin: 0;
+  min-height: 50rem;
+  background-color: $secondary-color;
 }
+
+.menu-tile {
+  padding: 0;
+  margin: 0;
+  min-height: 50rem;
+  background-color: $secondary-color;
+  overflow-y: auto;
+  border-bottom: $secondary-color solid 2px;
+}
+
+
 
 .button-container-left {
   margin-right: auto;

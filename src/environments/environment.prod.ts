@@ -5,4 +5,6 @@ export const environment = {
   recaptcha: {
     siteKey: '6LesvjIrAAAAAIjqz8U1slxQ0tnIltymT5jik5KG',
   },
+  showLogs: false,
+  stripePublishableKey: 'pk_test_5DJJIMjLAHgVHxjsu4rDDXr0'
 };

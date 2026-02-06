@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {Roles} from "../../domain/roles";
 import {Hosts} from "../../domain/hosts";
 import {User} from "../../domain/user";
+import {Customer} from "../../domain/customer";
 
 const AUTH_DATA = "auth_data";
 
@@ -81,7 +82,10 @@ export class AuthStore {
         if(token2){
             const jwtHelper = new JwtHelperService();
             const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
-            return decodedToken.fullName;
+            return {
+                fullName: decodedToken.fullName,
+                email: decodedToken.email
+            };
         }else{
             return "";
         }
@@ -133,6 +137,19 @@ export class AuthStore {
         }
     }
 
+    get customer():Partial<Customer> | null{
+        const token = localStorage.getItem(AUTH_DATA);
+        if (token) {
+            const token2 = JSON.parse(token);
+            const jwtHelper = new JwtHelperService();
+            const decodedToken = jwtHelper.decodeToken(token2.token ? token2.token : token2);
+            return {
+                name: decodedToken.fullName,
+                email: decodedToken.sub,
+            };
+        }
+        return null;
+    }
     login(email:string, password:string, token: string): Observable<string | undefined> {
         return this.authService.authenticate({
             body: {email, password},

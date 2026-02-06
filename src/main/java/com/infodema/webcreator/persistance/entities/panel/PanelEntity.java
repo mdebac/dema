@@ -1,6 +1,8 @@
 package com.infodema.webcreator.persistance.entities.panel;
 
 import com.infodema.webcreator.domain.enums.Country;
+import com.infodema.webcreator.domain.enums.SideMenuType;
+import com.infodema.webcreator.domain.enums.TopMenuType;
 import com.infodema.webcreator.persistance.entities.BaseAuditEntity;
 import com.infodema.webcreator.persistance.entities.menu.MenuEntity;
 import jakarta.persistence.*;
@@ -33,6 +35,10 @@ public class PanelEntity extends BaseAuditEntity {
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
     private MenuEntity menu;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SideMenuType sideMenuType;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(

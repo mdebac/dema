@@ -54,10 +54,10 @@ export class ForgotPasswordComponent {
                 //on close dialog redirect to login
                 this.router.navigate(['login']);
             }else{
-                console.log("password no good");
+               // console.log("password no good");
             }
         }else{
-            console.log("code not completed");
+          //  console.log("code not completed");
         }
     }
 

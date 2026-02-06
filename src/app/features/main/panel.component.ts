@@ -11,12 +11,11 @@ import {MatIcon} from '@angular/material/icon';
 import {WidgetComponent} from "../widget/widget.component";
 import {ApartmentStore} from "../../services/apartments-store.service";
 import {Colors} from "../../domain/colors";
-import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
+import {ApartmentDetail} from "../../domain/apartment-detail";
 import {ConformationDialogComponent} from "../dialogs/conformation-dialog/conformation-dialog.component";
 import {ApartmentItem, ApartmentItemDialogData} from "../../domain/apartment-item";
 import {ItemDialogComponent} from "../dialogs/item-dialog/item-dialog.component";
 import {Header} from "../../domain/header";
-import {DetailDialogComponent} from "../dialogs/detail-dialog/detail-dialog.component";
 import {Widget} from "../widget/widget";
 import {ChipMap} from "../../domain/chip-map";
 import {defaultIso} from "../../domain/countries-iso";
@@ -129,7 +128,7 @@ export class PanelComponent implements OnDestroy {
   loggedIn: boolean = false;
 
   @Input()
-  selectedIso: string | null = defaultIso;
+  selectedIso: string = defaultIso;
 
   unsubscribe$ = new Subject<void>();
   apartment: string = "";
@@ -173,6 +172,7 @@ export class PanelComponent implements OnDestroy {
       const data: ApartmentItemDialogData = {
         languages: this.header?.main?.languages,
         item: item,
+        selectedIso: this.selectedIso,
         fonts: this.header?.main?.fonts,
         colors: colors,
         roles: this.authStore.userRoles,
@@ -226,7 +226,8 @@ export class PanelComponent implements OnDestroy {
       component: ChipMap.get(item.chip),
       fonts: this.header?.main.fonts,
       colors: colors,
-      host: host
+      host: host,
+      isMobile: false
     };
   }
 

@@ -4,7 +4,7 @@ import {filter, takeUntil} from "rxjs/operators";
 import {defaultIso} from "../../domain/countries-iso";
 import {ApartmentDetail, ApartmentDetailDialogData} from "../../domain/apartment-detail";
 import {Header} from "../../domain/header";
-import {MatButton, MatIconButton} from "@angular/material/button";
+import {MatButton, MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {Router} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {Panel} from "../../domain/panel";
@@ -19,6 +19,9 @@ import {Layout} from "../../domain/layout";
 import {Side} from "../../domain/side";
 import {NgClass} from "@angular/common";
 import {QuillViewComponent} from "ngx-quill";
+import {Chip} from "../../domain/chip.enum";
+import {Menu} from "../../domain/menu";
+import {TopMenuType} from "../../domain/top-menu-type";
 
 
 const fadeInOut = trigger('fadeInOut', [
@@ -50,7 +53,8 @@ const fadeInOut = trigger('fadeInOut', [
         MatButton,
         MatIconButton,
         NgClass,
-        QuillViewComponent
+        QuillViewComponent,
+        MatMiniFabButton
     ],
     animations: [fadeInOut],
 })
@@ -146,7 +150,7 @@ export class MenuComponent implements OnDestroy {
     loggedIn: boolean = false;
 
     @Input()
-    selectedIso: string | null = defaultIso;
+    selectedIso: string = defaultIso;
 
     constructor() {
         console.log("Menu load");
@@ -182,8 +186,10 @@ export class MenuComponent implements OnDestroy {
 
                 const data: Partial<ApartmentDetailDialogData> = {
                     languages: header.main.languages,
+                    products: header.main.products,
                     fonts: header.main.fonts,
                     detail: newDetail,
+                    selectedIso: this.selectedIso,
                     colors: color,
                     host: header.main.host,
                 };
@@ -192,7 +198,6 @@ export class MenuComponent implements OnDestroy {
                     filter(val => !!val),
                     takeUntil(this.unsubscribe$)
                 ).subscribe(detailProps =>
-
                     this.store.createDetailEffect(detailProps)
                 );
             }
@@ -264,7 +269,50 @@ export class MenuComponent implements OnDestroy {
         return output;
     }
 
+    moveUp(panel: Panel | undefined | null, beforeId: number | undefined | null){
+        const panelPayload = {
+            ...panel,
+            chip: Chip.MOVE_LEFT,
+            beforeId:beforeId
+        } as Partial<Panel>;
+
+        console.log("moveUp");
+     this.store.moveSideMenuEffect(panelPayload);
+    }
+
+    moveDown(panel: Panel | undefined | null, nextId: number | undefined | null){
+        const panelPayload = {
+            ...panel,
+            chip: Chip.MOVE_RIGHT,
+            nextId:nextId
+        } as Partial<Panel>;
+
+        console.log("moveDown");
+     this.store.moveSideMenuEffect(panelPayload);
+    }
+
+    calculateBeforeId(index: number, menu: Partial<Menu> | null | undefined){
+        let beforeId = null;
+        if(index !== 0 && menu?.panels){
+            beforeId = menu?.panels.at(index-1)?.id;
+        }
+        return beforeId;
+    }
+
+    calculateNextId(index: number, menu: Partial<Menu> | null | undefined){
+        let nextId = null;
+        if(menu?.panels){
+            const tempPanel = menu?.panels.at(index + 1);
+            if(tempPanel){
+                nextId = tempPanel.id;
+            }
+            return nextId;
+        }
+       return nextId;
+    }
+
     protected readonly Roles = Roles;
     protected readonly Layout = Layout;
     protected readonly Side = Side;
+    protected readonly TopMenuType = TopMenuType;
 }

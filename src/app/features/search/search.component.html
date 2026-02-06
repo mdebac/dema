@@ -1,0 +1,111 @@
+<ng-container *ngrxLet="{
+        header: header$,
+ } as vm">
+
+    <mat-grid-list cols="20" rowHeight="18:13" gutterSize="0px">
+
+        <mat-grid-tile class="menu-tile-search"
+                       [colspan]=4
+                       [rowspan]=13>
+
+            @for (productType of vm.header?.main?.products; track productType.id; let i = $index) {
+
+                <div class="{{'zajednicko ' + resolveClass(i)}}"
+                     (click)="filterProduct(productType)">
+
+                    <div class="menu-container">
+
+                            @if (productType.image) {
+                                <div class="image-desc">
+                                    <img src="{{'data:image/jpg;base64,' + productType.image}}" alt=""/>
+                                </div>
+                            }
+
+                            <div class="menu-text">
+                                    <quill-view [content]="productType.name"
+                                                format="html"
+                                                theme="snow"></quill-view>
+                            </div>
+
+                    </div>
+                </div>
+
+
+
+            }
+
+            <!--            <dashboard-menu [loggedIn]="true"-->
+            <!--                            [selectedIso]="vm.selectedIso"-->
+            <!--                            [header]="vm.header"-->
+            <!--                            [paddingTop]="vm.shrinkMenu ? '0.5rem' : 0"-->
+            <!--                            [closedMenu]="vm.shrinkMenu"-->
+            <!--                            [justifyMenu]="vm.shrinkMenu ? 'center' : 'left'"-->
+            <!--                            [disableAddingNewPanels]="false"-->
+            <!--            ></dashboard-menu>-->
+        </mat-grid-tile>
+
+        <mat-grid-tile class="content-tile-search"
+                       [colspan]="12"
+                       [rowspan]="13">
+            content products
+            <!--            <ng-container *ngrxLet="{-->
+            <!--                            title: title$,-->
+            <!--                            chip: chip$,-->
+            <!--                            apartmentsCount: apartmentsCount$,-->
+            <!--                            header: header$,-->
+            <!--                            stateLayout: stateLayout$,-->
+            <!--                            products: products$-->
+            <!--                            } as vm">-->
+
+            <!--                <mat-card class="dashboard-card-dash">-->
+            <!--                    <mat-card-header>-->
+            <!--                        <h2 class="button-container-left text">-->
+            <!--                            <div class="dashboard-title">-->
+            <!--                                <mat-icon class="button-container-left text icon-size-transform">dashboard</mat-icon>-->
+            <!--                                <p> {{ "my.dashboard" | translate }} </p>-->
+            <!--                            </div>-->
+            <!--                        </h2>-->
+            <!--                        @if (isAdmin) {-->
+            <!--                            <div>-->
+            <!--                                <button (click)="createApartment()"-->
+            <!--                                        mat-fab extended>-->
+            <!--                                    <mat-icon>add_circle</mat-icon>-->
+            <!--                                    {{ "create.page" | translate }}-->
+            <!--                                </button>-->
+            <!--                            </div>-->
+            <!--                        }-->
+            <!--                    </mat-card-header>-->
+            <!--                    <mat-card-content>-->
+            <!--                        @if (isAdmin || isManager) {-->
+            <!--                            <router-outlet></router-outlet>-->
+            <!--                        }-->
+            <!--                    </mat-card-content>-->
+            <!--                </mat-card>-->
+
+
+            <!--            </ng-container>-->
+
+
+        </mat-grid-tile>
+
+        <mat-grid-tile class="filter-tile-search"
+                       [colspan]=4
+                       [rowspan]=13> filter
+            <!--            <dashboard-menu [loggedIn]="true"-->
+            <!--                            [selectedIso]="vm.selectedIso"-->
+            <!--                            [header]="vm.header"-->
+            <!--                            [paddingTop]="vm.shrinkMenu ? '0.5rem' : 0"-->
+            <!--                            [closedMenu]="vm.shrinkMenu"-->
+            <!--                            [justifyMenu]="vm.shrinkMenu ? 'center' : 'left'"-->
+            <!--                            [disableAddingNewPanels]="false"-->
+            <!--            ></dashboard-menu>-->
+        </mat-grid-tile>
+    </mat-grid-list>
+
+
+</ng-container>
+<footer class="createdBy">
+
+    created by <a href="https://info-dema.eu/web_creator">Dema Web Creator</a>
+</footer>
+

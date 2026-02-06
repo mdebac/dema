@@ -1,15 +1,9 @@
 package com.infodema.webcreator.controllers;
 
-import com.infodema.webcreator.domain.auth.ForgotPasswordRequest;
-import com.infodema.webcreator.domain.auth.RegistrationRequest;
-import com.infodema.webcreator.domain.core.Header;
-import com.infodema.webcreator.domain.core.Main;
-import com.infodema.webcreator.domain.core.MainCriteria;
+import com.infodema.webcreator.domain.core.*;
 import com.infodema.webcreator.domain.projections.MainProjection;
-import com.infodema.webcreator.domain.recaptcha.RequiresCaptcha;
 import com.infodema.webcreator.domain.utility.UtilityHelper;
 import com.infodema.webcreator.services.MainService;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -22,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 
 @RestController
@@ -66,6 +59,15 @@ public class MainController {
         return ResponseEntity.status(HttpStatus.OK).body(mainService.findDomains(pageable));
     }
 
+    @GetMapping("/find/hotels")
+    public ResponseEntity<Page<Main>> findHotels(
+            @RequestHeader("Host") String host,
+            HotelCriteria criteria,
+            Pageable pageable) {
+        log.info("findHotels by pageable={}", pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(mainService.findHotels(UtilityHelper.resolveHostForDevelopment(host), pageable, criteria));
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteApartment(@PathVariable Long id,
@@ -93,6 +95,7 @@ public class MainController {
         return ResponseEntity.created(location).body(main);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<Void> create(@RequestPart Main payload,
                                        @RequestPart(value = "file", required = false) MultipartFile file,

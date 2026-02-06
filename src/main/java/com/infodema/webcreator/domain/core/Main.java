@@ -25,7 +25,9 @@ public class Main extends AbstractAuditModel {
     private User owner;
     private BigDecimal price;
     private List<Comment> comments;
+    private List<ProductType> productType;
     private List<Menu>  menus;
+    private Set<ProductType> products;
     private Set<MainIso> iso;
     private String primaryColor;
     private String secondaryColor;

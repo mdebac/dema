@@ -1,5 +1,4 @@
-import {Component, HostBinding, inject, Input, OnDestroy, OnInit, signal} from '@angular/core';
-import {MatChipListbox, MatChipOption} from "@angular/material/chips";
+import {Component, HostBinding, inject, Input, OnDestroy} from '@angular/core';
 import {MatButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
@@ -24,6 +23,7 @@ import {Menu} from "../../domain/menu";
 import {Apartment} from "../../domain/apartment";
 import {ApartmentDialogComponent} from "../dialogs/apartment-dialog/apartment-dialog.component";
 import {Language} from "../../domain/language";
+import {defaultIso} from "../../domain/countries-iso";
 
 @Component({
   selector: 'actions',
@@ -48,6 +48,7 @@ export class ActionsComponent implements OnDestroy {
 
   @Input() activeDetail: ApartmentDetail | null = null;
   @Input() header: Header | null = null;
+  @Input() selectedIso: string = defaultIso;
 
   @HostBinding("style.--direction")
   @Input() direction: string = "";
@@ -75,9 +76,11 @@ export class ActionsComponent implements OnDestroy {
       const data: ApartmentItemDialogData = {
         languages: this.header?.main.languages,
         item: item,
+        selectedIso: this.selectedIso,
         colors: colors,
         roles: this.authStore.userRoles,
-        host: host
+        host: host,
+        fonts: this.header?.main.fonts
       };
 
       this.openDialogItem(data).pipe(
@@ -113,9 +116,11 @@ export class ActionsComponent implements OnDestroy {
     const partial: Partial<ApartmentDetail> = {...detail}
     const data: Partial<ApartmentDetailDialogData> = {
       languages: selectedLanguages,
+      selectedIso: this.selectedIso,
+      products:header?.main.products,
       fonts: header?.main.fonts,
       detail: partial,
-      colors: header?.colors,
+      colors: header?.main.colors,
       host: header?.main.host,
     }
 

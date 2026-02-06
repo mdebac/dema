@@ -1,10 +1,10 @@
 export type SearchCriteria = Record<
   string,
-  string | number | boolean | ReadonlyArray<string | number | boolean>
+  string | number | boolean | ReadonlyArray<string | number | boolean | undefined>
 > & {
-  page?: number;
-  size?: number;
-  sort?: string
+  page?: number | undefined;
+  size?: number | undefined;
+  sort?: string | undefined
 };
 
 export class Page<T> {

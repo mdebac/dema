@@ -12,4 +12,5 @@ export interface Widget {
   component: Type<unknown> | null
   colors: Colors | undefined,
   host: Hosts | undefined,
+  isMobile: boolean
 }

@@ -1,34 +1,59 @@
 <ng-container>
     <div id="top"></div>
-    <mat-card class="dashboard-card">
+    <mat-card class="dashboard-card-summer">
         <mat-card-header>
 
             @if (isMobile) {
-                <div class="menu-container" #menuContainer (click)="menuContainerClick()">
-                    @if (activeDetail?.sideMenu?.image) {
+
+                <div class="menu-container-summer-top" (click)="menuContainerClick()">
+                    @if (activeDetail?.topMenu?.image) {
                         <div class="image-desc">
-                            <img src="{{'data:image/jpg;base64,' + activeDetail?.sideMenu?.image}}" alt=""/>
+                            <img src="{{'data:image/jpg;base64,' + activeDetail?.topMenu?.image}}" alt=""/>
                         </div>
-                    } @else if (activeDetail?.sideMenu?.icon) {
+                    } @else if (activeDetail?.topMenu?.icon) {
                         <div class="menu-icon">
-                            @if (activeDetail?.sideMenu?.icon) {
-                                <mat-icon class="icon-display icon-active"> {{ activeDetail?.sideMenu?.icon }}
+                            @if (activeDetail?.topMenu?.icon) {
+                                <mat-icon class="icon-display"> {{ activeDetail?.topMenu?.icon }}
                                 </mat-icon>
                             }
                         </div>
                     }
-                    @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
+                    @for (iso of activeDetail?.topMenu?.iso; track iso.iso) {
                         @if (selectedIso === iso.iso) {
-                            <quill-view [content]="getMobileMenuLabel(iso.title, iso.description)" format="html"
+                            <quill-view [content]="getMobileMenuLabelTitle(iso.title)" format="html"
                                         theme="snow"></quill-view>
                         }
                     }
                 </div>
+
+                @if(!activeDetail?.topMenu?.hideMenuPanelIfOne){
+                    <div class="menu-container-summer" #menuContainer (click)="menuContainerClick()">
+                        @if (activeDetail?.sideMenu?.image) {
+                            <div class="image-desc">
+                                <img src="{{'data:image/jpg;base64,' + activeDetail?.sideMenu?.image}}" alt=""/>
+                            </div>
+                        } @else if (activeDetail?.sideMenu?.icon) {
+                            <div class="menu-icon">
+                                @if (activeDetail?.sideMenu?.icon) {
+                                    <mat-icon class="icon-display icon-active"> {{ activeDetail?.sideMenu?.icon }}
+                                    </mat-icon>
+                                }
+                            </div>
+                        }
+                        @for (iso of activeDetail?.sideMenu?.iso; track iso.iso) {
+                            @if (selectedIso === iso.iso) {
+                                <quill-view [content]="getMobileMenuLabel(iso.title, iso.description)" format="html"
+                                            theme="snow"></quill-view>
+                            }
+                        }
+                    </div>
+                }
+
                 @if (!hideContent) {
 
                     @if (isAdmin() || isManager()) {
 
-                        <div class="header-actions">
+                        <div class="header-actions-summer">
                             <div>
                                 <button mat-flat-button [matMenuTriggerFor]="pageActions">
                                     <i class="fa-solid fa-gears fa-xl"></i>
@@ -36,12 +61,13 @@
                                 </button>
                             </div>
                             <mat-menu #pageActions="matMenu">
-                                <div class="actionButtons">
+                                <div class="actionButtons-summer">
                                     <ng-container>
                                         <page-actions (click)="$event.stopPropagation()"
                                                       [activeDetail]="activeDetail"
                                                       [header]="header"
                                                       [direction]="'column'"
+                                                      [selectedIso]="selectedIso"
                                                       [activeBgColor]="activeDetail?.backgroundColor"
                                         ></page-actions>
                                     </ng-container>
@@ -54,8 +80,8 @@
                                     {{ "header.actions" | translate }}
                                 </button>
                             </div>
-                            <mat-menu #headerActions="matMenu">
-                                <div class="actionButtons">
+                            <mat-menu class="mat-menu-summer" #headerActions="matMenu">
+                                <div class="actionButtons-summer">
                                     <ng-container>
                                         <header-actions (click)="$event.stopPropagation()"
                                                         [header]="header"
@@ -71,7 +97,7 @@
             } @else {
                 @if (isAdmin() || isManager()) {
 
-                    <div class="header-actions">
+                    <div class="header-actions-summer">
                         <div>
                             <button mat-flat-button [matMenuTriggerFor]="pageActions">
                                 <i class="fa-solid fa-gears fa-xl"></i>
@@ -79,12 +105,13 @@
                             </button>
                         </div>
                         <mat-menu #pageActions="matMenu">
-                            <div class="actionButtons">
+                            <div class="actionButtons-summer">
                                 <ng-container>
                                     <page-actions (click)="$event.stopPropagation()"
                                                   [activeDetail]="activeDetail"
                                                   [header]="header"
                                                   [direction]="'column'"
+                                                  [selectedIso]="selectedIso"
                                                   [activeBgColor]="activeDetail?.backgroundColor"
                                     ></page-actions>
                                 </ng-container>
@@ -97,8 +124,8 @@
                                 {{ "header.actions" | translate }}
                             </button>
                         </div>
-                        <mat-menu #headerActions="matMenu">
-                            <div class="actionButtons">
+                        <mat-menu class="mat-menu-summer" #headerActions="matMenu">
+                            <div class="actionButtons-summer">
                                 <ng-container>
                                     <header-actions (click)="$event.stopPropagation()"
                                                     [header]="header"
@@ -115,21 +142,20 @@
         </mat-card-header>
 
         @if (activeDetail?.items) {
-            <mat-card-content
-                    cdkDropList [hidden]="hideContent"
-                    [cdkDropListDisabled]="!(isAdmin || isManager)"
-                    [cdkDropListData]="activeDetail!.items"
-                    (cdkDropListDropped)="drop($event)"
-            >
-                @for (data of activeDetail?.items; track data.id) {
+            <mat-card-content cdkDropList [hidden]="hideContent"
+                              [cdkDropListDisabled]="!(isAdmin || isManager)"
+                              [cdkDropListData]="activeDetail!.items"
+                              (cdkDropListDropped)="drop($event)">
 
-                    @if (activeDetail) {
-                        <widget [loggedIn]="loggedIn" [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso"
-                                [columns]="activeDetail.columns"
-                                cdkDrag [cdkDragDisabled]="!(isAdmin() || isManager())"
-                                [data]="transformItemToWidget(activeDetail, data, header?.main?.colors, header?.main?.host, isMobile)"></widget>
+                    @for (data of activeDetail?.items; track data.id; let i = $index) {
+
+                        @if (activeDetail) {
+                            <widget [loggedIn]="loggedIn" [canEdit]="isAdmin() || isManager()" [selectedIso]="selectedIso"
+                                    [columns]="activeDetail.columns"
+                                    [data]="transformItemToWidget(i, activeDetail, data, header?.main?.colors, header?.main?.host, isMobile)"></widget>
+                        }
                     }
-                }
+
             </mat-card-content>
             <div class="make-space"><br></div>
         }

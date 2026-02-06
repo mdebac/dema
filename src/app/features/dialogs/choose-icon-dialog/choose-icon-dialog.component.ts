@@ -18,7 +18,7 @@ import {MatCard, MatCardContent} from "@angular/material/card";
 export class ChooseIconDialogComponent {
   dialogRef = inject(MatDialogRef<ChooseIconDialogComponent>)
 
-  toChoose: string[] = ['close','favorite', 'add','egg', 'flutter_dash', 'cruelty_free','elderly'];
+  toChoose: string[] = ['close','favorite', 'add','egg', 'flutter_dash', 'cruelty_free','elderly','people-group','search','settings','parking_valet','build','auto_towing','directions_car','electric_car','toys','hand_meal','volunteer_activism','car_gear'];
 
   selectIcon(icon:string){
     this.dialogRef.close(icon);
